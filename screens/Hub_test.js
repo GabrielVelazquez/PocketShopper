@@ -5,8 +5,6 @@ import { StyleSheet, Text, Button, View, Image} from 'react-native';
 export default function Hub({navigation}) {
   return (
 
-  
-
     <View style={styles.container}>
 
 <View style={styles.imagesContainer}>
@@ -19,8 +17,13 @@ export default function Hub({navigation}) {
         />
 
         <Button 
-        title="Navigate to other"
-        onPress={()=> navigation.navigate("ItemSelect",{language: "english?"})} //parametro para pasar data
+        title="Navigate to CrearLista"
+        onPress={()=> navigation.navigate("CrearLista",{language: "english?"})} //parametro para pasar data
+        />
+
+      <Button 
+        title="Navigate to Other"
+        onPress={()=> navigation.navigate("Test",{language: "english?"})} //parametro para pasar data
         />
 
 <Text>This is the PocketShopper Debugging Hub, where all the pages will be linked for testing without 
