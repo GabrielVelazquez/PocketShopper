@@ -15,7 +15,7 @@ import ItemSelect from "./screens/Item_select";
 import CrearLista from "./screens/CrearLista";
 import Test from "./screens/test";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createNativeStackNavigator, style } from "@react-navigation/native-stack";
 
 const Stack = createNativeStackNavigator();
 

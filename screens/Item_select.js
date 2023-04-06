@@ -1,21 +1,11 @@
-import { StatusBar } from 'expo-status-bar';
-//import React from 'react';
-import { StyleSheet, Text, View, Button, Image, TextInput, TouchableOpacity } from 'react-native';
-
+//import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View, Button, Image, TextInput, TouchableOpacity, Modal} from 'react-native';
 //expo start para mostrar el qr code
-export default function ItemSelect({navigation, route}) {
-    let language = route.params.language;
-    let greeting = language === "french?" ? "bonjour" : "Hello";
-  /*return (
-    <View style={styles.container}>
-      <Text>{greeting}</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-  */
- // const Page = () => {
+const ItemSelect = () => {
+
     return (
       <View style={styles.container}>
+    
         {/* Header Title */}
         <Text style={styles.title}>Add items to list</Text>
         <Text style={styles.searchtext}>Search Item</Text>
@@ -46,6 +36,7 @@ export default function ItemSelect({navigation, route}) {
         {/* Button 1 */}
         <TouchableOpacity style={styles.buttoncreate}>
           <Text style={styles.buttoncreateText}>Create Item</Text>
+          
         </TouchableOpacity>
 
         {/* Button 2 */}
@@ -53,21 +44,11 @@ export default function ItemSelect({navigation, route}) {
           <Text style={styles.buttondoneText}>Done</Text>
         </TouchableOpacity>
       </View>
-        
-      </View>
-    );
-  //};
-}
 
-/*const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#5A71AF', 
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
-*/
+      </View> //termina el return
+    );
+//}//navigation
+    }
 
 const styles = StyleSheet.create({
     container: {
@@ -166,6 +147,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
        // fontWeight: 'bold',
         textAlign: 'center',
+        
       },
       buttondoneText: {
         color: '#FFFFFF',
@@ -175,4 +157,4 @@ const styles = StyleSheet.create({
       },
   });
 
-  
+  export default ItemSelect

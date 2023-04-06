@@ -13,17 +13,18 @@ export default function Hub({navigation}) {
 
         <Button 
         title="Navigate to Item Select"
-        onPress={()=> navigation.navigate("ItemSelect",{language: "french?"})} //parametro para pasar data
+        onPress={()=> navigation.navigate("ItemSelect")} //parametro para pasar data
         />
 
         <Button 
         title="Navigate to CrearLista"
-        onPress={()=> navigation.navigate("CrearLista",{language: "english?"})} //parametro para pasar data
+        onPress={()=> navigation.navigate("CrearLista")} //parametro para pasar data
         />
 
       <Button 
-        title="Navigate to Other"
-        onPress={()=> navigation.navigate("Test",{language: "english?"})} //parametro para pasar data
+        title="Navigate to CrearLista 'Styled' "
+        onPress={()=> navigation.navigate("Test")} //parametro para pasar data
+        
         />
 
 <Text>This is the PocketShopper Debugging Hub, where all the pages will be linked for testing without 
@@ -51,5 +52,4 @@ const styles = StyleSheet.create({
     height: 110,
     borderRadius: 15,
   },
-  
 });
