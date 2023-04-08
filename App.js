@@ -14,6 +14,7 @@ import Hub from "./screens/Hub_test";
 import ItemSelect from "./screens/Item_select";
 import CrearLista from "./screens/CrearLista";
 import Test from "./screens/test";
+import LocalDataTable from "./screens/Data";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator, style } from "@react-navigation/native-stack";
 
@@ -26,25 +27,38 @@ export default function App() {
   <Stack.Screen
     name="HUB"
     component={Hub}
-    options={{tittle: "Welcome"}}
+    //options={{headerShown: false}}
   />
   <Stack.Screen 
   name="ItemSelect"
   component={ItemSelect}
+ // options={{headerShown: false}}
   />
 <Stack.Screen 
   name="CrearLista"
   component={CrearLista}
+  //options={{headerShown: false}}
   />
 
 <Stack.Screen 
   name="Test"
   component={Test}
+  //options={{headerShown: false}} 
   />
+
+<Stack.Screen 
+  name="LocalDataTable"
+  component={LocalDataTable}
+  //options={{headerShown: false}}
+  />
+
+
 </Stack.Navigator>
 </NavigationContainer>
   );
 }
+
+
 
 /*
 import { StatusBar } from 'expo-status-bar';
