@@ -36,6 +36,7 @@ const CrearLista = () => {
   
   const renderListItem = ({ item }) => (
     <TouchableOpacity onPress={() => console.log('Navigate to list:', item.id)}>
+      
 
 {/*
         <View style={{ padding: 16 }}>
@@ -43,6 +44,7 @@ const CrearLista = () => {
         <Text style={{ fontSize: 16 }}>Items: {item.items.length}</Text>
 */}
       <View style={styles.listnamecolor}>
+        
         <Text style={{fontSize: 17,color:"#fff",  fontWeight: 'bold', marginRight: 1 ,}}>{item.name}                                                Items: {item.items.length}</Text> 
         <Text style={{fontSize: 17,color:"#fff", fontWeight: 'bold', marginTop:19}}>Date:</Text> 
         {/* BEFORE 1 <Text style={styles.category1}>Fruit</Text> {*/}

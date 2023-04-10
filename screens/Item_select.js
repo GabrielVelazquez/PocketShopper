@@ -4,7 +4,7 @@
 import React,{useState} from 'react';
 import {StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Modal} from 'react-native';
 //expo start para mostrar el qr code
-const ItemSelect = () => {//navigation
+const ItemSelect = ({navigation}) => {//navigation
 
   //const [name, setName] = useState('');
   //const [category, setCategory] = useState('');
@@ -70,7 +70,7 @@ const ItemSelect = () => {//navigation
         </TouchableOpacity>
 
         {/* Button 2 */}
-        <TouchableOpacity style={styles.buttondone}>
+        <TouchableOpacity style={styles.buttondone} onPress={()=> navigation.navigate("CrearLista")}>{/*DONE */}
           <Text style={styles.buttondoneText}>Done</Text>
         </TouchableOpacity>
       </View>
