@@ -30,10 +30,11 @@ export default function Hub({navigation}) {
         title="Navigate to Data Preview for testing only"
         onPress={()=> navigation.navigate("LocalDataTable")} //parametro para pasar data
          />
-  <Button 
+  {/*<Button 
         title="Navigate Home Template "
         onPress={()=> navigation.navigate("HomeScreen")} //parametro para pasar data
          />
+  */}
 
 <Text>This is the PocketShopper Debugging Hub, where all the pages will be linked for testing without 
     relying on other pages!</Text>
