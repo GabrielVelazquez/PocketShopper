@@ -22,12 +22,12 @@ export default function Hub({navigation}) {
         />
 
       <Button 
-        title="Navigate to CrearLista 'Styled' "
+        title="Navigate to CrearLista 'Styled' for testing only "
         onPress={()=> navigation.navigate("Test")} //parametro para pasar data
          />
 
   <Button 
-        title="Navigate Data Preview "
+        title="Navigate to Data Preview for testing only"
         onPress={()=> navigation.navigate("LocalDataTable")} //parametro para pasar data
          />
   <Button 
