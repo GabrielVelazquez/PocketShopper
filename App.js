@@ -15,6 +15,7 @@ import ItemSelect from "./screens/Item_select";
 import CrearLista from "./screens/CrearLista";
 import Test from "./screens/test";
 import LocalDataTable from "./screens/Data";
+import HomeScreen from "./screens/HomeScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator, style } from "@react-navigation/native-stack";
 
@@ -49,6 +50,11 @@ export default function App() {
 <Stack.Screen 
   name="LocalDataTable"
   component={LocalDataTable}
+  //options={{headerShown: false}}
+  />
+  <Stack.Screen 
+  name="HomeScreen"
+  component={HomeScreen}
   //options={{headerShown: false}}
   />
 
