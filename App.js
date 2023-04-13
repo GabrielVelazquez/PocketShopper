@@ -15,6 +15,7 @@ import ItemSelect from "./screens/Item_select";
 import CrearLista from "./screens/CrearLista";
 import Test from "./screens/test";
 import LocalDataTable from "./screens/Data";
+import LOGIN from "./screens/LOGIN";
 import HomeScreen from "./screens/HomeScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator, style } from "@react-navigation/native-stack";
@@ -58,7 +59,11 @@ export default function App() {
   //options={{headerShown: false}}
   />
   */}
-
+<Stack.Screen 
+  name="LOGIN"
+  component={LOGIN}
+  //options={{headerShown: false}} 
+  />
 
 </Stack.Navigator>
 </NavigationContainer>

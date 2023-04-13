@@ -30,6 +30,11 @@ export default function Hub({navigation}) {
         title="Navigate to Data Preview for testing only"
         onPress={()=> navigation.navigate("LocalDataTable")} //parametro para pasar data
          />
+
+  <Button 
+        title="Navigate to LOGIN"
+        onPress={()=> navigation.navigate("LOGIN")} //parametro para pasar data
+        />
   {/*<Button 
         title="Navigate Home Template "
         onPress={()=> navigation.navigate("HomeScreen")} //parametro para pasar data
