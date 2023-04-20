@@ -2,7 +2,7 @@
 //import {Picker} from '@react-native-picker/picker'; //constant drop down
 //import { SelectList } from 'react-native-dropdown-select-list'
 import React,{useState} from 'react';
-import {StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Modal} from 'react-native';
+import {StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Modal, SafeAreaView, ScrollView} from 'react-native';
 import Data from './Data';
 //expo start para mostrar el qr code
 const ItemSelect = ({navigation}) => {//navigation
@@ -46,7 +46,8 @@ const ItemSelect = ({navigation}) => {//navigation
         <View style={styles.searchContainer}>
           <TextInput style={styles.searchInput} placeholderTextColor="#000" placeholder="Search" />
         </View>
-  
+        <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
         {/* Image Slots First Category */}
         <Text style={styles.category1}>Fruit</Text>
         <TouchableOpacity style={styles.button}>
@@ -66,7 +67,12 @@ const ItemSelect = ({navigation}) => {//navigation
           <Image style={styles.image} source={require('../assets/mydonut.png')} />
           <Image style={styles.image} source={require('../assets/mydonut.png')} />
           <Image style={styles.image} source={require('../assets/mydonut.png')} />
+          {/* trabajar en paginacion  */}
+         {/*<Image style={styles.image} source={require('../assets/mydonut.png')} /> */}
+          
         </View>
+        </ScrollView>
+    </SafeAreaView>
         
  {/* Button Container */}
  <View style={styles.buttonContainer}>
@@ -160,6 +166,7 @@ const styles = StyleSheet.create({
     title: {
       fontSize: 24,
       //fontWeight: 'bold',
+      marginTop: -40,
       marginBottom: 20,
       alignItems: 'center',
       color: '#ffff',
@@ -188,9 +195,9 @@ const styles = StyleSheet.create({
       padding: 10,
     },
     imagesContainer: {
-      flexDirection: 'row',
+      flexDirection: 'row' ,
       justifyContent: 'space-between',
-      marginBottom: 20
+      marginBottom: 20,
     },
     image: {
       width: 100,
