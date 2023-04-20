@@ -36,6 +36,10 @@ export default function Hub({navigation}) {
         onPress={()=> navigation.navigate("LOGIN")} //parametro para pasar data
         />
   <Button 
+        title="Navigate to Sign_up"
+        onPress={()=> navigation.navigate("Sign_up")} //parametro para pasar data
+        />
+  <Button 
         title="Navigate Home Template "
         onPress={()=> navigation.navigate("HomeScreen")} //parametro para pasar data
          />

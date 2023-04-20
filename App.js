@@ -17,6 +17,7 @@ import CrearLista from "./screens/CrearLista";
 import Test from "./screens/test";
 import LocalDataTable from "./screens/Data";
 import LOGIN from "./screens/LOGIN";
+import Sign_up from "./screens/Sign_up";
 import HomeScreen from "./screens/HomeScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator, style } from "@react-navigation/native-stack";
@@ -63,6 +64,11 @@ export default function App() {
 <Stack.Screen 
   name="LOGIN"
   component={LOGIN}
+  //options={{headerShown: false}} 
+  />
+<Stack.Screen 
+  name="Sign_up"
+  component={Sign_up}
   //options={{headerShown: false}} 
   />
 
