@@ -3,6 +3,9 @@ import { StyleSheet, View, Text, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ActionButton from 'react-native-action-button';
 
+// añadir floating button: npm install react-native-action-button
+
+
 export default function HomeScreen() {
   const [list, setList] = useState([]);
   const navigation = useNavigation();
