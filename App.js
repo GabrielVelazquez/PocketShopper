@@ -10,6 +10,7 @@ click the right button on package.json
 Run in console integrated (Open the console)
 Now, you can run it.
 */
+// Import the functions you need from the SDKs you need
 import Hub from "./screens/Hub_test";
 import ItemSelect from "./screens/Item_select";
 import CrearLista from "./screens/CrearLista";

@@ -3,6 +3,7 @@
 //import { SelectList } from 'react-native-dropdown-select-list'
 import React,{useState} from 'react';
 import {StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Modal} from 'react-native';
+import Data from './Data';
 //expo start para mostrar el qr code
 const ItemSelect = ({navigation}) => {//navigation
 
@@ -48,11 +49,16 @@ const ItemSelect = ({navigation}) => {//navigation
   
         {/* Image Slots First Category */}
         <Text style={styles.category1}>Fruit</Text>
+        <TouchableOpacity style={styles.button}>
         <View style={styles.imagesContainer}>
+        {/*text goes here*/}
           <Image style={styles.image} source={require('../assets/mydonut.png')} />
-          <Image style={styles.image} source={require('../assets/mydonut.png')} />
-          <Image style={styles.image} source={require('../assets/mydonut.png')} />
+          {/*Aqui ira id para base de datos que muestre por categortia y id*/}
+          
+          {/*<Image style={styles.image} source={require('../assets/mydonut.png')} /> */}
+         {/* <Image style={styles.image} source={require('../assets/mydonut.png')} /> */}
         </View>
+        </TouchableOpacity>
 
         {/* Image Slots Second category*/}
         <Text style={styles.category2}>Dairy</Text>
@@ -66,12 +72,12 @@ const ItemSelect = ({navigation}) => {//navigation
  <View style={styles.buttonContainer}>
         {/* Button 1 */}
         <TouchableOpacity style={styles.buttoncreate} onPress={handleCreateItem}>
-          <Text style={styles.buttoncreateText}>Create Item</Text>
+          <Text style={{color:'#000',fontSize: 16,textAlign:'center'}}>Create Item</Text>
         </TouchableOpacity>
 
         {/* Button 2 */}
         <TouchableOpacity style={styles.buttondone} onPress={()=> navigation.navigate("CrearLista")}>{/*DONE */}
-          <Text style={styles.buttondoneText}>Done</Text>
+          <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Done</Text>
         </TouchableOpacity>
       </View>
 
@@ -127,12 +133,12 @@ const ItemSelect = ({navigation}) => {//navigation
 <View style={styles.modalbuttonContainer}>
         {/* Button Modal Cancel */}
         <TouchableOpacity style={styles.modalbuttoncancel} onPress={modalhandleCancelCreate}>
-          <Text style={styles.modalbuttoncreateText}>Cancel</Text>
+          <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Cancel</Text>
         </TouchableOpacity> 
 
         {/* Button Modal Create */}
         <TouchableOpacity style={styles.modalbuttoncreate}>
-          <Text style={styles.modalbuttoncreateText}>Create</Text>
+          <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Create</Text>
         </TouchableOpacity>
       </View>
       </Modal>
@@ -184,7 +190,7 @@ const styles = StyleSheet.create({
     imagesContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      marginBottom: 20,
+      marginBottom: 20
     },
     image: {
       width: 100,
@@ -201,7 +207,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#F7A0CB",
         width: 70,
     height: 27,
-    marginBottom: 5,
+    marginBottom: 10,
       },
       category2: {
         fontSize: 24,
@@ -237,12 +243,7 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         paddingHorizontal: 50,
       },
-      buttoncreateText: {
-        color: '#000',
-        fontSize: 16,
-        textAlign: 'center',
-      },
-      buttondoneText: {
+      oneText: {
         color: '#fff',
         fontSize: 16,
         textAlign: 'center',
@@ -309,11 +310,6 @@ const styles = StyleSheet.create({
         borderRadius: 2,
         paddingVertical: 15,
         paddingHorizontal: 50,
-      },
-      modalbuttoncreateText: {
-        color: '#fff',
-        fontSize: 16,
-        textAlign: 'center',
       },
       selectContainer: {
         borderWidth: 1,
