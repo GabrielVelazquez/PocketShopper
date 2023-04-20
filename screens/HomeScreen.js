@@ -29,16 +29,16 @@ export default function HomeScreen() {
         {/* <Text style={styles.headerText}>Shopper</Text> */}
 
       </View>
-      <View style={styles.divisionContainer}>
-        <View style={styles.division}>
+      {/* <View style={styles.divisionContainer}> */}
+        <View style={styles.divisionShared}>
           <Text style={styles.divisionTitle}>Shared Lists</Text>
         </View>
-        <View style={styles.division}>
+        <View style={styles.divisionPersonal}>
           <Text style={styles.divisionTitle}>Personal Lists</Text>
         </View>
-        <View style={styles.division}>
+        <View style={styles.divisionArchived}>
           <Text style={styles.divisionTitle}>Archived Lists</Text>
-        </View>
+        {/* </View> */}
       </View>
       <View style={styles.content}>
         {list.length === 0 ? (
@@ -63,21 +63,24 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#5469A3',
-    height: 100,
+    height: 150,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    
   },
   headerText: {
     color: '#000000',
     fontSize: 24,
     fontWeight: 'bold',
     marginLeft: 5,
+    marginTop: 68,
   },
   logo: {
     width: 100,
     height: 80,
     resizeMode:"contain",
+    marginTop: 50,
   },
   divisionContainer: {
     borderTopWidth: 1,
@@ -87,10 +90,42 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
   },
-  division: {
-    borderBottomWidth: 1,
-    borderColor: '#ccc',
-    paddingVertical: 10,
+  divisionShared: {
+    // borderBottomWidth: 1,
+    // borderColor: '#ccc',
+    // paddingVertical: 10,
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#868892',
+    backgroundColor: "#FEFEFE",
+    width: 400,
+    height: 30,
+    marginBottom: 7,
+    left: 5,
+  },
+  divisionPersonal: {
+    // borderBottomWidth: 1,
+    // borderColor: '#ccc',
+    // paddingVertical: 10,
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#868892',
+    backgroundColor: "#FEFEFE",
+    width: 400,
+    height: 30,
+    marginBottom: 7,
+  },
+  divisionArchived: {
+    // borderBottomWidth: 1,
+    // borderColor: '#ccc',
+    // paddingVertical: 10,
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#868892',
+    backgroundColor: "#FF784C",
+    width: 400,
+    height: 30,
+    marginBottom: 7,
   },
   divisionTitle: {
     fontSize: 20,
