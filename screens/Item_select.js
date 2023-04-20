@@ -3,6 +3,7 @@
 //import { SelectList } from 'react-native-dropdown-select-list'
 import React,{useState} from 'react';
 import {StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Modal, SafeAreaView, ScrollView} from 'react-native';
+import SelectDropdown from 'react-native-select-dropdown' //npm install react-native-select-dropdown
 import Data from './Data';
 //expo start para mostrar el qr code
 const ItemSelect = ({navigation}) => {//navigation
@@ -10,7 +11,7 @@ const ItemSelect = ({navigation}) => {//navigation
   //const [name, setName] = useState('');
   //const [category, setCategory] = useState('');
   //const [price, setPrice] = useState('');
-  
+  const categories = ["Fruit", "Dairy", "Meat", "Vegetable"]
   const [modalVisible, setModalVisible] = useState(false);
   const [itemName, setItemName] = useState('');
   const [itemcategory, setItemCategory] = useState('');
@@ -118,7 +119,22 @@ const ItemSelect = ({navigation}) => {//navigation
             </SelectList>
           </View>
             */}
-              <Text style={styles.modalText}>Category drop down goes here</Text>
+              <SelectDropdown style={styles.dropdownstyle} 
+	data={categories}
+	onSelect={(selectedItem, index) => {
+		console.log(selectedItem, index)
+	}}
+	buttonTextAfterSelection={(selectedItem, index) => {
+		// text represented after item is selected
+		// if data array is an array of objects then return selectedItem.property to render after item is selected
+		return selectedItem
+	}}
+	rowTextForSelection={(item, index) => {
+		// text represented for each item in dropdown
+		// if data array is an array of objects then return item.property to represent item in dropdown
+		return item
+	}}
+/>
 
               <Text style={styles.modalText}>Item Price (optional)</Text>
             <TextInput
@@ -285,6 +301,8 @@ const styles = StyleSheet.create({
       width: 200,
       height: 30,
       },
+      dropdownstyle: {
+       },
       modalTitle:{ //texto arriba del modal
         fontSize: 35,
         fontWeight: 'bold',
