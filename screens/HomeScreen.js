@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-//import ActionButton from 'react-native-action-button';
+import ActionButton from 'react-native-action-button';
 
 export default function HomeScreen() {
   const [list, setList] = useState([]);
@@ -22,16 +22,19 @@ export default function HomeScreen() {
           style={styles.logo}
           source={require('../assets/Pocketshopper_logo_v4.png')}
         />
-        <Text style={styles.header}>Pocket Shopper</Text>
+        <Text style={styles.headerText}>Pocket</Text>
+        <Text style={styles.headerText}>Shopper</Text>
       </View>
-      <View style={styles.division}>
-        <Text style={styles.divisionTitle}>Shared Lists</Text>
-      </View>
-      <View style={styles.division}>
-        <Text style={styles.divisionTitle}>Personal Lists</Text>
-      </View>
-      <View style={styles.division}>
-        <Text style={styles.divisionTitle}>Archived Lists</Text>
+      <View style={styles.divisionContainer}>
+        <View style={styles.division}>
+          <Text style={styles.divisionTitle}>Shared Lists</Text>
+        </View>
+        <View style={styles.division}>
+          <Text style={styles.divisionTitle}>Personal Lists</Text>
+        </View>
+        <View style={styles.division}>
+          <Text style={styles.divisionTitle}>Archived Lists</Text>
+        </View>
       </View>
       <View style={styles.content}>
         {list.length === 0 ? (
@@ -44,7 +47,7 @@ export default function HomeScreen() {
           ))
         )}
       </View>
-      {/*<ActionButton buttonColor="#5469A3" onPress={handleAddItem} /> */}
+      <ActionButton buttonColor="#5469A3" onPress={handleAddItem} />
     </View>
   );
 }
@@ -57,17 +60,33 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#5469A3',
     height: 100,
-    alignItems:"center",
-    justifyContent:"center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerText: {
+    color: '#000000',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginLeft: 5,
   },
   logo: {
     width: 100,
     height: 50,
     resizeMode:"contain",
   },
-  division: {
+  divisionContainer: {
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
     backgroundColor: '#fff',
-    padding: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  division: {
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+    paddingVertical: 10,
   },
   divisionTitle: {
     fontSize: 20,
