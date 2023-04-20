@@ -25,8 +25,9 @@ export default function HomeScreen() {
           style={styles.logo}
           source={require('../assets/Pocketshopper_logo_v4.png')}
         />
-        <Text style={styles.headerText}>Pocket</Text>
-        <Text style={styles.headerText}>Shopper</Text>
+        <Text style={styles.headerText}>Pocket {'\n'}Shopper</Text>
+        {/* <Text style={styles.headerText}>Shopper</Text> */}
+
       </View>
       <View style={styles.divisionContainer}>
         <View style={styles.division}>
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 100,
-    height: 50,
+    height: 80,
     resizeMode:"contain",
   },
   divisionContainer: {
