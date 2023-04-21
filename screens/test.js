@@ -16,7 +16,7 @@ export default Test;
 import { StatusBar } from 'expo-status-bar';
 
 import React, { useState } from 'react';
-import { View, Text, Button, TextInput, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Button, TextInput, FlatList, TouchableOpacity, StyleSheet,SafeAreaView, ScrollView  } from 'react-native';
 
 
 const CrearLista = () => {
@@ -60,13 +60,14 @@ const CrearLista = () => {
 
     <View style={{ flex: 1, padding: 16 }}>
 <Text style={styles.listtype1}>Personal List</Text>
-      <FlatList
+<SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
         data={lists}
         renderItem={renderListItem}
         keyExtractor={(item) => item.id}
         style={{ flex: 1 }}
-      />
-
+        </ScrollView>
+    </SafeAreaView>
       
 
 

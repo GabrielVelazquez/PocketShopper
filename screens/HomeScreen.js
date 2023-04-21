@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, Image } from 'react-native';
+import { StyleSheet, View, Text, Image,SafeAreaView, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ActionButton from 'react-native-action-button';
 
@@ -30,6 +30,8 @@ export default function HomeScreen() {
 
       </View>
       {/* <View style={styles.divisionContainer}> */}
+      <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
         <View style={styles.divisionShared}>
           <Text style={styles.divisionTitle}>Shared Lists</Text>
         </View>
@@ -40,6 +42,8 @@ export default function HomeScreen() {
           <Text style={styles.divisionTitle}>Archived Lists</Text>
         {/* </View> */}
       </View>
+      </ScrollView>
+    </SafeAreaView>
       <View style={styles.content}>
         {list.length === 0 ? (
           <Text style={styles.emptyMessage}>Empty</Text>
