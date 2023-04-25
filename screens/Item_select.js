@@ -1,12 +1,13 @@
+
 //import { StatusBar } from 'expo-status-bar';
 //import {Picker} from '@react-native-picker/picker'; //constant drop down
 //import { SelectList } from 'react-native-dropdown-select-list'
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import {StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Modal, SafeAreaView, ScrollView} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown' //npm install react-native-select-dropdown
 import Data from './Data';
-//expo start para mostrar el qr code
 const ItemSelect = ({navigation}) => {//navigation
+//expo start para mostrar el qr code
 
   //const [name, setName] = useState('');
   //const [category, setCategory] = useState('');
@@ -16,18 +17,15 @@ const ItemSelect = ({navigation}) => {//navigation
   const [itemName, setItemName] = useState('');
   const [itemcategory, setItemCategory] = useState('');
   const [itemPrice, setItemPrice] = useState('');
-
   const handleCreateItem = () => {
     setModalVisible(true);
   };
-
   const modalhandleCancelCreate = () => {
     setModalVisible(false);
     setItemName('');
     setItemCategory('');
     setItemPrice('');
   };
-
   const handleSaveItem = () => {
     // do something with itemName
     setItemName('');
@@ -35,7 +33,6 @@ const ItemSelect = ({navigation}) => {//navigation
     setItemPrice('');
     setModalVisible(false);
   };
-
     return (
       <View style={styles.container}>
     
@@ -55,13 +52,15 @@ const ItemSelect = ({navigation}) => {//navigation
         <View style={styles.imagesContainer}>
         {/*text goes here*/}
           <Image style={styles.image} source={require('../assets/mydonut.png')} />
+          <Text style={{ color: '#000000', right: 270,bottom:100,fontSize: 24,fontWeight: 'bold',marginLeft: 5,marginTop: 68,}}
+          >Apple</Text> 
+          {/* text hay que hacer que se adapte, esto esta fixed y eso es malo */}
           {/*Aqui ira id para base de datos que muestre por categortia y id*/}
           
           {/*<Image style={styles.image} source={require('../assets/mydonut.png')} /> */}
          {/* <Image style={styles.image} source={require('../assets/mydonut.png')} /> */}
         </View>
         </TouchableOpacity>
-
         {/* Image Slots Second category*/}
         <Text style={styles.category2}>Dairy</Text>
         <View style={styles.imagesContainer}>
@@ -81,13 +80,11 @@ const ItemSelect = ({navigation}) => {//navigation
         <TouchableOpacity style={styles.buttoncreate} onPress={handleCreateItem}>
           <Text style={{color:'#000',fontSize: 16,textAlign:'center'}}>Create Item</Text>
         </TouchableOpacity>
-
         {/* Button 2 */}
         <TouchableOpacity style={styles.buttondone} onPress={()=> navigation.navigate("CrearLista")}>{/*DONE */}
           <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Done</Text>
         </TouchableOpacity>
       </View>
-
        {/* Pop-up */}
        <Modal
         animationType="fade"
@@ -120,29 +117,27 @@ const ItemSelect = ({navigation}) => {//navigation
           </View>
             */}
               <SelectDropdown style={styles.dropdownstyle} 
-	data={categories}
-	onSelect={(selectedItem, index) => {
-		console.log(selectedItem, index)
-	}}
-	buttonTextAfterSelection={(selectedItem, index) => {
-		// text represented after item is selected
-		// if data array is an array of objects then return selectedItem.property to render after item is selected
-		return selectedItem
-	}}
-	rowTextForSelection={(item, index) => {
-		// text represented for each item in dropdown
-		// if data array is an array of objects then return item.property to represent item in dropdown
-		return item
-	}}
+  data={categories}
+  onSelect={(selectedItem, index) => {
+    console.log(selectedItem, index)
+  }}
+  buttonTextAfterSelection={(selectedItem, index) => {
+    // text represented after item is selected
+    // if data array is an array of objects then return selectedItem.property to render after item is selected
+    return selectedItem
+  }}
+  rowTextForSelection={(item, index) => {
+    // text represented for each item in dropdown
+    // if data array is an array of objects then return item.property to represent item in dropdown
+    return item
+  }}
 />
-
               <Text style={styles.modalText}>Item Price (optional)</Text>
             <TextInput
               style={styles.modalInput}
               value={itemPrice}
               onChangeText={(text) => setItemPrice(text)}
             />
-
            {/*} <TouchableOpacity style={styles.modalButton} onPress={handleSaveItem}>
               <Text style={styles.modalButtonText}>Save</Text>
             </TouchableOpacity>
@@ -157,21 +152,17 @@ const ItemSelect = ({navigation}) => {//navigation
         <TouchableOpacity style={styles.modalbuttoncancel} onPress={modalhandleCancelCreate}>
           <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Cancel</Text>
         </TouchableOpacity> 
-
         {/* Button Modal Create */}
         <TouchableOpacity style={styles.modalbuttoncreate}>
           <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Create</Text>
         </TouchableOpacity>
       </View>
       </Modal>
-
       
-
       </View> //termina el return
     );
 //}//navigation
     }
-
 const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -214,6 +205,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row' ,
       justifyContent: 'space-between',
       marginBottom: 20,
+      marginTop:20,
     },
     image: {
       width: 100,
@@ -346,5 +338,107 @@ const styles = StyleSheet.create({
       },
       //MODAL---------------------------------
   });
-
   export default ItemSelect
+  
+/*
+import React, { useState } from 'react';
+import { View, TouchableOpacity, Image, Text, StyleSheet, Dimensions } from 'react-native';
+
+const data = [
+  {
+    id: '1',
+    image: require('../assets/mydonut.png'),
+    text: 'Image 1',
+  },
+  {
+    id: '2',
+    image: require('../assets/mydonut.png'),
+    text: 'Image 2',
+  },
+  {
+    id: '3',
+    image: require('../assets/mydonut.png'),
+    text: 'Image 3',
+  },
+  {
+    id: '4',
+    image: require('../assets/mydonut.png'),
+    text: 'Image 4',
+  },
+  {
+    id: '5',
+    image: require('../assets/mydonut.png'),
+    text: 'Image 5',
+  },
+];
+
+const numColumns = 3;
+const WIDTH = Dimensions.get('window').width;
+
+const ItemSelect = ({navigation}) => {
+  const [selectedId, setSelectedId] = useState(null);
+
+  const handlePress = (id) => {
+    setSelectedId(id);
+  };
+
+  const renderItem = ({ item }) => {
+    const isSelected = item.id === selectedId;
+    return (
+      <TouchableOpacity
+        style={[styles.itemContainer, { backgroundColor: isSelected ? '#e0e0e0' : 'white' }]}
+        onPress={() => handlePress(item.id)}
+      >
+        <Image source={item.image} style={styles.image} />
+        <Text style={styles.text}>{item.text}</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      {data.map((item) => (
+        <TouchableOpacity
+          key={item.id}
+          style={styles.itemContainer}
+          onPress={() => handlePress(item.id)}
+        >
+          <Image source={item.image} style={styles.image} />
+          <Text style={styles.text}>{item.text}</Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+  },
+  itemContainer: {
+    width: WIDTH / numColumns - 20,
+    height: WIDTH / numColumns - 20,
+    alignItems: 'center',
+    marginVertical: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  image: {
+    width: '80%',
+    height: '80%',
+    resizeMode: 'contain',
+  },
+  text: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginTop: 5,
+  },
+});
+
+export default ItemSelect;
+*/

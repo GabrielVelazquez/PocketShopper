@@ -9,6 +9,7 @@
 click the right button on package.json
 Run in console integrated (Open the console)
 Now, you can run it.
+Ya instale firebase en el package.json pero si no les sale usen esto: npm install firebase
 */
 // Import the functions you need from the SDKs you need
 import Hub from "./screens/Hub_test";

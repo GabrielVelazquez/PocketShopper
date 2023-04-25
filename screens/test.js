@@ -60,14 +60,13 @@ const CrearLista = () => {
 
     <View style={{ flex: 1, padding: 16 }}>
 <Text style={styles.listtype1}>Personal List</Text>
-<SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
+      <FlatList
         data={lists}
         renderItem={renderListItem}
         keyExtractor={(item) => item.id}
         style={{ flex: 1 }}
-        </ScrollView>
-    </SafeAreaView>
+      />
+
       
 
 
