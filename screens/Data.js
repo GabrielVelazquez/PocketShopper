@@ -13,22 +13,22 @@ const Data = ({navigation}) => {//navigation
   const [items, setItems] = useState([]);
   const todoRef = firebase.firestore().collection('Items');
 
-  useEffect(async () => {
-    todoRef.onSnapshot(
-      querySnapShot => {
-        const items = []
-    querySnapShot.forEach((doc) => {
-      const {name, category, price}=doc.data()
-      items.push({
-    id: doc.id, name, category, price,
-  })
-  })
-  setItems(items)
-  }
-  )
+  (async () => {
+ 
  },[]
 )
-
+todoRef.onSnapshot(
+  querySnapShot => {
+    const items = []
+querySnapShot.forEach((doc) => {
+  const {name, category, price}=doc.data()
+  items.push({
+id: doc.id, name, category, price,
+}); console.log(items)
+})
+setItems(items)
+}
+)
 
   //const [name, setName] = useState('');
   //const [category, setCategory] = useState('');
@@ -84,7 +84,7 @@ const Data = ({navigation}) => {//navigation
          {/* <Image style={styles.image} source={require('../assets/mydonut.png')} /> */}
         </View>
         </TouchableOpacity>
-
+         
         {/* Image Slots Second category*/}
         <Text style={styles.category2}>Dairy</Text>
         <View style={styles.imagesContainer}>
