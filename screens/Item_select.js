@@ -73,12 +73,13 @@ const modalhandleCancelCreate = () => {
     );
   };
   //^^^ Clone for modal input
-  const handleSaveNewItem = (selectedCategory) => {
+  const handleSaveNewItem = (selectedCategory) => { //if  selecteedcategory == category. category: selectedcategory
     setModalVisible(false);
     const newItem = {
       id: `${Date.now()}`,
       name: newItemName,
-      category:`${selectedCategory} `,
+      category: selectedCategory,
+      //category:`${selectedCategory} `,
       price: newPriceName,
       image: require('../assets/mydonut.png')
     };
