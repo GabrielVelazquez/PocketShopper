@@ -1,90 +1,131 @@
-
-//import { StatusBar } from 'expo-status-bar';
-//import {Picker} from '@react-native-picker/picker'; //constant drop down
-//import { SelectList } from 'react-native-dropdown-select-list'
-import React,{useState, useEffect} from 'react';
-import {StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Modal, SafeAreaView, ScrollView} from 'react-native';
+import React, { useState } from 'react';
+import {StyleSheet, Text, View, Image, Pressable, TextInput, TouchableOpacity, Modal, SafeAreaView, ScrollView, FlatList} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown' //npm install react-native-select-dropdown
-import Data from './Data';
 const ItemSelect = ({navigation}) => {//navigation
-//expo start para mostrar el qr code
+  
+const data = [
+  { id: '1', name: 'Apple', category: 'Fruit', price: '1.31',image: require('../assets/mydonut.png') },
+  { id: '2',name: 'Banana', category: 'Fruit', price: '1.00', image: require('../assets/mydonut.png') },
+  { id: '3',name: 'Milk', category: 'Dairy', price: '3.50', image: require('../assets/mydonut.png') },
+  { id: '4',name: 'Cheese', category: 'Dairy', price: '4.00', image: require('../assets/mydonut.png') },
+];
 
-  //const [name, setName] = useState('');
-  //const [category, setCategory] = useState('');
-  //const [price, setPrice] = useState('');
-  const categories = ["Fruit", "Dairy", "Meat", "Vegetable"]
-  const [modalVisible, setModalVisible] = useState(false);
-  const [itemName, setItemName] = useState('');
-  const [itemcategory, setItemCategory] = useState('');
-  const [itemPrice, setItemPrice] = useState('');
-  const handleCreateItem = () => {
-    setModalVisible(true);
-  };
-  const modalhandleCancelCreate = () => {
-    setModalVisible(false);
-    setItemName('');
-    setItemCategory('');
-    setItemPrice('');
-  };
-  const handleSaveItem = () => {
-    // do something with itemName
-    setItemName('');
-    setItemCategory('');
-    setItemPrice('');
-    setModalVisible(false);
-  };
+const categoryColors = {
+  "fruit": "#F7A0CB",
+  "dairy": "#F6EC95",
+};
+const [items, setItems] = useState(data);
+const [newItemName, setNewItemName] = useState(data);
+const [selectedCategory, setSelectedCategory] = useState(null);
+const [newPriceName, setNewPriceName] = useState(data);
+
+const [modalVisible, setModalVisible] = useState(false);
+const categories = Array.from(new Set(data.map(item => item.category))); // extract unique categories from the data array
+
+const handleCreateItem = () => {
+  setModalVisible(true);
+};
+
+const modalhandleCancelCreate = () => {
+  setModalVisible(false);
+ //setItemName(''); //('')
+  //setItemCategory('');
+  //setItemPrice('');
+};
+
+  const renderItem = (item) => {
     return (
-      <View style={styles.container}>
-    
+      <Pressable key={item.id} onPress={() => console.log(item.name)}>
+      <Text style={styles.text}>{item.name}</Text>
+      <Image source={item.image} style={styles.image} />
+    </Pressable>
+    );
+  };
+
+  const renderCategory = (category) => {
+    const categoryItems = items.filter((item) => item.category === category);
+    return (
+      <View style={styles.category}>
+        
+        <Text style={styles.categoryTitle}>{category}</Text>
+        <View style={styles.list}>{categoryItems.map(renderItem)}</View>
+      </View>
+    );
+  };
+
+  const handleAddItem = (category) => {
+    //setModalVisible(true);
+    const newItem = {
+      id: `${Date.now()}`,
+      name: `New ${category} Item`,
+      category: category,
+      //price: price,
+      image: require('../assets/mydonut.png'),
+    };
+    setItems([...items, newItem]);
+  };
+
+  const renderAddItem = (category) => {
+    return (
+      <Pressable key={category} style={styles.addButton}onPress={() => handleAddItem(category)}> 
+        <Text style={styles.addButtonText}>+ Add {category}</Text>
+      </Pressable>
+    );
+  };
+  //^^^ Clone for modal input
+  const handleSaveNewItem = (selectedCategory) => {
+    setModalVisible(false);
+    const newItem = {
+      id: `${Date.now()}`,
+      name: newItemName,
+      category:`${selectedCategory} `,
+      price: newPriceName,
+      image: require('../assets/mydonut.png')
+    };
+    setItems([...items, newItem]);
+  };
+
+
+  const renderCategories = () => {
+    const categories = Array.from(new Set(items.map((item) => item.category)));
+    return categories.map((category) => (
+      <View key={category} style={styles.containercat}>
+        {renderCategory(category)}
+        {renderAddItem(category)}
+      </View>
+    ));
+  };
+  
+  //render stuff?
+  return (
+//Background and Search Bar--------------------------------
+    <View style={styles.container}>
         {/* Header Title */}
         <Text style={styles.title}>Add items to list</Text>
         <Text style={styles.searchtext}>Search Item</Text>
-  
         {/* Search Bar */}
         <View style={styles.searchContainer}>
           <TextInput style={styles.searchInput} placeholderTextColor="#000" placeholder="Search" />
         </View>
-        <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        {/* Image Slots First Category */}
-        <Text style={styles.category1}>Fruit</Text>
-        <TouchableOpacity style={styles.button}>
-        <View style={styles.imagesContainer}>
-        {/*text goes here*/}
-          <Image style={styles.image} source={require('../assets/mydonut.png')} />
-          <Text style={{ color: '#000000', right: 270,bottom:100,fontSize: 24,fontWeight: 'bold',marginLeft: 5,marginTop: 68,}}
-          >Apple</Text> 
-          {/* text hay que hacer que se adapte, esto esta fixed y eso es malo */}
-          {/*Aqui ira id para base de datos que muestre por categortia y id*/}
-          
-          {/*<Image style={styles.image} source={require('../assets/mydonut.png')} /> */}
-         {/* <Image style={styles.image} source={require('../assets/mydonut.png')} /> */}
-        </View>
-        </TouchableOpacity>
-        {/* Image Slots Second category*/}
-        <Text style={styles.category2}>Dairy</Text>
-        <View style={styles.imagesContainer}>
-          <Image style={styles.image} source={require('../assets/mydonut.png')} />
-          <Image style={styles.image} source={require('../assets/mydonut.png')} />
-          <Image style={styles.image} source={require('../assets/mydonut.png')} />
-          {/* trabajar en paginacion  */}
-         {/*<Image style={styles.image} source={require('../assets/mydonut.png')} /> */}
-          
-        </View>
-        </ScrollView>
-    </SafeAreaView>
-        
- {/* Button Container */}
- <View style={styles.buttonContainer}>
+{/*Shows data, images, cat, etc.*/}
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      {renderCategories()}
+    </ScrollView>
+
+{/*Bottom buttons n modal*/}
+{/* Button Container */}
+<View style={styles.buttonContainer}>
         {/* Button 1 */}
         <TouchableOpacity style={styles.buttoncreate} onPress={handleCreateItem}>
           <Text style={{color:'#000',fontSize: 16,textAlign:'center'}}>Create Item</Text>
         </TouchableOpacity>
+
         {/* Button 2 */}
         <TouchableOpacity style={styles.buttondone} onPress={()=> navigation.navigate("CrearLista")}>{/*DONE */}
           <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Done</Text>
         </TouchableOpacity>
       </View>
+
        {/* Pop-up */}
        <Modal
         animationType="fade"
@@ -98,46 +139,35 @@ const ItemSelect = ({navigation}) => {//navigation
             <Text style={styles.modalText}>Item name</Text>
             <TextInput
               style={styles.modalInput}
-              value={itemName}
-              onChangeText={(text) => setItemName(text)}
+              value={newItemName}
+              onChangeText={(text) => setNewItemName(text)}
             />
-{/*
-<View style={styles.selectContainer}>
-            <SelectList
-              selectedValue={category}
-              style={styles.select}
-              onValueChange={(itemValue, itemIndex) =>
-                setCategory(itemValue)
-              }
-            >
-              <SelectList.Item label="Category 1" value="category1" />
-              <SelectList.Item label="Category 2" value="category2" />
-              <SelectList.Item label="Category 3" value="category3" />
-            </SelectList>
-          </View>
-            */}
-              <SelectDropdown style={styles.dropdownstyle} 
-  data={categories}
-  onSelect={(selectedItem, index) => {
-    console.log(selectedItem, index)
-  }}
-  buttonTextAfterSelection={(selectedItem, index) => {
-    // text represented after item is selected
-    // if data array is an array of objects then return selectedItem.property to render after item is selected
-    return selectedItem
-  }}
-  rowTextForSelection={(item, index) => {
-    // text represented for each item in dropdown
-    // if data array is an array of objects then return item.property to represent item in dropdown
-    return item
-  }}
+{/**/}
+            <SelectDropdown style={styles.dropdownstyle} 
+	data={categories}
+	onSelect={(selectedItem, index) => { 
+		console.log(selectedItem, index)
+    setSelectedCategory(selectedItem);
+	}}
+	buttonTextAfterSelection={(selectedItem, index) => {
+		// text represented after item is selected
+		// if data array is an array of objects then return selectedItem.property to render after item is selected
+		return selectedItem
+	}}
+	rowTextForSelection={(item, index) => {
+		// text represented for each item in dropdown
+		// if data array is an array of objects then return item.property to represent item in dropdown
+		return item
+	}}
 />
+
               <Text style={styles.modalText}>Item Price (optional)</Text>
             <TextInput
               style={styles.modalInput}
-              value={itemPrice}
-              onChangeText={(text) => setItemPrice(text)}
+              value={newPriceName}
+              onChangeText={(text) => setNewPriceName(text)}
             />
+
            {/*} <TouchableOpacity style={styles.modalButton} onPress={handleSaveItem}>
               <Text style={styles.modalButtonText}>Save</Text>
             </TouchableOpacity>
@@ -152,293 +182,218 @@ const ItemSelect = ({navigation}) => {//navigation
         <TouchableOpacity style={styles.modalbuttoncancel} onPress={modalhandleCancelCreate}>
           <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Cancel</Text>
         </TouchableOpacity> 
+
         {/* Button Modal Create */}
-        <TouchableOpacity style={styles.modalbuttoncreate}>
+        <TouchableOpacity style={styles.modalbuttoncreate} onPress={() => handleSaveNewItem(selectedCategory)}>
           <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Create</Text>
         </TouchableOpacity>
       </View>
       </Modal>
-      
-      </View> //termina el return
-    );
-//}//navigation
-    }
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#5A71AF',
-      padding: 20,
-      paddingTop:70,
-    },
-    title: {
-      fontSize: 24,
-      //fontWeight: 'bold',
-      marginTop: -40,
-      marginBottom: 20,
-      alignItems: 'center',
-      color: '#ffff',
-      textAlign: "center",
-     alignSelf: "center"
-    },
-    searchtext: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 1,
-        alignItems: 'center',
-        color: '#ffff',
-      },
-    searchContainer: {
-        textAlign: "center",
-        alignSelf: "center",
-      borderWidth: 1,
-      borderColor: '#ccc',
-      backgroundColor: '#fff',
-      borderRadius: 5,
-      marginBottom: 20,
-      width: 310,
-    },
-    searchInput: {
-    //fontWeight: 'bold',
-      padding: 10,
-    },
-    imagesContainer: {
-      flexDirection: 'row' ,
-      justifyContent: 'space-between',
-      marginBottom: 20,
-      marginTop:20,
-    },
-    image: {
-      width: 100,
-      height: 100,
-      borderRadius: 15,
-    },
-    category1: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        //font: Inter,
-        marginBottom: 1,
-        alignItems: 'center',
-        color: '#000',
-        backgroundColor: "#F7A0CB",
-        width: 70,
-    height: 27,
-    marginBottom: 10,
-      },
-      category2: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 1,
-        alignItems: 'center',
-        color: '#000',
-        backgroundColor: "#F6EC95",
-    // borderRadius: 10, buscar luego como cambiar radius
-        width: 70,
-    height: 27,
-    marginBottom: 5,
-      },
-      buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        padding: 20,
-      },
-      buttoncreate: {
-        backgroundColor: '#FEFEFE',
-        borderRadius: 2,
-        paddingVertical: 15,
-        paddingHorizontal: 50,
-      },
-      buttondone: {
-        backgroundColor: '#636D85',
-        borderRadius: 2,
-        paddingVertical: 15,
-        paddingHorizontal: 50,
-      },
-      oneText: {
-        color: '#fff',
-        fontSize: 16,
-        textAlign: 'center',
-      },
-      //MODAL---------------------------------
-      modalContainer: { //modal completo
-        flex: 1,
-        backgroundColor: 'rgba(84, 105, 163, 0.87)',
-        alignItems: 'center',
-        justifyContent: 'center',
-      },
-      modal: { //modal box
-        backgroundColor: '#BBC6DA',
-        margin: 80, //size all
-       padding: 60, // centralizar interior
-        //width:350,
-        borderRadius: 30, //curvas
-        //flex:.5,//lenght
-      },
-      modalText: {
-       fontSize:20,
-       color:'#fff',
-      },
-      modalInput:{
-        textAlign: "center",
-        alignSelf: "center",
-      borderWidth: 1,
-      borderColor: '#ccc',
-      backgroundColor: '#fff',
-      borderRadius: 5,
-      marginBottom: 10,
-      width: 200,
-      height: 30,
-      },
-      dropdownstyle: {
-       },
-      modalTitle:{ //texto arriba del modal
-        fontSize: 35,
-        fontWeight: 'bold',
-        color:'#fff',
-        textAlign: 'center',
-        paddingTop: 1 ,
-        //position:'absolute',
-        top:'-45%',
-         right:10,
-         marginBottom:-90,
-      },
-      modalbuttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        position: 'absolute',
-        //top:'55%',
-        bottom: 170,
-        right: 45,
-        //padding: 2,  
-      },
-      modalbuttoncancel: {
-        backgroundColor: '#FF784C',
-        borderRadius: 2,
-        paddingVertical: 15,
-        paddingHorizontal: 50,
-      },
-      modalbuttoncreate: {
-        backgroundColor: '#636D85',
-        borderRadius: 2,
-        paddingVertical: 15,
-        paddingHorizontal: 50,
-      },
-      selectContainer: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        backgroundColor: '#fff',
-        borderRadius: 5,
-        marginBottom: 20,
-        paddingHorizontal: 10,
-      },
-      //MODAL---------------------------------
-  });
-  export default ItemSelect
-  
-/*
-import React, { useState } from 'react';
-import { View, TouchableOpacity, Image, Text, StyleSheet, Dimensions } from 'react-native';
 
-const data = [
-  {
-    id: '1',
-    image: require('../assets/mydonut.png'),
-    text: 'Image 1',
-  },
-  {
-    id: '2',
-    image: require('../assets/mydonut.png'),
-    text: 'Image 2',
-  },
-  {
-    id: '3',
-    image: require('../assets/mydonut.png'),
-    text: 'Image 3',
-  },
-  {
-    id: '4',
-    image: require('../assets/mydonut.png'),
-    text: 'Image 4',
-  },
-  {
-    id: '5',
-    image: require('../assets/mydonut.png'),
-    text: 'Image 5',
-  },
-];
-
-const numColumns = 3;
-const WIDTH = Dimensions.get('window').width;
-
-const ItemSelect = ({navigation}) => {
-  const [selectedId, setSelectedId] = useState(null);
-
-  const handlePress = (id) => {
-    setSelectedId(id);
-  };
-
-  const renderItem = ({ item }) => {
-    const isSelected = item.id === selectedId;
-    return (
-      <TouchableOpacity
-        style={[styles.itemContainer, { backgroundColor: isSelected ? '#e0e0e0' : 'white' }]}
-        onPress={() => handlePress(item.id)}
-      >
-        <Image source={item.image} style={styles.image} />
-        <Text style={styles.text}>{item.text}</Text>
-      </TouchableOpacity>
-    );
-  };
-
-  return (
-    <View style={styles.container}>
-      {data.map((item) => (
-        <TouchableOpacity
-          key={item.id}
-          style={styles.itemContainer}
-          onPress={() => handlePress(item.id)}
-        >
-          <Image source={item.image} style={styles.image} />
-          <Text style={styles.text}>{item.text}</Text>
-        </TouchableOpacity>
-      ))}
+    
     </View>
   );
-};
 
+
+}
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#5A71AF',
+    padding: 20,
+    paddingTop:70,
+  },
+  title: {
+    fontSize: 24,
+    //fontWeight: 'bold',
+    marginTop: -40,
+    marginBottom: 20,
+    alignItems: 'center',
+    color: '#ffff',
+    textAlign: "center",
+   alignSelf: "center"
+  },
+  searchtext: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      marginBottom: 1,
+      alignItems: 'center',
+      color: '#ffff',
+    },
+  searchContainer: {
+      textAlign: "center",
+      alignSelf: "center",
+    borderWidth: 1,
+    borderColor: '#ccc',
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    marginBottom: 20,
+    width: 310,
+  },
+  searchInput: {
+  //fontWeight: 'bold',
+    padding: 10,
+  },
+//NEW STYLES-----------------------------------------
+  scrollContainer: {
+    padding: 16,
+  },
+  containercat: {
+    marginBottom: 16,
+  },
+  category: {
+    marginBottom: 10,
+  },
+  categoryTitle: { //categoryfruit, check later los colores
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#000',
+    backgroundColor: "yellow",
+    width: 70,
+    height: 25,
+  },
+  categoryfruit: { 
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#000',
+    backgroundColor: "#F7A0CB",
+    width: 70,
+    height: 25,
+  },
+  categorydairy: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#000',
+    backgroundColor: "#F7A0CB",
+    width: 70,
+    height: 25,
+  },
+  list: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
-  },
-  itemContainer: {
-    width: WIDTH / numColumns - 20,
-    height: WIDTH / numColumns - 20,
-    alignItems: 'center',
-    marginVertical: 10,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
   },
   image: {
-    width: '80%',
-    height: '80%',
-    resizeMode: 'contain',
+    width: 100,
+      height: 100,
+      borderRadius: 15,
   },
   text: {
+    textAlign: 'center',
+  },
+  addButton: {
+    backgroundColor: 'lightgrey',
+    borderRadius: 8,
+    padding: 8,
+    marginTop: 8,
+  },
+  addButtonText: {
     fontWeight: 'bold',
+  },
+  //Buttons and modal
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 20,
+  },
+  buttoncreate: {
+    backgroundColor: '#FEFEFE',
+    borderRadius: 2,
+    paddingVertical: 15,
+    paddingHorizontal: 50,
+  },
+  buttondone: {
+    backgroundColor: '#636D85',
+    borderRadius: 2,
+    paddingVertical: 15,
+    paddingHorizontal: 50,
+  },
+  oneText: {
+    color: '#fff',
     fontSize: 16,
-    marginTop: 5,
+    textAlign: 'center',
+  },
+  //MODAL---------------------------------
+  modalContainer: { //modal completo
+    flex: 1,
+    backgroundColor: 'rgba(84, 105, 163, 0.87)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modal: { //modal box
+    backgroundColor: '#BBC6DA',
+    margin: 80, //size all
+   padding: 60, // centralizar interior
+    //width:350,
+    borderRadius: 30, //curvas
+    //flex:.5,//lenght
+  },
+  modalText: {
+   fontSize:20,
+   color:'#fff',
+  },
+  modalInput:{
+    textAlign: "center",
+    alignSelf: "center",
+  borderWidth: 1,
+  borderColor: '#ccc',
+  backgroundColor: '#fff',
+  borderRadius: 5,
+  marginBottom: 10,
+  width: 200,
+  height: 30,
+  },
+  dropdownstyle: {
+   },
+  modalTitle:{ //texto arriba del modal
+    fontSize: 35,
+    fontWeight: 'bold',
+    color:'#fff',
+    textAlign: 'center',
+    paddingTop: 1 ,
+    //position:'absolute',
+    top:'-45%',
+     right:10,
+     marginBottom:-90,
+  },
+  modalbuttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    position: 'absolute',
+    //top:'55%',
+    bottom: 170,
+    right: 45,
+    //padding: 2,  
+  },
+  modalbuttoncancel: {
+    backgroundColor: '#FF784C',
+    borderRadius: 2,
+    paddingVertical: 15,
+    paddingHorizontal: 50,
+  },
+  modalbuttoncreate: {
+    backgroundColor: '#636D85',
+    borderRadius: 2,
+    paddingVertical: 15,
+    paddingHorizontal: 50,
+  },
+  selectContainer: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    marginBottom: 20,
+    paddingHorizontal: 10,
   },
 });
 
-export default ItemSelect;
-*/
+export default ItemSelect

@@ -2,7 +2,7 @@
 //import {Picker} from '@react-native-picker/picker'; //constant drop down
 //import { SelectList } from 'react-native-dropdown-select-list'
 import React,{useState, useEffect} from 'react';
-import {StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Modal, SafeAreaView, ScrollView} from 'react-native';
+import {StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Modal, SafeAreaView, ScrollView, FlatList} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown' //npm install react-native-select-dropdown
 //import Data from './Data';
 import {firebase} from '../firebase.config';//
@@ -77,6 +77,13 @@ setItems(items)
         <View style={styles.imagesContainer}>
         {/*text goes here*/}
           {/* renderItem={} */}
+          <FlatList
+          items={items}
+        renderItem={({ items }) => <Text>{items.name}</Text>}
+        keyExtractor={(items, index) => index.toString()}
+        />
+        items={items}
+        <Text>{items.name}</Text>
           <Image style={styles.image} source={require('../assets/mydonut.png')} />
           {/*Aqui ira id para base de datos que muestre por categortia y id*/}
           
