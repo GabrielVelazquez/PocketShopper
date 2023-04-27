@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, Image,SafeAreaView, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, Image, SafeAreaView, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ActionButton from 'react-native-action-button';
-
-// añadir floating button: npm install react-native-action-button
-
 
 export default function HomeScreen() {
   const [list, setList] = useState([]);
@@ -19,18 +16,14 @@ export default function HomeScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Image
           style={styles.logo}
           source={require('../assets/Pocketshopper_logo_v4.png')}
         />
         <Text style={styles.headerText}>Pocket {'\n'}Shopper</Text>
-        {/* <Text style={styles.headerText}>Shopper</Text> */}
-
       </View>
-      {/* <View style={styles.divisionContainer}> */}
-      <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.divisionShared}>
           <Text style={styles.divisionTitle}>Shared Lists</Text>
@@ -40,23 +33,21 @@ export default function HomeScreen() {
         </View>
         <View style={styles.divisionArchived}>
           <Text style={styles.divisionTitle}>Archived Lists</Text>
-        {/* </View> */}
-      </View>
+        </View>
+        <View style={styles.content}>
+          {list.length === 0 ? (
+            <Text style={styles.emptyMessage}>Empty</Text>
+          ) : (
+            list.map((item) => (
+              <Text key={item.id} style={styles.item}>
+                {item.name}
+              </Text>
+            ))
+          )}
+        </View>
       </ScrollView>
-    </SafeAreaView>
-      <View style={styles.content}>
-        {list.length === 0 ? (
-          <Text style={styles.emptyMessage}>Empty</Text>
-        ) : (
-          list.map((item) => (
-            <Text key={item.id} style={styles.item}>
-              {item.name}
-            </Text>
-          ))
-        )}
-      </View>
       <ActionButton buttonColor="#5469A3" onPress={handleAddItem} />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -71,65 +62,54 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    
+    paddingTop: 50,
   },
   headerText: {
     color: '#000000',
     fontSize: 24,
     fontWeight: 'bold',
     marginLeft: 5,
-    marginTop: 68,
   },
   logo: {
     width: 100,
     height: 80,
-    resizeMode:"contain",
-    marginTop: 50,
+    resizeMode: "contain",
   },
-  divisionContainer: {
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+  scrollView: {
+    flex: 1,
   },
   divisionShared: {
-    // borderBottomWidth: 1,
-    // borderColor: '#ccc',
-    // paddingVertical: 10,
     fontSize: 24,
     fontWeight: 'bold',
     color: '#868892',
     backgroundColor: "#FEFEFE",
-    width: 400,
+    width: '100%',
     height: 30,
     marginBottom: 7,
-    left: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   divisionPersonal: {
-    // borderBottomWidth: 1,
-    // borderColor: '#ccc',
-    // paddingVertical: 10,
     fontSize: 24,
     fontWeight: 'bold',
     color: '#868892',
     backgroundColor: "#FEFEFE",
-    width: 400,
+    width: '100%',
     height: 30,
     marginBottom: 7,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   divisionArchived: {
-    // borderBottomWidth: 1,
-    // borderColor: '#ccc',
-    // paddingVertical: 10,
     fontSize: 24,
     fontWeight: 'bold',
     color: '#868892',
     backgroundColor: "#FF784C",
-    width: 400,
+    width: '100%',
     height: 30,
     marginBottom: 7,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   divisionTitle: {
     fontSize: 20,
@@ -137,15 +117,19 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyMessage: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  item: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
+justifyContent: 'center',
+alignItems: 'center',
+paddingHorizontal: 20,
+},
+emptyMessage: {
+fontSize: 20,
+fontWeight: 'bold',
+},
+item: {
+fontSize: 16,
+marginBottom: 10,
+},
+scrollView: {
+marginBottom: 70,
+},
 });
