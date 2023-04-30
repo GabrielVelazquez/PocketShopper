@@ -17,7 +17,7 @@ const categoryColors = {
   "fruit": "#F7A0CB",
   "dairy": "#F6EC95",
 };
-
+const [searchText, setSearchText] = useState(''); //textinput
 const [items, setItems] = useState(data);
 const [newItemName, setNewItemName] = useState(data);
 const [selectedCategory, setSelectedCategory] = useState(null);
@@ -37,23 +37,40 @@ const modalhandleCancelCreate = () => {
   setNewPriceName('');
 };
 
+//BORRAR LUEGO#####################################################
+const [count, setCount] = useState(0);// initialize the count state to 0------------
+const handlePress = () => {//----------------
+  setCount(count + 1);//increment the count state on press--------------
+};
+//BORRAR LUEGO#####################################################
+
 /*console.log(item.name) se remplaza con add to list con correct id */
   const renderItem = (item) => {
+   
+//COUNT DE ITEM INDIVIDUAL PERO SEARCH NO FUNCIONA CON ESTO
+//const [count, setCount] = useState(0);// initialize the count state to 0------------
+//const handlePress = () => {//----------------
+//setCount(count + 1);//increment the count state on press--------------
+//};//------------
+
     return (
-      <TouchableOpacity key={item.id} onPress={() => console.log(item.name)}>
+      <TouchableOpacity key={item.id} onPress={() => {handlePress(); console.log(item.name);}}>
       <Text style={styles.itemtext}>{item.name}</Text>
       <Image source={item.image} style={styles.image} />
+      <Pressable style={styles.itemcounter}></Pressable>
+      <Text style={{fontSize:15,color:'#fff',left:80,bottom:55,marginBottom:-50}}>{count}</Text> 
     </TouchableOpacity>
     );
-  };
+  };    
 
   const renderCategory = (category) => {
-    const categoryItems = items.filter((item) => item.category === category);
+    const filteredItems = items.filter((item) => { //const categoryItems = items.filter((item) => item.category === category);
+        return item.category === category && item.name.toLowerCase().includes(searchText.toLowerCase());});
     return (
       <View style={styles.category}>
-      
         <Text style={styles.categoryTitle}>{category}</Text>
-        <View style={styles.list}>{categoryItems.map(renderItem)}</View>
+        <View style={styles.list}>
+          {filteredItems.map(renderItem)}</View>
       </View>
     );
   };
@@ -121,7 +138,8 @@ const modalhandleCancelCreate = () => {
         <Text style={styles.searchtext}>Search Item</Text>
         {/* Search Bar */}
         <View style={styles.searchContainer}>
-          <TextInput style={styles.searchInput} placeholderTextColor="#000" placeholder="Search" />
+          <TextInput style={styles.searchInput} placeholderTextColor="#000" placeholder="Search" value={searchText}
+  onChangeText={setSearchText} />
         </View>
 {/*Shows data, images, cat, etc.*/}
     <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -364,6 +382,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   },
+  itemcounter: {
+    backgroundColor: '#FF784C',
+    width: 35,
+    height: 35,
+    borderRadius: 40/2,
+    left:67,
+    bottom:30,
+},     
   //MODAL---------------------------------
   modalContainer: { //modal completo
     flex: 1,
