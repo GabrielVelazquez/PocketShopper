@@ -69,22 +69,24 @@ setItems(items)
         <View style={styles.searchContainer}>
           <TextInput style={styles.searchInput} placeholderTextColor="#000" placeholder="Search" />
         </View>
+
+        <View
+          items={items}
+        renderItem={({ items }) => <Text>{items.name}</Text>}
+        keyExtractor={(items, index) => index.toString()}
+        />
+
         <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
+       <ScrollView style={styles.scrollView}>
         {/* Image Slots First Category */}
         <Text style={styles.category1}>Fruit</Text>
         <TouchableOpacity style={styles.button}>
         <View style={styles.imagesContainer}>
         {/*text goes here*/}
           {/* renderItem={} */}
-          <FlatList
-          items={items}
-        renderItem={({ items }) => <Text>{items.name}</Text>}
-        keyExtractor={(items, index) => index.toString()}
-        />
-        items={items}
-        <Text>{items.name}</Text>
-          <Image style={styles.image} source={require('../assets/mydonut.png')} />
+        <Text style={styles.itemName}>{items.name}</Text>
+        <Text style={styles.itemName}>AHHHHH</Text>
+          {/*<Image style={styles.image} source={require('../assets/mydonut.png')} /> */}
           {/*Aqui ira id para base de datos que muestre por categortia y id*/}
           
           {/*<Image style={styles.image} source={require('../assets/mydonut.png')} /> */}

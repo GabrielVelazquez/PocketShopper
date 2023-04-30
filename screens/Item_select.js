@@ -9,7 +9,7 @@ const data = [
   { id: '2',name: 'Banana', category: 'Fruit', price: '1.00', image: require('../assets/banana.png') },
   { id: '3',name: 'Strawberry', category: 'Fruit', price: '2.00', image: require('../assets/strawberry.png') },
   { id: '4',name: 'Milk', category: 'Dairy', price: '3.50', image: require('../assets/milk.png') },
-  { id: '5',name: 'Cheese', category: 'Dairy', price: '4.00', image: require('../assets/mydonut.png') },
+  { id: '5',name: 'Cheese', category: 'Dairy', price: '4.00', image: require('../assets/itemlplaceholder.png') },
   { id: '6',name: 'Donut', category: 'Pastry', price: '2.50', image: require('../assets/mydonut.png') },
 ];
 
@@ -32,15 +32,15 @@ const handleCreateItem = () => {
 
 const modalhandleCancelCreate = () => {
   setModalVisible(false);
- //setItemName(''); //('')
-  //setItemCategory('');
-  //setItemPrice('');
+ setNewItemName(''); //('')
+ setSelectedCategory('');
+  setNewPriceName('');
 };
 
 /*console.log(item.name) se remplaza con add to list con correct id */
   const renderItem = (item) => {
     return (
-      <TouchableOpacity key={item.id} onPress={() => console.log(item.name)}> 
+      <TouchableOpacity key={item.id} onPress={() => console.log(item.name)}>
       <Text style={styles.itemtext}>{item.name}</Text>
       <Image source={item.image} style={styles.image} />
     </TouchableOpacity>
@@ -65,7 +65,7 @@ const modalhandleCancelCreate = () => {
       name: `New ${category} Item`,
       category: category,
       //price: price,
-      image: require('../assets/mydonut.png'),
+      image: require('../assets/itemlplaceholder.png'),
     };
     setItems([...items, newItem]);
   };
@@ -89,7 +89,7 @@ const modalhandleCancelCreate = () => {
       category: selectedCategory,
       //category:`${selectedCategory} `,
       price: newPriceName,
-      image: require('../assets/mydonut.png')
+      image: require('../assets/itemlplaceholder.png')
     };
     setItems([...items, newItem]);
   };
@@ -186,11 +186,11 @@ const modalhandleCancelCreate = () => {
 
 <Text style={{fontSize:23,color:'#fff', bottom:-25, right:50}}>Add image</Text>
 
-<TouchableOpacity
- style={{backgroundColor: '#636D85',  width: 50,height: 50,borderRadius: 55/2,
- left:40,bottom:10}} 
-/>
-<Text style={{fontSize:40,color:'#fff', left:40,bottom:60}}>+</Text>
+<TouchableOpacity style={{backgroundColor: '#636D85',  width: 50,height: 50,borderRadius: 55/2,
+ left:40,bottom:10}}>
+  <Text style={{fontSize:40,color:'#fff', left:13, bottom:1}}>+</Text>
+  </TouchableOpacity>
+
 
            {/*} <TouchableOpacity style={styles.modalButton} onPress={handleSaveItem}>
               <Text style={styles.modalButtonText}>Save</Text>
