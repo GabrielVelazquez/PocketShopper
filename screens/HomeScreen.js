@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, Image, SafeAreaView, ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
+import { StyleSheet, View, Text, Image, SafeAreaView, ScrollView,  FlatList, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 export default function HomeScreen() {
@@ -11,27 +11,43 @@ export default function HomeScreen() {
   const [lists, setLists] = useState([]);
 
   const categories = ['Fruits', 'Vegetables', 'Meat', 'Dairy'];
-
-  const handleSubmit = () => {
-    // Add code to handle the submission of the new item here
-    console.log(newItemName, selectedCategory);
-    setModalVisible(false);
-  };
+  const renderListItem = ({ item }) => (
+    <TouchableOpacity onPress={() => console.log('Navigate to list:', item.id)}>
+      <View style={{ padding: 16 }}>
+        <Text style={{ fontSize: 20 }}>{item.name}</Text>
+        <Text style={{ fontSize: 16 }}>Items: {item.items.length}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+   
+  const [newListName, setNewListName] = useState('');
+  
+    
+    // const handleCreateList = () => {
+    //   const newList = { id: Math.random().toString(), name: newListName, items: [] };
+    //   setLists([...lists, newList]);
+    //   setNewListName('');
+    // };
+    // setModalVisible(false);
+    const handleCreateList = () => {
+      if (newListName !== '') {
+        const newList = { id: Math.random().toString(), name: newListName, items: [] };
+        setLists([...lists, newList]);
+        setNewListName('');
+        setModalVisible(false);
+        console.log(newListName);
+      }
+      console.log(lists);
+      console.log(newListName);
+    };
+ 
 
   const handleSubmit2 = () => {
     // Add code to handle the submission of the new item here
     console.log(newItemName, selectedCategory);
     setModalVisible2(false);
   };
-  const handleCreateList = () => {
-    const newList = {
-      listName: 'My New List',
-      items: []
-    };
-    setLists([...lists, newList]);
-    setModalVisible(false);
-    navigation.navigate('Item_select', { list: newList });
-  }
+  
   
 
   const handleCancel = () => {
@@ -64,6 +80,13 @@ export default function HomeScreen() {
         <View style={styles.divisionPersonal}>
           <Text style={styles.divisionTitle}>Personal Lists</Text>
         </View>
+        
+      <FlatList
+        data={lists}
+        renderItem={renderListItem}
+        keyExtractor={(item) => item.id}
+        style={{ flex: 1 }}
+      />
         <View style={styles.divisionArchived}>
           <Text style={styles.divisionTitle}>Archived Lists</Text>
         </View>
@@ -82,7 +105,7 @@ export default function HomeScreen() {
             <TextInput
       style={styles.input}
       placeholder="List Name"
-      onChangeText={(text) => setLists(text)}
+      onChangeText={(text) => setNewListName(text)}
     />
             <TouchableOpacity style={styles.modalButton} onPress={handleCreateList}>
               <Text style={styles.buttonText}>Create</Text>
