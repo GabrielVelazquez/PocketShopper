@@ -59,7 +59,7 @@ export default function App() {
  <Stack.Screen 
   name="HomeScreen"
   component={HomeScreen}
-  options={{headerShown: false}}
+  //options={{headerShown: false}}
   />
  
 <Stack.Screen 

@@ -12,9 +12,9 @@
     "@react-native-picker/picker": "2.4.8",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
-    "expo": "^48.0.10",
+    "expo": "^46.0.21",
     "expo-linear-gradient": "^12.1.2",
-    "expo-splash-screen": "~0.18.2",
+    "expo-splash-screen": "^0.14.0",
     "expo-status-bar": "~1.4.4",
     "firebase": "^9.20.0",
     "native-base": "^3.4.28",
@@ -30,7 +30,9 @@
     "react-native-select-dropdown": "^3.3.2",
     "react-native-vector-icons": "^9.2.0",
     "react-native-web": "~0.18.11",
-    "react-navigation": "^4.4.4"
+    "react-navigation": "^4.4.4",
+    "react-redux": "^8.0.5",
+    "redux": "^4.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

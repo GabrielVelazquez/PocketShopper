@@ -12,10 +12,10 @@ export default function HomeScreen() {
 
   const categories = ['Fruits', 'Vegetables', 'Meat', 'Dairy'];
   const renderListItem = ({ item }) => (
-    <TouchableOpacity onPress={() => console.log('Navigate to list:', item.id)}>
-      <View style={{ padding: 16 }}>
-        <Text style={{ fontSize: 20 }}>{item.name}</Text>
-        <Text style={{ fontSize: 16 }}>Items: {item.items.length}</Text>
+    <TouchableOpacity onPress={() => {navigation.navigate("ItemSelect"); console.log('Navigate to list:', item.id)}}>
+      <View style={styles.listbox}>  
+        <Text style={styles.listtext}>{item.name}</Text>
+        <Text style={styles.listtextammount}>{item.items.length}/#</Text>
       </View>
     </TouchableOpacity>
   );
@@ -88,7 +88,7 @@ export default function HomeScreen() {
         style={{ flex: 1 }}
       />
         <View style={styles.divisionArchived}>
-          <Text style={styles.divisionTitle}>Archived Lists</Text>
+          <Text style={styles.divisionTitleArchived}>Archived Lists</Text>
         </View>
       </ScrollView>
 
@@ -186,11 +186,13 @@ const styles = StyleSheet.create({
             width: 100,
             height: 80,
             resizeMode: "contain",
+            bottom:5,
           },
   headerText: {
   fontSize: 24,
   fontWeight: 'bold',
   marginLeft: 10,
+  bottom:5,
   },
   buttonContainer: {
   flexDirection: 'row',
@@ -199,15 +201,15 @@ const styles = StyleSheet.create({
   backgroundColor: '#B1C0D8',
   },
   button: {
-  paddingVertical: 10,
-  paddingHorizontal: 20,
-  borderRadius: 5,
-  backgroundColor: '#87CEFA',
+  paddingVertical: 15,
+  paddingHorizontal: 30,
+  borderRadius: 1,
+  backgroundColor: '#FEFEFE',
   },
   buttonText: {
   color: '#000',
   fontWeight: 'bold',
-  fontSize: 16,
+  fontSize: 20,
   },
   scrollView: {
   flex: 1,
@@ -215,45 +217,55 @@ const styles = StyleSheet.create({
   paddingHorizontal: 10,
   },
   divisionShared: {
+  right:5,
   fontSize: 24,
   fontWeight: 'bold',
   color: '#868892',
   backgroundColor: "#FEFEFE",
-  width: '100%',
+  width: '102%',
   height: 40,
-  
   paddingHorizontal: 10,
   paddingVertical: 5,
-  borderRadius: 5,
+  borderRadius: 1, //5
   },
   divisionPersonal: {
+  right:5,
   fontSize: 24,
   fontWeight: 'bold',
   color: '#868892',
   backgroundColor: "#FEFEFE",
-  width: '100%',
+  width: '102%',
   height: 40,
   marginTop: 20,
   paddingHorizontal: 10,
   paddingVertical: 5,
-  borderRadius: 5,
+  borderRadius: 1,//5
   },
   divisionArchived: {
+  right:5,
   fontSize: 24,
   fontWeight: 'bold',
   color: '#868892',
   backgroundColor: "#FF784C",
-  width: '100%',
+  width: '102%',
   height: 40,
   marginTop: 20,
   paddingHorizontal: 10,
   paddingVertical: 5,
-  borderRadius: 5,
+  borderRadius: 1, //5
   },
   divisionTitle: {
-  fontSize: 18,
+  fontSize: 23,
   fontWeight: 'bold',
+  right:5,
+  color:'#868892',
   },
+  divisionTitleArchived: {
+    fontSize: 23,
+    fontWeight: 'bold',
+    right:5,
+    color: '#fff',
+    },
   content: {
   marginTop: 10,
   },
@@ -270,11 +282,30 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
   flex: 1,
-  
   backgroundColor: 'rgba(0,0,0,0.5)',
   justifyContent: 'center',
   alignItems: 'center',
   },
+listbox: {
+    backgroundColor: '#636C84',
+    marginTop: 10,
+    width: '102%',
+    height:65,
+    },
+listtext: {
+  left:5,
+  top:2,
+      color: '#fff',
+      fontSize:25,
+      fontWeight:'bold',
+      },
+      listtextammount: {
+        left:"82%",
+        bottom:17,
+            color: '#fff',
+            fontSize:30,
+            fontWeight:'bold',
+            },
   modal: {
   backgroundColor: '#B1C0D8',
   width: '90%',

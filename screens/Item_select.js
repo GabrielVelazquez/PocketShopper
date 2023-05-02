@@ -2,22 +2,48 @@ import React, { useState } from 'react';
 import {StyleSheet, Text, View, Image, Pressable, TextInput, TouchableOpacity, Modal, SafeAreaView, ScrollView, FlatList} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown' //npm install react-native-select-dropdown
 import { LinearGradient } from "expo-linear-gradient";
+//import {firebase} from '../firebase.config';//
+//import {ref, set} from "firebase/database";
+//import {db} from './component/config';
 const ItemSelect = ({navigation}) => {//navigation
+  
+  //const ItemRef = firebase.firestore().collection('Items');
+
+  const cats=[ //foreing
+  {id: '1',catergory :'Fruit'},
+  {id: '2',catergory :'Dairy'},
+  {id: '3',catergory :'Pastry'},
+  ];
   
 const data = [
   { id: '1', name: 'Apple', category: 'Fruit', price: '1.31',image: require('../assets/apple.png') },
   { id: '2',name: 'Banana', category: 'Fruit', price: '1.00', image: require('../assets/banana.png') },
   { id: '3',name: 'Strawberry', category: 'Fruit', price: '2.00', image: require('../assets/strawberry.png') },
   { id: '4',name: 'Milk', category: 'Dairy', price: '3.50', image: require('../assets/milk.png') },
-  { id: '5',name: 'Cheese', category: 'Dairy', price: '4.00', image: require('../assets/itemlplaceholder.png') },
+  { id: '5',name: 'Cheese', category: 'Dairy', price: '4.00', image: require('../assets/cheese.png') },
   { id: '6',name: 'Donut', category: 'Pastry', price: '2.50', image: require('../assets/mydonut.png') },
+  { id: '7',name: 'Ham', category: 'Meat', price: '5.50', image: require('../assets/ham.png') },
+  //{ id: '8',name: 'Cups', category: 'Pastry', price: '2.50', image: require('../assets/mydonut.png') },
+  
 ];
 
-
-const categoryColors = {
-  "fruit": "#F7A0CB",
-  "dairy": "#F6EC95",
-};
+/*
+(async () => {
+ItemRef.onSnapshot(
+ querySnapShot => {
+   const items = []
+querySnapShot.forEach((doc) => {
+ const {name, category, price}=doc.data()
+ items.push({
+id: doc.id, name, category, price,
+}); console.log(items)
+})
+setItems(items)
+}
+)
+},[]
+)
+*/
 const [searchText, setSearchText] = useState(''); //textinput
 const [items, setItems] = useState(data);
 const [newItemName, setNewItemName] = useState(data);
@@ -39,7 +65,7 @@ const modalhandleCancelCreate = () => {
 
 
 //BORRAR LUEGO#####################################################
-//const [count, setCount] = useState(0);
+const [count, setCount] = useState(0);
 
 /*console.log(item.name) se remplaza con add to list con correct id */
   const renderItem = (item) => {
@@ -49,7 +75,7 @@ const modalhandleCancelCreate = () => {
 //const handlePress = () => {//----------------
 //setCount(count + 1);//increment the count state on press--------------
 //};//------------
-const [count, setCount] = useState(0);
+//const [count, setCount] = useState(0);
  const handlePress = () => {//----------------
   setCount(count + 1);//increment the count state on press--------------
 };
@@ -64,11 +90,26 @@ const [count, setCount] = useState(0);
   };    
 
   const renderCategory = (category) => {
+
+    let backgroundColor = '#FFFFFF'; // default to white
+    // determine the color based on the data
+    if (category=== 'Fruit') {
+      backgroundColor = '#F7A0CB';
+    } else if (category === 'Dairy') {
+      backgroundColor = '#F6EC95';
+    } else if (category === 'Pastry') {
+      backgroundColor = '#F4C283';
+    }else if (category === 'Meat') {
+      backgroundColor = '#D25241';
+    }
+    
+
     const filteredItems = items.filter((item) => { //const categoryItems = items.filter((item) => item.category === category);
         return item.category === category && item.name.toLowerCase().includes(searchText.toLowerCase());});
     return (
       <View style={styles.category}>
-        <Text style={styles.categoryTitle}>{category}</Text>
+        {/*<Text style={styles.categoryTitle}>{category}</Text> */}
+        <Text style={[styles.categoryTitle,{backgroundColor}]}>{category}</Text> 
         <View style={styles.list}>
           {filteredItems.map(renderItem)}</View>
       </View>
@@ -281,7 +322,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     backgroundColor: '#fff',
     borderRadius: 5,
-    marginBottom: 20,
+    marginBottom: 5,
     width: 310,
   },
   searchInput: {
@@ -304,26 +345,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     color: '#000',
     backgroundColor: "yellow",
-    width: 70,
-    height: 25,
-  },
-  categoryfruit: { 
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: '#000',
-    backgroundColor: "#F7A0CB",
-    width: 70,
-    height: 25,
-  },
-  categorydairy: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: '#000',
-    backgroundColor: "#F6EC95",
-    width: 70,
-    height: 25,
+    width: 75,
+    height: 27,
+    borderRadius: 8,
   },
   list: {
     flexDirection: 'row',
