@@ -43,6 +43,10 @@ export default function Hub({navigation}) {
         title="Navigate Home Template "
         onPress={()=> navigation.navigate("HomeScreen")} //parametro para pasar data
          />
+         <Button 
+        title="Navigate View List "
+        onPress={()=> navigation.navigate("ListModified")} //parametro para pasar data
+         />
  
 
 <Text>This is the PocketShopper Debugging Hub, where all the pages will be linked for testing without 

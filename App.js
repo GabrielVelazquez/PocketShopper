@@ -20,6 +20,7 @@ import LocalDataTable from "./screens/Data";
 import LOGIN from "./screens/LOGIN";
 import Sign_up from "./screens/Sign_up";
 import HomeScreen from "./screens/HomeScreen";
+import ListModified from "./screens/ListModified";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator, style } from "@react-navigation/native-stack";
 
@@ -71,6 +72,12 @@ export default function App() {
   name="Sign_up"
   component={Sign_up}
   //options={{headerShown: false}} 
+  />
+<Stack.Screen
+  name="ListModified"
+  component={ListModified}
+  //options={{headerShown: false}}
+
   />
 
 </Stack.Navigator>
