@@ -19,6 +19,7 @@ import Test from "./screens/test";
 import LocalDataTable from "./screens/Data";
 import LOGIN from "./screens/LOGIN";
 import Sign_up from "./screens/Sign_up";
+import ProfileScreen from "./screens/ProfileScreen";
 import HomeScreen from "./screens/HomeScreen";
 import ListModified from "./screens/ListModified";
 import { NavigationContainer } from "@react-navigation/native";
