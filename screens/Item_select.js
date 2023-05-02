@@ -7,19 +7,20 @@ const ItemSelect = ({navigation}) => {//navigation
   
 const ItemRef = firebase.firestore().collection('Items'); //FIRESTORE
   
+
 const data = [
-  { id: '1', name: 'Apple', category: 'Fruit', price: '1.31',image: require('../assets/apple.png') },
-  { id: '2',name: 'Banana', category: 'Fruit', price: '1.00', image: require('../assets/banana.png') },
-  { id: '3',name: 'Strawberry', category: 'Fruit', price: '2.00', image: require('../assets/strawberry.png') },
-  { id: '4',name: 'Milk', category: 'Dairy', price: '3.50', image: require('../assets/milk.png') },
-  { id: '5',name: 'Cheese', category: 'Dairy', price: '4.00', image: require('../assets/cheese.png') },
-  { id: '6',name: 'Donut', category: 'Pastry', price: '2.50', image: require('../assets/mydonut.png') },
-  { id: '7',name: 'Ham', category: 'Meat', price: '5.50', image: require('../assets/ham.png') },
+  //{ id: '1', name: 'Apple', category: 'Fruit', price: '1.31',image: require('../assets/apple.png') },
+  //{ id: '2',name: 'Banana', category: 'Fruit', price: '1.00', image: require('../assets/banana.png') },
+  //{ id: '3',name: 'Strawberry', category: 'Fruit', price: '2.00', image: require('../assets/strawberry.png') },
+  //{ id: '4',name: 'Milk', category: 'Dairy', price: '3.50', image: require('../assets/milk.png') },
+  //{ id: '5',name: 'Cheese', category: 'Dairy', price: '4.00', image: require('../assets/cheese.png') },
+  //{ id: '6',name: 'Donut', category: 'Pastry', price: '2.50', image: require('../assets/mydonut.png') },
+  //{ id: '7',name: 'Ham', category: 'Meat', price: '5.50', image: require('../assets/ham.png') },
   //{ id: '8',name: 'Cups', category: 'Other', price: '2.50', image: require('../assets/mydonut.png') },
-  
 ];
 
-/*//FIRESTORE WIP
+
+//FIRESTORE WIP
 (async () => {
 },[]
 )
@@ -30,12 +31,12 @@ querySnapShot.forEach((doc) => {
  const {name, category, price}=doc.data()
  items.push({
 id: doc.id, name, category, price,
-}); console.log(items)
+}); //console.log(items)
 })
 setItems(items)
 }
 )
-*/
+
 
 const [searchText, setSearchText] = useState(''); //textinput
 const [items, setItems] = useState(data);
