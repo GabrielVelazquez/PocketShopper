@@ -197,7 +197,7 @@ const [count, setCount] = useState(0);
         </TouchableOpacity>
 
         {/* Button 2 */}
-        <TouchableOpacity style={styles.buttondone} onPress={()=> navigation.navigate("CrearLista")}>{/*DONE */}
+        <TouchableOpacity style={styles.buttondone} onPress={()=> navigation.navigate("HomeScreen")}>{/*DONE */}
           <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Done</Text>
         </TouchableOpacity>
       </View>

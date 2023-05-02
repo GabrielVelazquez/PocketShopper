@@ -10,6 +10,10 @@ export default function HomeScreen() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [lists, setLists] = useState([]);
 
+  //const datalist = [
+  //  {id: '1', name: 'Christmas List', Boolean:'1' }, //0=shared, 1=personal
+  //];
+
   const categories = ['Fruits', 'Vegetables', 'Meat', 'Dairy'];
   const renderListItem = ({ item }) => (
     <TouchableOpacity onPress={() => {navigation.navigate("ItemSelect"); console.log('Navigate to list:', item.id)}}>
@@ -102,19 +106,23 @@ export default function HomeScreen() {
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>Create List</Text>
             {/* Add code for creating a new list here */}
+            <Text style={{fontSize:25,color:'#fff',bottom: 55,right:45}}>List name</Text>
             <TextInput
-      style={styles.input}
+      style={styles.modallistInput}
       placeholder="List Name"
       onChangeText={(text) => setNewListName(text)}
     />
-            <TouchableOpacity style={styles.modalButton} onPress={handleCreateList}>
-              <Text style={styles.buttonText}>Create</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.modalButton} onPress={handleCancel}>
-              <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
+           
           </View>
         </View>
+        <View style={styles.modalbuttonContainer}>
+        <TouchableOpacity style={styles.modalButtonCancel} onPress={handleCancel}>
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+        <TouchableOpacity style={styles.modalButtonCreate} onPress={handleCreateList}>
+              <Text style={styles.buttonText}>Create</Text>
+            </TouchableOpacity>
+            </View>
       </Modal>
 
       <Modal
@@ -281,10 +289,10 @@ const styles = StyleSheet.create({
   borderBottomColor: '#ccc',
   },
   modalContainer: {
-  flex: 1,
-  backgroundColor: 'rgba(0,0,0,0.5)',
-  justifyContent: 'center',
-  alignItems: 'center',
+    flex: 1,
+    backgroundColor: 'rgba(84, 105, 163, 0.87)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 listbox: {
     backgroundColor: '#636C84',
@@ -307,17 +315,22 @@ listtext: {
             fontWeight:'bold',
             },
   modal: {
-  backgroundColor: '#B1C0D8',
-  width: '90%',
-  paddingVertical: 40,
-  paddingHorizontal: 20,
-  borderRadius: 10,
-  alignItems: 'center',
+    alignItems: 'center',
+    borderRadius: 30,
+    backgroundColor: '#BBC6DA',
+    width: 340,
+    height: 388,
   },
   modalTitle: {
-  fontSize: 24,
-  fontWeight: 'bold',
-  marginBottom: 20,
+    fontSize: 35,
+    fontWeight: 'bold',
+    color:'#fff',
+    textAlign: 'center',
+    paddingTop: 1 ,
+    //position:'absolute',
+     top:'-12%',
+     right:10,
+     marginBottom:50,
   },
   modalTextInput: {
   width: '100%',
@@ -345,4 +358,37 @@ listtext: {
   borderRadius: 5,
   marginHorizontal: 5,
   },
+  modallistInput:{
+    borderColor: '#ccc',
+    backgroundColor: '#fff',
+    borderRadius: 5,
+   marginBottom: -25,
+    width: 200,
+    height: 40,
+    bottom: 50,
+    right:0,
+    },
+    modalButtonCreate:{
+      backgroundColor: '#636D85',
+      borderRadius: 2,
+      paddingVertical: 15,
+      paddingHorizontal: 50,
+    },
+    modalButtonCancel:{
+      backgroundColor: '#FF784C',
+      borderRadius: 2,
+      paddingVertical: 15,
+      paddingHorizontal: 50,
+    },
+    modalbuttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      padding: 20,
+      marginBottom:10,
+    },
   });
