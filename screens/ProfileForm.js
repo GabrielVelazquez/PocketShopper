@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { profileUpdate } from '../../actions';
+/*import { profileUpdate } from '../../actions';
 
 class ProfileForm extends Component {
   render() {
@@ -22,4 +22,4 @@ const mapStateToProps = (state) => {
   return { firstName, lastName, email };
 };
 
-export default connect(mapStateToProps, { profileUpdate })(ProfileForm);
+export default connect(mapStateToProps, { profileUpdate })(ProfileForm);*/
