@@ -13,6 +13,7 @@ const data = [
   { id: '6',name: 'Donut', category: 'Pastry', price: '2.50', image: require('../assets/mydonut.png') },
 ];
 
+
 const categoryColors = {
   "fruit": "#F7A0CB",
   "dairy": "#F6EC95",
@@ -22,7 +23,6 @@ const [items, setItems] = useState(data);
 const [newItemName, setNewItemName] = useState(data);
 const [selectedCategory, setSelectedCategory] = useState(null);
 const [newPriceName, setNewPriceName] = useState(data);
-
 const [modalVisible, setModalVisible] = useState(false);
 const categories = Array.from(new Set(data.map(item => item.category))); // extract unique categories from the data array
 
@@ -37,12 +37,9 @@ const modalhandleCancelCreate = () => {
   setNewPriceName('');
 };
 
+
 //BORRAR LUEGO#####################################################
-const [count, setCount] = useState(0);// initialize the count state to 0------------
-const handlePress = () => {//----------------
-  setCount(count + 1);//increment the count state on press--------------
-};
-//BORRAR LUEGO#####################################################
+//const [count, setCount] = useState(0);
 
 /*console.log(item.name) se remplaza con add to list con correct id */
   const renderItem = (item) => {
@@ -52,7 +49,10 @@ const handlePress = () => {//----------------
 //const handlePress = () => {//----------------
 //setCount(count + 1);//increment the count state on press--------------
 //};//------------
-
+const [count, setCount] = useState(0);
+ const handlePress = () => {//----------------
+  setCount(count + 1);//increment the count state on press--------------
+};
     return (
       <TouchableOpacity key={item.id} onPress={() => {handlePress(); console.log(item.name);}}>
       <Text style={styles.itemtext}>{item.name}</Text>
@@ -146,6 +146,7 @@ const handlePress = () => {//----------------
       {renderCategories()}
     </ScrollView>
 
+
 {/*Bottom buttons n modal*/}
 {/* Button Container */}
 <View style={styles.buttonContainer}>
@@ -160,84 +161,84 @@ const handlePress = () => {//----------------
         </TouchableOpacity>
       </View>
 
+
        {/* Pop-up */}
        <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-        >
-        <View style={styles.modalContainer}>
-          <View style={styles.modal}>
-          <Text style={styles.modalTitle}>Create Item</Text>
-            <Text style={{fontSize:25,color:'#fff',bottom: 70,right:10}}>Item name</Text>
-            <TextInput
-              style={styles.modalnameInput}
-              value={newItemName}
-              onChangeText={(text) => setNewItemName(text)}
-            />
+animationType="fade"
+transparent={true}
+visible={modalVisible}
+onRequestClose={() => setModalVisible(false)}
+>
+<View style={styles.modalContainer}>
+  <View style={styles.modal}>
+  <Text style={styles.modalTitle}>Create Item</Text>
+    <Text style={{fontSize:25,color:'#fff',bottom: 70,right:10}}>Item name</Text>
+    <TextInput
+      style={styles.modalnameInput}
+      value={newItemName}
+      onChangeText={(text) => setNewItemName(text)}
+    />
 {/**/}
-            <SelectDropdown //style dont work >:( tengo que improvisar
-	data={categories}
-	onSelect={(selectedItem, index) => { 
-		console.log(selectedItem, index)
-    setSelectedCategory(selectedItem);
-	}}
-	buttonTextAfterSelection={(selectedItem, index) => {
-		// text represented after item is selected
-		// if data array is an array of objects then return selectedItem.property to render after item is selected
-		return selectedItem
-	}}
-	rowTextForSelection={(item, index) => {
-		// text represented for each item in dropdown
-		// if data array is an array of objects then return item.property to represent item in dropdown
-		return item
-	}}
+    <SelectDropdown //style dont work >:( tengo que improvisar
+data={categories}
+onSelect={(selectedItem, index) => { 
+console.log(selectedItem, index)
+setSelectedCategory(selectedItem);
+}}
+buttonTextAfterSelection={(selectedItem, index) => {
+// text represented after item is selected
+// if data array is an array of objects then return selectedItem.property to render after item is selected
+return selectedItem
+}}
+rowTextForSelection={(item, index) => {
+// text represented for each item in dropdown
+// if data array is an array of objects then return item.property to represent item in dropdown
+return item
+}}
 />
-              <Text style={{fontSize:23,color:'#fff', bottom:-10, right:1}}>Item Price (optional)</Text>
-            <TextInput
-              style={styles.modalpriceInput}
-              value={newPriceName}
-              onChangeText={(text) => setNewPriceName(text)}
-              keyboardType="numeric"
-            />
+      <Text style={{fontSize:23,color:'#fff', bottom:-10, right:1}}>Item Price (optional)</Text>
+    <TextInput
+      style={styles.modalpriceInput}
+      value={newPriceName}
+      onChangeText={(text) => setNewPriceName(text)}
+      keyboardType="numeric"
+    />
 
 <Text style={{fontSize:23,color:'#fff', bottom:-25, right:50}}>Add image</Text>
 
 <TouchableOpacity style={{backgroundColor: '#636D85',  width: 50,height: 50,borderRadius: 55/2,
- left:40,bottom:10}}>
-  <Text style={{fontSize:40,color:'#fff', left:13, bottom:1}}>+</Text>
-  </TouchableOpacity>
+left:40,bottom:10}}>
+<Text style={{fontSize:40,color:'#fff', left:13, bottom:1}}>+</Text>
+</TouchableOpacity>
 
 
-           {/*} <TouchableOpacity style={styles.modalButton} onPress={handleSaveItem}>
-              <Text style={styles.modalButtonText}>Save</Text>
-            </TouchableOpacity>
-          */}
-          </View>
-         
-        </View>
-        
-         {/* Modal Button Container */}
+   {/*} <TouchableOpacity style={styles.modalButton} onPress={handleSaveItem}>
+      <Text style={styles.modalButtonText}>Save</Text>
+    </TouchableOpacity>
+  */}
+  </View>
+ 
+</View>
+
+ {/* Modal Button Container */}
 <View style={styles.modalbuttonContainer}>
-        {/* Button Modal Cancel */}
-        <TouchableOpacity style={styles.modalbuttoncancel} onPress={modalhandleCancelCreate}>
-          <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Cancel</Text>
-        </TouchableOpacity> 
+{/* Button Modal Cancel */}
+<TouchableOpacity style={styles.modalbuttoncancel} onPress={modalhandleCancelCreate}>
+  <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Cancel</Text>
+</TouchableOpacity> 
 
-        {/* Button Modal Create */}
-        <TouchableOpacity style={styles.modalbuttoncreate} onPress={() => handleSaveNewItem(selectedCategory)}>
-          <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Create</Text>
-        </TouchableOpacity>
-      </View>
-      </Modal>
-
-    
+{/* Button Modal Create */}
+<TouchableOpacity style={styles.modalbuttoncreate} onPress={() => handleSaveNewItem(selectedCategory)}>
+  <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Create</Text>
+</TouchableOpacity>
+</View>
+</Modal>
+  
     </View>
   );
-
-
 }
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -429,8 +430,6 @@ const styles = StyleSheet.create({
   height: 40,
   bottom: 50,
   right:0,
-  
- 
   },
 
   modalpriceInput:{
