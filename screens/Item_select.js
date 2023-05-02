@@ -1,19 +1,11 @@
 import React, { useState } from 'react';
 import {StyleSheet, Text, View, Image, Pressable, TextInput, TouchableOpacity, Modal, SafeAreaView, ScrollView, FlatList} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown' //npm install react-native-select-dropdown
-import { LinearGradient } from "expo-linear-gradient";
-//import {firebase} from '../firebase.config';//
-//import {ref, set} from "firebase/database";
-//import {db} from './component/config';
+import { LinearGradient } from "expo-linear-gradient"; //FIRESTORE
+import {firebase} from '../firebase.config'; //FIRESTORE
 const ItemSelect = ({navigation}) => {//navigation
   
-  //const ItemRef = firebase.firestore().collection('Items');
-
-  const cats=[ //foreing
-  {id: '1',catergory :'Fruit'},
-  {id: '2',catergory :'Dairy'},
-  {id: '3',catergory :'Pastry'},
-  ];
+const ItemRef = firebase.firestore().collection('Items'); //FIRESTORE
   
 const data = [
   { id: '1', name: 'Apple', category: 'Fruit', price: '1.31',image: require('../assets/apple.png') },
@@ -23,12 +15,14 @@ const data = [
   { id: '5',name: 'Cheese', category: 'Dairy', price: '4.00', image: require('../assets/cheese.png') },
   { id: '6',name: 'Donut', category: 'Pastry', price: '2.50', image: require('../assets/mydonut.png') },
   { id: '7',name: 'Ham', category: 'Meat', price: '5.50', image: require('../assets/ham.png') },
-  //{ id: '8',name: 'Cups', category: 'Pastry', price: '2.50', image: require('../assets/mydonut.png') },
+  //{ id: '8',name: 'Cups', category: 'Other', price: '2.50', image: require('../assets/mydonut.png') },
   
 ];
 
-/*
+/*//FIRESTORE WIP
 (async () => {
+},[]
+)
 ItemRef.onSnapshot(
  querySnapShot => {
    const items = []
@@ -41,9 +35,8 @@ id: doc.id, name, category, price,
 setItems(items)
 }
 )
-},[]
-)
 */
+
 const [searchText, setSearchText] = useState(''); //textinput
 const [items, setItems] = useState(data);
 const [newItemName, setNewItemName] = useState(data);
@@ -66,22 +59,15 @@ const modalhandleCancelCreate = () => {
 
 //BORRAR LUEGO#####################################################
 const [count, setCount] = useState(0);
-
 /*console.log(item.name) se remplaza con add to list con correct id */
   const renderItem = (item) => {
-   
 //COUNT DE ITEM INDIVIDUAL PERO SEARCH NO FUNCIONA CON ESTO
-//const [count, setCount] = useState(0);// initialize the count state to 0------------
-//const handlePress = () => {//----------------
-//setCount(count + 1);//increment the count state on press--------------
-//};//------------
-//const [count, setCount] = useState(0);
  const handlePress = () => {//----------------
-  setCount(count + 1);//increment the count state on press--------------
+  setCount(count + 1);//se le suma 1 al count al presionar--------------
 };
     return (
       <TouchableOpacity key={item.id} onPress={() => {handlePress(); console.log(item.name);}}>
-      <Text style={styles.itemtext}>{item.name}</Text>
+      <Text style={styles.itemtext}>{item.name}</Text> 
       <Image source={item.image} style={styles.image} />
       <Pressable style={styles.itemcounter}></Pressable>
       <Text style={{fontSize:15,color:'#fff',left:80,bottom:55,marginBottom:-50}}>{count}</Text> 
@@ -89,10 +75,12 @@ const [count, setCount] = useState(0);
     );
   };    
 
+  /*</TouchableOpacity>is {item.price}</Text> //FIRESTORE*/
+
   const renderCategory = (category) => {
 
-    let backgroundColor = '#FFFFFF'; // default to white
-    // determine the color based on the data
+    let backgroundColor = '#FFFFFF'; // default blanco
+    // cambia el color segun data category
     if (category=== 'Fruit') {
       backgroundColor = '#F7A0CB';
     } else if (category === 'Dairy') {
@@ -127,6 +115,10 @@ const [count, setCount] = useState(0);
     };
     setItems([...items, newItem]);
   };
+
+  //setItems(prevItems => {
+   // return[{id: id(), text}, ...prevItems]
+  //})
 
   /*
   const renderAddItem = (category) => {
@@ -182,7 +174,7 @@ const [count, setCount] = useState(0);
           <TextInput style={styles.searchInput} placeholderTextColor="#000" placeholder="Search" value={searchText}
   onChangeText={setSearchText} />
         </View>
-{/*Shows data, images, cat, etc.*/}
+{/*muestra data, images, cat, etc.*/}
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       {renderCategories()}
     </ScrollView>
@@ -191,12 +183,12 @@ const [count, setCount] = useState(0);
 {/*Bottom buttons n modal*/}
 {/* Button Container */}
 <View style={styles.buttonContainer}>
-        {/* Button 1 */}
+        {/* Button 1 crear */}
         <TouchableOpacity style={styles.buttoncreate} onPress={handleCreateItem}>
           <Text style={{color:'#000',fontSize: 16,textAlign:'center',}}>Create Item</Text>
         </TouchableOpacity>
 
-        {/* Button 2 */}
+        {/* Button 2 terminar */}
         <TouchableOpacity style={styles.buttondone} onPress={()=> navigation.navigate("HomeScreen")}>{/*DONE */}
           <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Done</Text>
         </TouchableOpacity>
@@ -227,13 +219,11 @@ console.log(selectedItem, index)
 setSelectedCategory(selectedItem);
 }}
 buttonTextAfterSelection={(selectedItem, index) => {
-// text represented after item is selected
-// if data array is an array of objects then return selectedItem.property to render after item is selected
+// texto que muestra luego de escogerlo
 return selectedItem
 }}
 rowTextForSelection={(item, index) => {
-// text represented for each item in dropdown
-// if data array is an array of objects then return item.property to represent item in dropdown
+// texto en el drop
 return item
 }}
 />
@@ -314,6 +304,7 @@ const styles = StyleSheet.create({
       marginBottom: 1,
       alignItems: 'center',
       color: '#ffff',
+      left:20,
     },
   searchContainer: {
       textAlign: "center",
