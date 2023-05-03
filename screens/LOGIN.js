@@ -1,3 +1,4 @@
+import {firebase} from '../firebase.config'; //FIRESTORE
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
@@ -36,12 +37,22 @@ const LOGIN = ({navigation}) => {
           onChangeText={(password) => setPassword(password)}
         /> 
       </View> 
-      <TouchableOpacity>
-        <Text style={styles.forgot_button}>Forgot Password?</Text> 
-      </TouchableOpacity> 
-      <TouchableOpacity style={styles.loginBtn}>
-        <Text style={styles.loginText}>LOGIN</Text> 
-      </TouchableOpacity>
+      <TouchableOpacity
+  style={styles.loginBtn}
+  onPress={() => {
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then(() => {
+        // Login successful, navigate to the home screen
+        navigation.navigate('HomeScreen');
+      })
+      .catch((error) => {
+        // Handle login error
+        console.log(error);
+      });
+  }}>
+  <Text style={styles.loginText}>LOGIN</Text>
+</TouchableOpacity>
+
        <Text style = {{color: "#fff"}}>Or Create Account, ya dingus</Text>
        
       <TouchableOpacity style={styles.SignUpBtn}>

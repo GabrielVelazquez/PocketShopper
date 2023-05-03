@@ -23,13 +23,23 @@ import HomeScreen from "./screens/HomeScreen";
 import ListModified from "./screens/ListModified";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator, style } from "@react-navigation/native-stack";
+// import { AccountNavigator } from "./screens/account.navigator";
+
+
+
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
+
 <NavigationContainer>
+{/* isAuthenticated ? <AccountNavigator /> :
+(
+ <AppNavigator />
+) */}
 <Stack.Navigator>
+
   <Stack.Screen
     name="HUB"
     component={Hub}
