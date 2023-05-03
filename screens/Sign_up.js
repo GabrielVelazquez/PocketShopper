@@ -56,8 +56,10 @@
 //}
 
 import React, { useState } from "react";
-import firebase from '../firebase.config';
-import "firebase/auth";
+// import firebase from '../firebase.config'; //FIRESTORE
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
+
 import {
   StyleSheet,
   Text,
@@ -69,7 +71,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 
-import HomeScreen from "./HomeScreen";
 
 export default function Sign_up({ navigation }) {
   const [email, setEmail] = useState("");
