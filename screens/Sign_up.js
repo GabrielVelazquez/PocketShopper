@@ -108,10 +108,10 @@ export default function Sign_up({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Image
-        style={styles.logo}
-        source={require("../assets/Pocketshopper_logo_v4.png")}
-      />
+      <View style={{marginBottom:45}}>
+      <Image style={styles.image} source={require('../assets/Pocketshopper_logo_v4.png')} />
+      <Text style={styles.imagetext}>Pocket{'\n'}Shopper</Text>
+      </View>
       <View style={styles.inputView}>
         <TextInput
           style={styles.TextInput}
@@ -212,5 +212,19 @@ const styles = StyleSheet.create({
   },
   SignUpText: {
     color: "#000"
+  },
+  image: {
+    width: 125,
+    height: 125,
+    right:80,
+    bottom:30,
+  },
+  imagetext:{
+    fontSize: 45,
+    color: '#000',
+    textAlign: "center",
+    position: "absolute",
+    left:45,
+    bottom:35,
   },
 });

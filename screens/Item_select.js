@@ -3,8 +3,10 @@ import {StyleSheet, Text, View, Image, Pressable, TextInput, TouchableOpacity, M
 import SelectDropdown from 'react-native-select-dropdown' //npm install react-native-select-dropdown
 import { LinearGradient } from "expo-linear-gradient"; //FIRESTORE
 import {firebase} from '../firebase.config'; //FIRESTORE
+//import { initializeApp } from 'firebase/app';
+import {getStorage, ref, getDownloadURL} from 'firebase/storage';
 const ItemSelect = ({navigation}) => {//navigation
-  
+  const[url,setUrl]= useState();
 const ItemRef = firebase.firestore().collection('Items'); //FIRESTORE
   
 
@@ -18,25 +20,34 @@ const data = [
   //{ id: '7',name: 'Ham', category: 'Meat', price: '5.50', image: require('../assets/ham.png') },
   //{ id: '8',name: 'Cups', category: 'Other', price: '2.50', image: require('../assets/mydonut.png') },
 ];
+//const categories=[];
 
 
 //FIRESTORE WIP
 (async () => {
+  const storage =getStorage();
+  const reference =ref(storage, '/apple.png');
+  await getDownloadURL(reference).then((x)=>{
+    setUrl(x);
+  })
 },[]
 )
 ItemRef.onSnapshot(
  querySnapShot => {
    const items = []
+   //const categories = []
 querySnapShot.forEach((doc) => {
  const {name, category, price}=doc.data()
  items.push({
-id: doc.id, name, category, price,
+id: doc.id, name, category, price
 }); //console.log(items)
+//if (category && !categories.includes(category)) {   PARA CATEGORY DROP LIST
+//  categories.push(category);
+//}
 })
 setItems(items)
 }
 )
-
 
 const [searchText, setSearchText] = useState(''); //textinput
 const [items, setItems] = useState(data);
@@ -45,7 +56,7 @@ const [selectedCategory, setSelectedCategory] = useState(null);
 const [newPriceName, setNewPriceName] = useState(data);
 const [modalVisible, setModalVisible] = useState(false);
 const categories = Array.from(new Set(data.map(item => item.category))); // extract unique categories from the data array
-
+//COMENTAR categories ^^^
 const handleCreateItem = () => {
   setModalVisible(true);
 };
@@ -70,6 +81,7 @@ const [count, setCount] = useState(0);
       <TouchableOpacity key={item.id} onPress={() => {handlePress(); console.log(item.name);}}>
       <Text style={styles.itemtext}>{item.name}</Text> 
       <Image source={item.image} style={styles.image} />
+      <Image source={{uri: url}} style={styles.image} />
       <Pressable style={styles.itemcounter}></Pressable>
       <Text style={{fontSize:15,color:'#fff',left:80,bottom:55,marginBottom:-50}}>{count}</Text> 
     </TouchableOpacity>
@@ -105,6 +117,7 @@ const [count, setCount] = useState(0);
     );
   };
 
+  /*
   const handleAddItem = (category) => {
     //setModalVisible(true);
     const newItem = {
@@ -116,6 +129,7 @@ const [count, setCount] = useState(0);
     };
     setItems([...items, newItem]);
   };
+  */
 
   //setItems(prevItems => {
    // return[{id: id(), text}, ...prevItems]
@@ -175,6 +189,7 @@ const [count, setCount] = useState(0);
           <TextInput style={styles.searchInput} placeholderTextColor="#000" placeholder="Search" value={searchText}
   onChangeText={setSearchText} />
         </View>
+        
 {/*muestra data, images, cat, etc.*/}
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       {renderCategories()}

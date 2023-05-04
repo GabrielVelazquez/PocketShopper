@@ -3,6 +3,7 @@
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore'
+//import { getStorage } from "firebase/storage";
 //import { getAnalytics } from "firebase/analytics";
 import { getDatabase } from 'firebase/database';
 // TODO: Add SDKs for Firebase products that you want to use
@@ -26,6 +27,10 @@ const firebaseConfig = {
 /*const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 export {db}; */
+
+// Initialize Cloud Storage and get a reference to the service
+//const storage = getStorage(app);
+
 if(!firebase.apps.length){
   firebase.initializeApp(firebaseConfig)
 }

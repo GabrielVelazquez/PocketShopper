@@ -40,11 +40,21 @@ export default function App() {
 ) */}
 <Stack.Navigator>
 
-  <Stack.Screen
+{/*}
+<Stack.Screen
     name="HUB"
     component={Hub}
     //options={{headerShown: false}}
   />
+*/}
+
+<Stack.Screen 
+  name="LOGIN"
+  component={LOGIN}
+  //options={{headerShown: false}} 
+  />
+
+ 
   <Stack.Screen 
   name="ItemSelect"
   component={ItemSelect}
@@ -73,11 +83,7 @@ export default function App() {
   //options={{headerShown: false}}
   />
  
-<Stack.Screen 
-  name="LOGIN"
-  component={LOGIN}
-  //options={{headerShown: false}} 
-  />
+
 <Stack.Screen 
   name="Sign_up"
   component={Sign_up}

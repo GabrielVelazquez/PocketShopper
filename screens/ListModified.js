@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Image, TouchableOpacity,ScrollView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { Border, Color, FontFamily, FontSize } from "../GlobalStyles";
@@ -35,6 +35,8 @@ const ListModified = () => {
         resizeMode="cover"
         source={require("../assets/search-item-textbox1.png")}
       />
+ <ScrollView contentContainerStyle={styles.scrollContainer}>
+
       <Text style={[styles.fruits, styles.textTypo]}>Fruits</Text>
       <Text style={[styles.text, styles.textTypo]}>2/3</Text>
       <Image
@@ -89,6 +91,7 @@ const ListModified = () => {
       <Text style={[styles.listname8, styles.listname8Position]}>
         Pineapple
       </Text>
+      
      
       <TouchableOpacity
         style={[styles.createButton, styles.createLayout]}
@@ -183,7 +186,9 @@ const ListModified = () => {
         resizeMode="cover"
         source={require("../assets/ellipse-11.png")}
       />
+      </ScrollView>
     </View>
+    
   );
 };
 
@@ -612,6 +617,9 @@ const styles = StyleSheet.create({
     height: 800,
     width: "100%",
     
+  },
+  scrollContainer: {
+    padding: 16,
   },
 });
 export default ListModified;
