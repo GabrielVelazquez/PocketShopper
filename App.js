@@ -12,7 +12,7 @@ Now, you can run it.
 Ya instale firebase en el package.json pero si no les sale usen esto: npm install firebase
 */
 // Import the functions you need from the SDKs you need
-import Hub from "./screens/Hub_test";
+// import Hub from "./screens/Hub_test";
 import ItemSelect from "./screens/Item_select";
 import CrearLista from "./screens/CrearLista";
 import Test from "./screens/test";
@@ -41,11 +41,11 @@ export default function App() {
 <Stack.Navigator>
 
 
-<Stack.Screen
+{/* <Stack.Screen
     name="HUB"
     component={Hub}
     //options={{headerShown: false}}
-  />
+  /> */}
 
 
 <Stack.Screen 

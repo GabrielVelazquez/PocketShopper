@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+    width: "100%",
   },
  
   inputView: {
@@ -143,13 +144,16 @@ const styles = StyleSheet.create({
   gradientBackdrop: {
     top: 0,
     left: 0,
+    width: "100%",
+    backgroundColor: "transparent",
+    position: "absolute",
+    height: "100%",
     borderStyle: "solid",
     borderColor: "#000",
     borderWidth: 1,
-    width: 400,
     backgroundColor: "transparent",
     position: "absolute",
-    height: 800,
+   
   },
 });
 

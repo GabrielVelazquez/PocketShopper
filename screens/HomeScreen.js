@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Image, SafeAreaView, ScrollView,  FlatList, TouchableOpacity, Modal, TextInput } from 'react-native';
+import { StyleSheet, View, Text, Image, SafeAreaView, ScrollView,  FlatList, TouchableOpacity, Modal, TextInput, Switch, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-// import {firebase} from '../firebase.config'; //FIRESTORE
 import {firebase} from '../firebase.config';
+import { FAB } from 'react-native-paper';
 
 const database = firebase.database();
 export default function HomeScreen() {
@@ -13,82 +13,134 @@ export default function HomeScreen() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [lists, setLists] = useState([]);
   const [newListName, setNewListName] = useState('');
-  //const datalist = [
-  //  {id: '1', name: 'Christmas List', Boolean:'1' }, //0=shared, 1=personal
-  //];
-
+  const [isShared, setIsShared] = useState(false);
+  const [personalLists, setPersonalLists] = useState([]);
+  const [sharedLists, setSharedLists] = useState([]);
   const categories = ['Fruits', 'Vegetables', 'Meat', 'Dairy'];
-  const renderListItem = ({ item }) => (
-    <TouchableOpacity onPress={() => {navigation.navigate("ItemSelect"); console.log('Navigate to list:', item.id)}}>
-      <View style={styles.listbox}>  
-        <Text style={styles.listtext}>{item.name}</Text>
-        
-        <Text style={styles.listtextammount}>{item.items?.length}/#</Text>
-      </View>
-    </TouchableOpacity>
-  );
+  const [isSpeedDialOpen, setIsSpeedDialOpen] = useState(false);
+  // const [inviteCode, setInviteCode] = useState('');
+
+  const toggleSpeedDial = () => {
+    setIsSpeedDialOpen(!isSpeedDialOpen);
+  };
+  
+
+  const renderListItem = ({ item, isShared, navigation }) => {
+    if (!isShared && item.owner !== firebase.auth().currentUser.uid) {
+      return null;
+    }
+    if (isShared && item.owner === firebase.auth().currentUser.uid) {
+      return null;
+    }
+    return (
+      <TouchableOpacity onPress={() => {navigation.navigate("ItemSelect"); console.log('Navigate to list:', item.id)}}>
+        <View style={styles.listbox}>  
+          <Text style={styles.listtext}>{item.name}</Text>
+          <Text style={styles.listtextammount}>{item.items?.length}/#</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
    
-  
-  
-    
-    // const handleCreateList = () => {
-    //   const newList = { id: Math.random().toString(), name: newListName, items: [] };
-    //   setLists([...lists, newList]);
-    //   setNewListName('');
-    // };
-    // setModalVisible(false);
-
-    //Este es el que funciona localmente
-    // const handleCreateList = () => {
-    //   if (newListName !== '') {
-    //     const newList = { id: Math.random().toString(), name: newListName, items: [] };
-    //     setLists([...lists, newList]);
-    //     setNewListName('');
-    //     setModalVisible(false);
-    //     console.log(newListName);
-    //   }
-    //   console.log(lists);
-    //   console.log(newListName);
-    // };
-
     //Este es el que funciona en el servidor
     const handleCreateList = () => {
       if (newListName !== '') {
         const newListId = Math.random().toString().replace(/\D/g, ''); // Elimina los caracteres no numéricos del ID
-        const newList = { id: newListId, name: newListName, items: [] };
+        const newList = { id: newListId, name: newListName, items: [], owner: firebase.auth().currentUser.uid, isShared, inviteCode: null}; // Agrega el campo "owner" con la identificación del usuario actual y el valor de "isShared"
         setLists([...lists, newList]);
         setNewListName('');
         setModalVisible(false);
     
         // Agrega la nueva lista a Firebase
         database.ref(`lists/${newListId}`).set(newList);
+        // Escucha los cambios en el campo "inviteCode" de la lista recién creada
+    database.ref(`lists/${newListId}/inviteCode`).on('value', (snapshot) => {
+      const newInviteCode = snapshot.val();
+      if (newInviteCode) {
+        const updatedLists = lists.map((list) => {
+          if (list.id === newListId) {
+            return { ...list, inviteCode: newInviteCode };
+          }
+          return list;
+        });
+        setLists(updatedLists);
+      }
+    });
       }
     };
     
+    const sendInvite = (list) => {
+      // Genera un código de invitación único para la lista
+      const inviteCode = Math.random().toString(36).substr(2, 5);
+      // Actualiza el código de invitación en la lista en Firebase
+      database.ref(`lists/${list.id}/inviteCode`).set(inviteCode);
+      // Muestra el código de invitación en una ventana emergente
+      alert(`El código de invitación para la lista "${list.name}" es: ${inviteCode}`);
+    };
+    
+    
+
+    const JoinList = () => {
+      const [inviteCode, setInviteCode] = useState('');
+    
+      const handleJoinList = () => {
+        // Busca la lista con el código de invitación correspondiente en Firebase
+        database.ref('lists').orderByChild('inviteCode').equalTo(inviteCode).once('value', (snapshot) => {
+          const firebaseLists = snapshot.val();
+          if (firebaseLists) {
+            // Si se encuentra una lista con el código de invitación correspondiente, agrega al usuario actual como colaborador
+            const listId = Object.keys(firebaseLists)[0];
+            const list = firebaseLists[listId];
+            const currentUser = firebase.auth().currentUser;
+            if (currentUser) {
+              database.ref(`lists/${listId}/collaborators/${currentUser.uid}`).set(true);
+              alert(`Te has unido a la lista "${list.name}"`);
+            }
+          } else {
+            // Si no se encuentra una lista con el código de invitación correspondiente, muestra un mensaje de error
+            alert(`No se encontró ninguna lista con el código de invitación "${inviteCode}"`);
+          }
+        });
+        
+      };
+      return (
+        <View>
+          <Text>Enter invite code:</Text>
+          <TextInput value={inviteCode} onChangeText={setInviteCode} />
+          <Button title="Join list" onPress={handleJoinList} />
+        </View>
+      );
+    };
+
+    
+    
+    
+    
+    
+    
     
     useEffect(() => {
+      const currentUser = firebase.auth().currentUser;
+    
       database.ref('lists').on('value', (snapshot) => {
         const firebaseLists = snapshot.val();
         if (firebaseLists) {
-          const newLists = Object.keys(firebaseLists).map((id) => ({
-            id,
-            ...firebaseLists[id],
-          }));
-          setLists(newLists);
+          const newLists = Object.keys(firebaseLists)
+            .map((id) => ({ id, ...firebaseLists[id] }))
+            .filter((list) => list.owner === currentUser.uid); // Filtra las listas para que solo se muestren las del usuario actual
+    
+          setPersonalLists(newLists.filter((list) => !list.isShared));
+          setSharedLists(newLists.filter((list) => list.isShared));
         }
       });
     }, []);
     
-
  
-
   const handleSubmit2 = () => {
     // Add code to handle the submission of the new item here
     console.log(newItemName, selectedCategory);
     setModalVisible2(false);
   };
-  
-  
 
   const handleCancel = () => {
     setModalVisible(false);
@@ -114,24 +166,56 @@ export default function HomeScreen() {
       </View>
 
       <ScrollView style={styles.scrollView}>
-        <View style={styles.divisionShared}>
-          <Text style={styles.divisionTitle}>Shared Lists</Text>
-        </View>
-        <View style={styles.divisionPersonal}>
-          <Text style={styles.divisionTitle}>Personal Lists</Text>
-        </View>
-      
-      <FlatList
-        data={lists}
-        renderItem={renderListItem}
-        keyExtractor={(item) => item.id}
-        style={{ flex: 1 }}
-      />
-        <View style={styles.divisionArchived}>
-          <Text style={styles.divisionTitleArchived}>Archived Lists</Text>
-        </View>
-      </ScrollView>
+  <View style={styles.divisionShared}>
+    <Text style={styles.divisionTitle}>Shared Lists</Text>
+  </View>
+  <FlatList
+    data={sharedLists}
+    renderItem={renderListItem}
+    keyExtractor={(item) => item.id}
+    style={{ flex: 1 }}
+  />
 
+  <View style={styles.divisionPersonal}>
+    <Text style={styles.divisionTitle}>Personal Lists</Text>
+  </View>
+  <FlatList
+    data={personalLists}
+    renderItem={renderListItem}
+    keyExtractor={(item) => item.id}
+    style={{ flex: 1 }}
+  />
+
+  <View style={styles.divisionArchived}>
+    <Text style={styles.divisionTitleArchived}>Archived Lists</Text>
+  </View>
+</ScrollView>
+<FAB.Group
+    open={isSpeedDialOpen}
+    icon={isSpeedDialOpen ? 'close' : 'plus'}
+    actions={[
+      {
+        icon: 'playlist-plus',
+        label: 'Create list',
+        // onPress: setModalVisible(true),
+      },
+      {
+        icon: 'playlist-check',
+        label: 'Join list',
+        // onPress:JoinList,
+      },
+      {
+        icon: 'plus-box',
+        label: 'Create item',
+        // onPress: setModalVisible2(true),
+      },
+    ]}
+    onStateChange={({ open }) => setIsSpeedDialOpen(open)}
+    onPress={() => setIsSpeedDialOpen(!isSpeedDialOpen)}
+  />
+
+
+     
       <Modal
         animationType="fade"
         transparent={true}
@@ -139,18 +223,27 @@ export default function HomeScreen() {
         onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalContainer}>
-          <View style={styles.modal}>
-            <Text style={styles.modalTitle}>Create List</Text>
-            {/* Add code for creating a new list here */}
-            <Text style={{fontSize:25,color:'#fff',bottom: 55,right:45}}>List name</Text>
-            <TextInput
-      style={styles.modallistInput}
-      placeholder="List Name"
-      onChangeText={(text) => setNewListName(text)}
-    />
-           
-          </View>
+       
+    <View style={styles.modal}>
+        <Text style={styles.modalTitle}>Create List</Text>
+        <Text style={{ fontSize: 25, color: '#fff', bottom: 55, right: 45 }}>List name</Text>
+        <TextInput
+          style={styles.modallistInput}
+          placeholder="List Name"
+          onChangeText={(text) => setNewListName(text)}
+        />
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
+          <Switch
+            value={isShared}
+            onValueChange={(value) => setIsShared(value)}
+            
+          />
+          <Text style={{ marginLeft: 10 }}>Shared List</Text>
         </View>
+      </View>
+        </View>
+        
+
         <View style={styles.modalbuttonContainer}>
         <TouchableOpacity style={styles.modalButtonCancel} onPress={handleCancel}>
               <Text style={styles.buttonText}>Cancel</Text>
@@ -313,11 +406,7 @@ const styles = StyleSheet.create({
   content: {
   marginTop: 10,
   },
-  emptyMessage: {
-  textAlign: 'center',
-  color: '#ccc',
-  marginTop: 40,
-  },
+
   item: {
   fontSize: 16,
   paddingVertical: 10,

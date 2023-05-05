@@ -6,7 +6,19 @@ import { Border, Color, FontFamily, FontSize } from "../GlobalStyles";
 
 const ListModified = () => {
   const navigation = useNavigation();
-
+  const ListDetails = ({ route }) => {
+    const { list } = route.params;
+  
+    return (
+      <View>
+        <Text>List name: {list.name}</Text>
+        <Text>List owner: {list.owner}</Text>
+        <Text>Invite code: {list.inviteCode}</Text>
+        <Button title="Send invite" onPress={() => sendInvite(list)} />
+      </View>
+    );
+  };
+  
   return (
     <View style={styles.listModified}>
       <LinearGradient
@@ -623,4 +635,3 @@ const styles = StyleSheet.create({
   },
 });
 export default ListModified;
-
