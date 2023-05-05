@@ -25,7 +25,7 @@ export default function HomeScreen() {
   };
   
 
-  const renderListItem = ({ item, isShared, navigation }) => {
+  const renderListItem = ({ item, isShared }) => {
     if (!isShared && item.owner !== firebase.auth().currentUser.uid) {
       return null;
     }
@@ -33,7 +33,7 @@ export default function HomeScreen() {
       return null;
     }
     return (
-      <TouchableOpacity onPress={() => {navigation.navigate("ItemSelect"); console.log('Navigate to list:', item.id)}}>
+      <TouchableOpacity onPress={() => {navigation.navigate('ItemSelect'); console.log('Navigate to list:', item.id)}}>
         <View style={styles.listbox}>  
           <Text style={styles.listtext}>{item.name}</Text>
           <Text style={styles.listtextammount}>{item.items?.length}/#</Text>
@@ -41,7 +41,6 @@ export default function HomeScreen() {
       </TouchableOpacity>
     );
   };
-   
     //Este es el que funciona en el servidor
     const handleCreateList = () => {
       if (newListName !== '') {
@@ -111,13 +110,6 @@ export default function HomeScreen() {
         </View>
       );
     };
-
-    
-    
-    
-    
-    
-    
     
     useEffect(() => {
       const currentUser = firebase.auth().currentUser;
