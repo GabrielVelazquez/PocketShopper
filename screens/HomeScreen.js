@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Image, SafeAreaView, ScrollView,  FlatList, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+// import {firebase} from '../firebase.config'; //FIRESTORE
+import {firebase} from '../firebase.config';
 
+const database = firebase.database();
 export default function HomeScreen() {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
@@ -9,7 +12,7 @@ export default function HomeScreen() {
   const [newItemName, setNewItemName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [lists, setLists] = useState([]);
-
+  const [newListName, setNewListName] = useState('');
   //const datalist = [
   //  {id: '1', name: 'Christmas List', Boolean:'1' }, //0=shared, 1=personal
   //];
@@ -19,12 +22,13 @@ export default function HomeScreen() {
     <TouchableOpacity onPress={() => {navigation.navigate("ItemSelect"); console.log('Navigate to list:', item.id)}}>
       <View style={styles.listbox}>  
         <Text style={styles.listtext}>{item.name}</Text>
-        <Text style={styles.listtextammount}>{item.items.length}/#</Text>
+        
+        <Text style={styles.listtextammount}>{item.items?.length}/#</Text>
       </View>
     </TouchableOpacity>
   );
    
-  const [newListName, setNewListName] = useState('');
+  
   
     
     // const handleCreateList = () => {
@@ -33,17 +37,49 @@ export default function HomeScreen() {
     //   setNewListName('');
     // };
     // setModalVisible(false);
+
+    //Este es el que funciona localmente
+    // const handleCreateList = () => {
+    //   if (newListName !== '') {
+    //     const newList = { id: Math.random().toString(), name: newListName, items: [] };
+    //     setLists([...lists, newList]);
+    //     setNewListName('');
+    //     setModalVisible(false);
+    //     console.log(newListName);
+    //   }
+    //   console.log(lists);
+    //   console.log(newListName);
+    // };
+
+    //Este es el que funciona en el servidor
     const handleCreateList = () => {
       if (newListName !== '') {
-        const newList = { id: Math.random().toString(), name: newListName, items: [] };
+        const newListId = Math.random().toString().replace(/\D/g, ''); // Elimina los caracteres no numéricos del ID
+        const newList = { id: newListId, name: newListName, items: [] };
         setLists([...lists, newList]);
         setNewListName('');
         setModalVisible(false);
-        console.log(newListName);
+    
+        // Agrega la nueva lista a Firebase
+        database.ref(`lists/${newListId}`).set(newList);
       }
-      console.log(lists);
-      console.log(newListName);
     };
+    
+    
+    useEffect(() => {
+      database.ref('lists').on('value', (snapshot) => {
+        const firebaseLists = snapshot.val();
+        if (firebaseLists) {
+          const newLists = Object.keys(firebaseLists).map((id) => ({
+            id,
+            ...firebaseLists[id],
+          }));
+          setLists(newLists);
+        }
+      });
+    }, []);
+    
+
  
 
   const handleSubmit2 = () => {
@@ -84,7 +120,7 @@ export default function HomeScreen() {
         <View style={styles.divisionPersonal}>
           <Text style={styles.divisionTitle}>Personal Lists</Text>
         </View>
-        
+      
       <FlatList
         data={lists}
         renderItem={renderListItem}
