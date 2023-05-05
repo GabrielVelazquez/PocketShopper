@@ -4,11 +4,11 @@ import SelectDropdown from 'react-native-select-dropdown' //npm install react-na
 import { LinearGradient } from "expo-linear-gradient"; //FIRESTORE
 import {firebase} from '../firebase.config'; //FIRESTORE
 //import { initializeApp } from 'firebase/app';
-import {getStorage, ref, getDownloadURL} from 'firebase/storage';
 const ItemSelect = ({navigation}) => {//navigation
-  const[url,setUrl]= useState();
 const ItemRef = firebase.firestore().collection('Items'); //FIRESTORE
-  
+//const ItemRef = firebase.firestore().collection('Items');
+//const database = firebase.database();
+const database = firebase.database();
 
 const data = [
   //{ id: '1', name: 'Apple', category: 'Fruit', price: '1.31',image: require('../assets/apple.png') },
@@ -25,11 +25,6 @@ const data = [
 
 //FIRESTORE WIP
 (async () => {
-  const storage =getStorage();
-  const reference =ref(storage, '/apple.png');
-  await getDownloadURL(reference).then((x)=>{
-    setUrl(x);
-  })
 },[]
 )
 ItemRef.onSnapshot(
@@ -55,7 +50,9 @@ const [newItemName, setNewItemName] = useState(data);
 const [selectedCategory, setSelectedCategory] = useState(null);
 const [newPriceName, setNewPriceName] = useState(data);
 const [modalVisible, setModalVisible] = useState(false);
-const categories = Array.from(new Set(data.map(item => item.category))); // extract unique categories from the data array
+const categories = Array.from(new Set(items.map(item => item.category)));
+
+//const categories = Array.from(new Set(data.map(item => item.category))); // extract unique categories from the data array
 //COMENTAR categories ^^^
 const handleCreateItem = () => {
   setModalVisible(true);
@@ -70,20 +67,21 @@ const modalhandleCancelCreate = () => {
 
 
 //BORRAR LUEGO#####################################################
-const [count, setCount] = useState(0);
+//const [count, setCount] = useState(0);
 /*console.log(item.name) se remplaza con add to list con correct id */
   const renderItem = (item) => {
+
 //COUNT DE ITEM INDIVIDUAL PERO SEARCH NO FUNCIONA CON ESTO
  const handlePress = () => {//----------------
-  setCount(count + 1);//se le suma 1 al count al presionar--------------
+ 
+  //setCount(count + 1);//se le suma 1 al count al presionar--------------
 };
     return (
       <TouchableOpacity key={item.id} onPress={() => {handlePress(); console.log(item.name);}}>
       <Text style={styles.itemtext}>{item.name}</Text> 
       <Image source={item.image} style={styles.image} />
-      <Image source={{uri: url}} style={styles.image} />
       <Pressable style={styles.itemcounter}></Pressable>
-      <Text style={{fontSize:15,color:'#fff',left:80,bottom:55,marginBottom:-50}}>{count}</Text> 
+      <Text style={{fontSize:15,color:'#fff',left:80,bottom:55,marginBottom:-50}}></Text> 
     </TouchableOpacity>
     );
   };    
@@ -156,8 +154,15 @@ const [count, setCount] = useState(0);
       price: newPriceName,
       image: require('../assets/itemlplaceholder.png')
     };
+    const itemsRef = database.ref('Items'); // Use a specific location in the database
+  itemsRef.push(newItem);
     setItems([...items, newItem]);
+    //database.ref(`lists/${newListId}`).set(newItem);
   };
+
+  
+
+
 
 
   const renderCategories = () => {
