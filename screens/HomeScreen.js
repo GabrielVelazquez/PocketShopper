@@ -33,7 +33,7 @@ export default function HomeScreen() {
       return null;
     }
     return (
-      <TouchableOpacity onPress={() => {navigation.navigate('ItemSelect'); console.log('Navigate to list:', item.id)}}>
+      <TouchableOpacity onPress={() => {navigation.navigate('ListModified'); console.log('Navigate to list:', item.id)}}>
         <View style={styles.listbox}>  
           <Text style={styles.listtext}>{item.name}</Text>
           <Text style={styles.listtextammount}>{item.items?.length}/#</Text>
@@ -43,6 +43,7 @@ export default function HomeScreen() {
   };
     //Este es el que funciona en el servidor
     const handleCreateList = () => {
+      setModalVisible (true);
       if (newListName !== '') {
         const newListId = Math.random().toString().replace(/\D/g, ''); // Elimina los caracteres no numéricos del ID
         const newList = { id: newListId, name: newListName, items: [], owner: firebase.auth().currentUser.uid, isShared, inviteCode: null}; // Agrega el campo "owner" con la identificación del usuario actual y el valor de "isShared"
@@ -131,7 +132,7 @@ export default function HomeScreen() {
   const handleSubmit2 = () => {
     // Add code to handle the submission of the new item here
     console.log(newItemName, selectedCategory);
-    setModalVisible2(false);
+    setModalVisible2(true);
   };
 
   const handleCancel = () => {
@@ -149,7 +150,8 @@ export default function HomeScreen() {
         <Text style={styles.headerText}>Pocket {'\n'}Shopper</Text>
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
+        {/* <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}> */}
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
           <Text style={styles.buttonText}>Create List</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => setModalVisible2(true)}>
@@ -182,24 +184,25 @@ export default function HomeScreen() {
     <Text style={styles.divisionTitleArchived}>Archived Lists</Text>
   </View>
 </ScrollView>
-<FAB.Group
+<FAB.Group 
+    fabStyle={styles.fab}
     open={isSpeedDialOpen}
     icon={isSpeedDialOpen ? 'close' : 'plus'}
     actions={[
       {
         icon: 'playlist-plus',
         label: 'Create list',
-        // onPress: setModalVisible(true),
+        onPress: handleCreateList,
       },
       {
         icon: 'playlist-check',
         label: 'Join list',
-        // onPress:JoinList,
+        onPress:JoinList,
       },
       {
         icon: 'plus-box',
         label: 'Create item',
-        // onPress: setModalVisible2(true),
+        onPress: handleSubmit2,
       },
     ]}
     onStateChange={({ open }) => setIsSpeedDialOpen(open)}
@@ -340,6 +343,8 @@ const styles = StyleSheet.create({
   fontWeight: 'bold',
   fontSize: 20,
   },
+ 
+  
   scrollView: {
   flex: 1,
   backgroundColor: '#B1C0D8',
@@ -508,4 +513,8 @@ listtext: {
       padding: 20,
       marginBottom:10,
     },
+    fab: {
+      backgroundColor: '#BBC6DA',
+      // color: '#5469A3',
+    }
   });
