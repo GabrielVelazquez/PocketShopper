@@ -2,8 +2,9 @@
 //import { initializeApp } from "firebase/app";
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
-import 'firebase/compat/firestore'
+import 'firebase/compat/firestore';
 import 'firebase/compat/database';
+import 'firebase/compat/storage';
 //import { getStorage } from "firebase/storage";
 //import { getAnalytics } from "firebase/analytics";
 import { getDatabase } from 'firebase/database';

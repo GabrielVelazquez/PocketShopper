@@ -3,12 +3,16 @@ import {StyleSheet, Text, View, Image, Pressable, TextInput, TouchableOpacity, M
 import SelectDropdown from 'react-native-select-dropdown' //npm install react-native-select-dropdown
 import { LinearGradient } from "expo-linear-gradient"; //FIRESTORE
 import {firebase} from '../firebase.config'; //FIRESTORE
+//import storage from '@react-native-firebase/storage';
 //import { initializeApp } from 'firebase/app';
 const ItemSelect = ({navigation}) => {//navigation
 const ItemRef = firebase.firestore().collection('Items'); //FIRESTORE
+
 //const ItemRef = firebase.firestore().collection('Items');
 //const database = firebase.database();
 const database = firebase.database();
+
+
 
 const data = [
   //{ id: '1', name: 'Apple', category: 'Fruit', price: '1.31',image: require('../assets/apple.png') },
@@ -64,7 +68,6 @@ const modalhandleCancelCreate = () => {
  setSelectedCategory('');
   setNewPriceName('');
 };
-
 
 //BORRAR LUEGO#####################################################
 //const [count, setCount] = useState(0);
@@ -157,6 +160,8 @@ const modalhandleCancelCreate = () => {
     const itemsRef = database.ref('Items'); // Use a specific location in the database
   itemsRef.push(newItem);
     setItems([...items, newItem]);
+    //database.ref(`Items/${selectedCategory}`).set(newItem);//
+    
     //database.ref(`lists/${newListId}`).set(newItem);
   };
 
