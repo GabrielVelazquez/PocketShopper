@@ -53,7 +53,7 @@ const renderItem = (item) => {
     //setCount(count + 1);//se le suma 1 al count al presionar--------------
   };
       return (
-        <TouchableOpacity key={item.id} onPress={() => {handlePress(); console.log(item.name);}}>
+        <TouchableOpacity key={item.id} onPress={() => {handlePress(); console.log('Check off ',item.name,' of ',item.price);}}>
         <Text style={styles.itemtext}>{item.name} {'\t'} price: ${item.price}</Text> 
         {/*<Pressable style={styles.itemcounter}></Pressable>*/}
        
@@ -68,10 +68,19 @@ const renderCategory = (category) => {
     backgroundColor = '#F7A0CB';
   } else if (category === 'Dairy') {
     backgroundColor = '#F6EC95';
-  } else if (category === 'Pastry') {
+  } else if (category === 'Bakery') {
     backgroundColor = '#F4C283';
   }else if (category === 'Meat') {
     backgroundColor = '#D25241';
+  }
+  else if (category === 'Fish') {
+    backgroundColor = '#7CABC5';
+  }
+  else if (category === 'Beverages') {
+    backgroundColor = '#3574C4';
+  }
+  else if (category === 'Vegetables') {
+    backgroundColor = '#80C547';
   }
   const filteredItems = items.filter((item) => { //const categoryItems = items.filter((item) => item.category === category);
       return item.category === category;});
@@ -103,7 +112,7 @@ const renderCategories = () => {
 
  <Text style={styles.PageTitle}>List Name</Text> 
 
-<Text>hola</Text>
+{/*<Text>hola</Text> */}
 <ScrollView contentContainerStyle={styles.scrollContainer}>
       {renderCategories()}
     </ScrollView>
@@ -144,6 +153,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
 category: {
+  marginTop:10,
   marginBottom: 1,
   width: 360,
 },

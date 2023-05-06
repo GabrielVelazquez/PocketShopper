@@ -12,8 +12,6 @@ const ItemRef = firebase.firestore().collection('Items'); //FIRESTORE
 //const database = firebase.database();
 const database = firebase.database();
 
-
-
 const data = [
   //{ id: '1', name: 'Apple', category: 'Fruit', price: '1.31',image: require('../assets/apple.png') },
   //{ id: '2',name: 'Banana', category: 'Fruit', price: '1.00', image: require('../assets/banana.png') },
@@ -73,10 +71,8 @@ const modalhandleCancelCreate = () => {
 //const [count, setCount] = useState(0);
 /*console.log(item.name) se remplaza con add to list con correct id */
   const renderItem = (item) => {
-
 //COUNT DE ITEM INDIVIDUAL PERO SEARCH NO FUNCIONA CON ESTO
  const handlePress = () => {//----------------
- 
   //setCount(count + 1);//se le suma 1 al count al presionar--------------
 };
     return (
@@ -88,24 +84,28 @@ const modalhandleCancelCreate = () => {
     </TouchableOpacity>
     );
   };    
-
   /*</TouchableOpacity>is {item.price}</Text> //FIRESTORE*/
-
   const renderCategory = (category) => {
-
     let backgroundColor = '#FFFFFF'; // default blanco
     // cambia el color segun data category
     if (category=== 'Fruit') {
       backgroundColor = '#F7A0CB';
     } else if (category === 'Dairy') {
       backgroundColor = '#F6EC95';
-    } else if (category === 'Pastry') {
+    } else if (category === 'Bakery') {
       backgroundColor = '#F4C283';
     }else if (category === 'Meat') {
       backgroundColor = '#D25241';
     }
-    
-
+    else if (category === 'Fish') {
+      backgroundColor = '#7CABC5';
+    }
+    else if (category === 'Beverages') {
+      backgroundColor = '#3574C4';
+    }
+    else if (category === 'Vegetables') {
+      backgroundColor = '#80C547';
+    }
     const filteredItems = items.filter((item) => { //const categoryItems = items.filter((item) => item.category === category);
         return item.category === category && item.name.toLowerCase().includes(searchText.toLowerCase());});
     return (
@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     color: '#000',
     backgroundColor: "yellow",
-    width: 75,
+    width: 130,
     height: 27,
     borderRadius: 8,
   },
