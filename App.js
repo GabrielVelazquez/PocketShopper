@@ -15,7 +15,7 @@ Ya instale firebase en el package.json pero si no les sale usen esto: npm instal
  import Hub from "./screens/Hub_test";
 import ItemSelect from "./screens/Item_select";
 import CrearLista from "./screens/CrearLista";
-import Test from "./screens/test";
+import test  from "./screens/test";
 import LocalDataTable from "./screens/Data";
 import LOGIN from "./screens/LOGIN";
 import Sign_up from "./screens/Sign_up";
@@ -58,7 +58,7 @@ export default function App() {
   <Stack.Screen 
   name="ItemSelect"
   component={ItemSelect}
- // options={{headerShown: false}}
+  //options={{headerShown: false}}
   />
 <Stack.Screen 
   name="CrearLista"
@@ -67,8 +67,8 @@ export default function App() {
   />
 
 <Stack.Screen 
-  name="Test"
-  component={Test}
+  name="test"
+  component={test}
   //options={{headerShown: false}} 
   />
 

@@ -1,9 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
-
+import HamburgerMenu  from './test';
+//import HamburgerMenu  from "./screens/test";
 import React, { useState } from 'react';
 import { View, Text, Button, TextInput, FlatList, TouchableOpacity } from 'react-native';
 
-const CrearLista = () => {
+const CrearLista = ({navigation}) => {
   const [lists, setLists] = useState([
     { id: '1', name: 'Lista 1', items: ['item 1', 'item 2', 'item 3'] },
     { id: '2', name: 'Lista 2', items: ['item 4', 'item 5', 'item 6'] },
@@ -28,6 +29,14 @@ const CrearLista = () => {
 
   return (
     <View style={{ flex: 1, padding: 16 }}>
+      
+     <View>
+      {/* OtherPage content */}
+      <HamburgerMenu navigation={navigation} />
+      {/* OtherPage content */}
+    </View>
+    
+
       <Text style={{ fontSize: 24, marginBottom: 16 }}>Mis listas de compras</Text>
       <FlatList
         data={lists}

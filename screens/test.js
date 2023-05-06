@@ -1,37 +1,79 @@
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
-import CheckBox from '@react-native-community/checkbox';
+import { Text, View, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 
-const CheckboxList = () => {
-  const [categories, setCategories] = useState([
-    { name: 'Category 1', items: [{ name: 'Item 1', checked: false }, { name: 'Item 2', checked: false }] },
-    { name: 'Category 2', items: [{ name: 'Item 3', checked: false }, { name: 'Item 4', checked: false }] },
-  ]);
+const HamburgerMenu  = ({ navigation }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuWidth = useState(new Animated.Value(0))[0];
 
-  const handleCheck = (categoryIndex, itemIndex) => {
-    const updatedCategories = [...categories];
-    updatedCategories[categoryIndex].items[itemIndex].checked = !updatedCategories[categoryIndex].items[itemIndex].checked;
-    setCategories(updatedCategories);
+  const toggleMenu = () => {
+    if (isMenuOpen) {
+      Animated.timing(menuWidth, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: false,
+      }).start();
+    } else {
+      Animated.timing(menuWidth, {
+        toValue: 300, // Adjust the width as needed
+        duration: 200,
+        useNativeDriver: false,
+      }).start();
+    }
+    setIsMenuOpen(!isMenuOpen);
   };
 
   return (
-    <View>
-      {categories.map((category, categoryIndex) => (
-        <View key={categoryIndex}>
-          <Text>{category.name}</Text>
-          {category.items.map((item, itemIndex) => (
-            <View key={itemIndex}>
-              <CheckBox
-                value={item.checked}
-                onValueChange={() => handleCheck(categoryIndex, itemIndex)}
-              />
-              <Text>{item.name}</Text>
-            </View>
-          ))}
-        </View>
-      ))}
+    <View style={styles.container}>
+      <TouchableOpacity onPress={toggleMenu}>
+        {/* Hamburger button */}
+        <View style={styles.hamburger} />
+        <View style={styles.hamburger} />
+        <View style={styles.hamburger} />
+      </TouchableOpacity>
+      {/* Menu */}
+      <Animated.View style={[styles.menu, { width: menuWidth }]}>
+        <Text style={styles.menuText}>Menu Item 1</Text>
+        <Text style={styles.menuText}>Menu Item 2</Text>
+        <Text style={styles.menuText}>Menu Item 3</Text>
+        {/* Menu content */}
+        {/* Place your menu items here */}
+      </Animated.View>
     </View>
   );
 };
 
-export default CheckboxList;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor:'white',
+  },
+  hamburger: {
+    width: 30,
+    height: 3,
+    backgroundColor: 'black',
+    marginVertical: 3,
+    right: 165,
+    bottom: 350,
+  },
+  menu: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    //width:60,
+    backgroundColor: '#5469A3',
+    zIndex: 1,
+    borderRightWidth: 1,
+    borderColor: 'gray',
+    overflow: 'hidden',
+  },
+  menuText: {
+    color: 'white',
+    fontSize: 18,
+    padding: 10,
+  },
+});
+
+export default HamburgerMenu ;

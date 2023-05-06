@@ -3,6 +3,7 @@ import {StyleSheet, Text, View, Image, Pressable, TextInput, TouchableOpacity, M
 import SelectDropdown from 'react-native-select-dropdown' //npm install react-native-select-dropdown
 import { LinearGradient } from "expo-linear-gradient"; //FIRESTORE
 import {firebase} from '../firebase.config'; //FIRESTORE
+import HamburgerMenu from './test';
 //import storage from '@react-native-firebase/storage';
 //import { initializeApp } from 'firebase/app';
 const ItemSelect = ({navigation}) => {//navigation
@@ -183,6 +184,8 @@ const modalhandleCancelCreate = () => {
   //render stuff?
   return (
 //Background and Search Bar--------------------------------
+
+
     <View style={styles.container}>
       <LinearGradient style={styles.gradientBackdrop}
         locations={[0.45, 0.9, 1]}
@@ -193,12 +196,19 @@ const modalhandleCancelCreate = () => {
         ]} />
         {/* Header Title */}
         <Text style={styles.title}>Add items to list</Text>
+          {/* OtherPage content */}
+      <HamburgerMenu navigation={navigation} />
+      {/* OtherPage content */}
         <Text style={styles.searchtext}>Search Item</Text>
         {/* Search Bar */}
         <View style={styles.searchContainer}>
           <TextInput style={styles.searchInput} placeholderTextColor="#000" placeholder="Search" value={searchText}
   onChangeText={setSearchText} />
         </View>
+
+        <View>
+    
+    </View>
         
 {/*muestra data, images, cat, etc.*/}
     <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -301,7 +311,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#5A71AF',
     padding: 20,
-    paddingTop:70,
+    paddingTop:125,
+    
   },
   gradientBackdrop: {
     top: 0,
@@ -312,7 +323,7 @@ const styles = StyleSheet.create({
     width: 400,
     backgroundColor: "transparent",
     position: "absolute",
-    height: 800,
+    height: 850,
   },
   title: {
     fontSize: 24,

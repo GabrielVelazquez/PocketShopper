@@ -23,7 +23,7 @@ export default function Hub({navigation}) {
 
         <Button 
         title="Navigate to CrearLista 'Styled' for testing only "
-        onPress={()=> navigation.navigate("Test")} //parametro para pasar data
+        onPress={()=> navigation.navigate("test")} //parametro para pasar data
          />
 
         <Button 
