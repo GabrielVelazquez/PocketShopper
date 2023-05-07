@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, Animated, Pressable } from 'react-native';
+import {firebase} from '../firebase.config'; //FIRESTORE
 
 const HamburgerMenu  = ({ navigation }) => {
+  const sessionData = {
+    usuario: "email",
+  };
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuWidth = useState(new Animated.Value(0))[0];
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const toggleMenu = () => {
     if (isMenuOpen) {
@@ -54,7 +60,14 @@ const HamburgerMenu  = ({ navigation }) => {
       <Text style={styles.menuText}>Shoppers</Text>
       </Pressable>
 
-      <Pressable onPress={() => {console.log('LogOut');}}>
+      <Pressable onPress={() => {
+    firebase.auth().signOut(email, password)
+      .then(() => {
+        // Login successful, navigate to the home screen
+        navigation.navigate('LOGIN');
+        setPassword ("");
+      })
+  }}>
         <Text style={styles.menuText}>Logout</Text>
         </Pressable>
         </View>

@@ -70,9 +70,6 @@ export default function HomeScreen() {
   };
   
   
-
-
-
     //Este es el que funciona en el servidor
     const handleCreateList = () => {
       setModalVisible (true);
@@ -288,16 +285,19 @@ export default function HomeScreen() {
       <Text style={styles.modalText}>
         Are you sure you want to delete the list "{selectedList?.name}"?
       </Text>
-      <View style={styles.modalButtonContainer}>
+      <View style={styles.modalbuttonContainerdelete}>
+
+      <TouchableOpacity style={styles.modalButtonCancel2} onPress={handleDelete}>
+          <Text style={styles.buttonTextModal}>Delete</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity
-          style={styles.modalButton}
+          style={styles.modalButtonCreate}
           onPress={() => setSelectedList(null)}
         >
-          <Text style={styles.buttonText}>Cancel</Text>
+          <Text style={styles.buttonTextModal}>Cancel</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.modalButton} onPress={handleDelete}>
-          <Text style={styles.buttonText}>Delete</Text>
-        </TouchableOpacity>
+  
       </View>
     </View>
   </View>
@@ -321,23 +321,24 @@ export default function HomeScreen() {
           onChangeText={(text) => setNewListName(text)}
         />
         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
-          <Switch
+          <Switch trackColor={{/*false: '#FF784C'*/ true: '#1FF9FA'}}
+        //thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+        ios_backgroundColor="#FF784C"
             value={isShared}
             onValueChange={(value) => setIsShared(value)}
             
           />
-          <Text style={{ marginLeft: 10 }}>Shared List</Text>
+          <Text style={{ marginLeft:10,color:'#fff', fontSize:25 }}>Shared List</Text>
         </View>
       </View>
         </View>
-        
 
         <View style={styles.modalbuttonContainer}>
         <TouchableOpacity style={styles.modalButtonCancel} onPress={handleCancel}>
-              <Text style={styles.buttonText}>Cancel</Text>
+              <Text style={styles.buttonTextModal}>Cancel</Text>
             </TouchableOpacity>
         <TouchableOpacity style={styles.modalButtonCreate} onPress={handleCreateList}>
-              <Text style={styles.buttonText}>Create</Text>
+              <Text style={styles.buttonTextModal}>Create</Text>
             </TouchableOpacity>
             </View>
       </Modal>
@@ -436,6 +437,12 @@ const styles = StyleSheet.create({
   fontWeight: 'bold',
   fontSize: 20,
   },
+
+  buttonTextModal: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 20,
+    },
  
   
   scrollView: {
@@ -548,6 +555,14 @@ listtext: {
      right:10,
      marginBottom:50,
   },
+  modalText: {
+    fontSize: 20, 
+    color: '#fff', 
+    //bottom: 55, 
+   // right: 45 
+   width:250,
+   textAlign:'center',
+  },
   modalTextInput: {
   width: '100%',
   borderColor: 'gray',
@@ -601,14 +616,32 @@ listtext: {
       justifyContent: 'space-between',
       alignItems: 'center',
       position: 'absolute',
-      bottom: 0,
+      bottom: 120,
       left: 0,
       right: 0,
       padding: 20,
       marginBottom:10,
     },
     fab: {
-      backgroundColor: '#BBC6DA',
-      // color: '#5469A3',
-    }
+      backgroundColor: '#FEFEFE',
+       //color: '#5469A3',
+    },
+    modalbuttonContainerdelete: {
+      flexDirection: 'column',
+      //justifyContent: 'space-between',
+      alignItems: 'center',
+      position: 'absolute',
+      bottom: 65,
+      left: 0,
+      right: 0,
+      padding: 10,
+      marginBottom:0,
+    },
+    modalButtonCancel2:{
+      backgroundColor: '#FF784C',
+      marginBottom:30,
+      borderRadius: 2,
+      paddingVertical: 15,
+      paddingHorizontal: 50,
+    },
   });

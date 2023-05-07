@@ -14,12 +14,12 @@ import {
 const LOGIN = ({navigation}) => {
   const sessionData = {
     usuario: "email",
-    
   };
 
 //export default function LOGIN() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // State for error message
   return (
     <View style={styles.container}>
        <LinearGradient style={styles.gradientBackdrop}
@@ -41,6 +41,7 @@ const LOGIN = ({navigation}) => {
           placeholderTextColor="#000"
           textAlign="center"
           onChangeText={(email) => setEmail(email)}
+          value={email}
         /> 
       </View> 
 
@@ -52,8 +53,11 @@ const LOGIN = ({navigation}) => {
           textAlign="center"
           secureTextEntry={true}
           onChangeText={(password) => setPassword(password)}
+          value={password}
         /> 
       </View> 
+
+      {errorMessage !== "" && <Text style={styles.errorText}>Email or Password is incorrect</Text>}
       <TouchableOpacity
   style={styles.loginBtn}
   onPress={() => {
@@ -61,10 +65,13 @@ const LOGIN = ({navigation}) => {
       .then(() => {
         // Login successful, navigate to the home screen
         navigation.navigate('HomeScreen');
+        setEmail("");
+        setPassword("");
       })
       .catch((error) => {
         // Handle login error
         console.log(error);
+        setErrorMessage(error.message);
       });
   }}>
   <Text style={styles.loginText}>LOGIN</Text>
@@ -158,7 +165,27 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     backgroundColor: "transparent",
     position: "absolute",
-   
+  },
+  gradientBackdrop: {
+    top: 0,
+    left: 0,
+    width: "100%",
+    backgroundColor: "transparent",
+    position: "absolute",
+    height: "100%",
+    borderStyle: "solid",
+    borderColor: "#000",
+    borderWidth: 1,
+    backgroundColor: "transparent",
+    position: "absolute",
+  },
+  errorText: {
+    backgroundColor:'#D01B1B',
+    color: '#fff',
+    fontSize:20,
+    height:30,
+    width: 280,
+    textAlign:'center',
   },
 });
 
