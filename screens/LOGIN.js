@@ -12,6 +12,11 @@ import {
   TouchableOpacity,
 } from "react-native";
 const LOGIN = ({navigation}) => {
+  const sessionData = {
+    usuario: "email",
+    
+  };
+
 //export default function LOGIN() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

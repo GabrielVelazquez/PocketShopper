@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Image, SafeAreaView, ScrollView,  FlatList, TouchableOpacity, Modal, TextInput, Switch, Button } from 'react-native';
+import { StyleSheet, View, Text, Image, SafeAreaView, ScrollView,  FlatList, TouchableOpacity, Modal, TextInput, Switch, Button, BackHandler } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {firebase} from '../firebase.config';
 import { FAB } from 'react-native-paper';
@@ -19,12 +19,27 @@ export default function HomeScreen() {
   const [sharedLists, setSharedLists] = useState([]);
   const categories = ['Fruits', 'Vegetables', 'Meat', 'Dairy'];
   const [isSpeedDialOpen, setIsSpeedDialOpen] = useState(false);
+  const [archivedLists, setArchivedLists] = useState([]);
+  const [selectedList, setSelectedList] = useState(null);
+
+
+
   // const [inviteCode, setInviteCode] = useState('');
 
   const toggleSpeedDial = () => {
     setIsSpeedDialOpen(!isSpeedDialOpen);
   };
-  
+  const handleDelete = () => {
+    const updatedLists = lists.filter((list) => list.id !== selectedList.id);
+    const archivedList = { ...selectedList, archivedAt: new Date() };
+    setLists(updatedLists);
+    setArchivedLists([...archivedLists, archivedList]);
+
+    // Elimina la lista de Firebase
+    database.ref(`lists/${selectedList.id}`).remove();
+
+    setSelectedList(null);
+  };
 
   const renderListItem = ({ item, isShared }) => {
     if (!isShared && item.owner !== firebase.auth().currentUser.uid) {
@@ -33,21 +48,37 @@ export default function HomeScreen() {
     if (isShared && item.owner === firebase.auth().currentUser.uid) {
       return null;
     }
+  
+    const handleLongPress = (list) => {
+      setSelectedList(list);
+    };
+  
     return (
-      <TouchableOpacity onPress={() => {navigation.navigate('ListModified'); console.log('Navigate to list:', item.id)}}>
-        <View style={styles.listbox}>  
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('ListModified');
+          console.log('Navigate to list:', item.id);
+        }}
+        onLongPress={() => handleLongPress(item)} // Agrega el evento de presionar prolongadamente
+      >
+        <View style={styles.listbox}>
           <Text style={styles.listtext}>{item.name}</Text>
           <Text style={styles.listtextammount}>{item.items?.length}/#</Text>
         </View>
       </TouchableOpacity>
     );
   };
+  
+  
+
+
+
     //Este es el que funciona en el servidor
     const handleCreateList = () => {
       setModalVisible (true);
       if (newListName !== '') {
         const newListId = Math.random().toString().replace(/\D/g, ''); // Elimina los caracteres no numéricos del ID
-        const newList = { id: newListId, name: newListName, items: [], owner: firebase.auth().currentUser.uid, isShared, inviteCode: null}; // Agrega el campo "owner" con la identificación del usuario actual y el valor de "isShared"
+        const newList = { id: newListId, name: newListName, items: [], owner: firebase.auth().currentUser.uid, isShared, inviteCode: null, archivedBy: null}; // Agrega el campo "owner" con la identificación del usuario actual y el valor de "isShared"
         setLists([...lists, newList]);
         setNewListName('');
         setModalVisible(false);
@@ -128,6 +159,32 @@ export default function HomeScreen() {
         }
       });
     }, []);
+
+
+    useEffect(() => {
+      const removeArchivedLists = () => {
+        const currentDate = new Date();
+        const updatedArchivedLists = archivedLists.filter(
+          (list) =>
+            (currentDate - list.archivedAt) / (1000 * 60 * 60 * 24) < 30 && // Elimina las listas archivadas después de 30 días
+            list.archivedBy === firebase.auth().currentUser.uid // Filtra las listas archivadas por el usuario actual
+        );
+        setArchivedLists(updatedArchivedLists);
+      };
+    
+      const interval = setInterval(removeArchivedLists, 24 * 60 * 60 * 1000); // Verifica el archivado cada 24 horas
+    
+      return () => clearInterval(interval);
+    }, [archivedLists]);
+    
+    
+      const handleModalClose = () => {
+        setSelectedList(null);
+      };
+    
+     
+    
+    
     
  
   const handleSubmit2 = () => {
@@ -152,8 +209,7 @@ export default function HomeScreen() {
         <Text style={styles.headerText}>Pocket {'\n'}Shopper</Text>
       </View>
       <View style={styles.buttonContainer}>
-        {/* <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}> */}
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
+        <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
           <Text style={styles.buttonText}>Create List</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => setModalVisible2(true)}>
@@ -170,6 +226,7 @@ export default function HomeScreen() {
     renderItem={renderListItem}
     keyExtractor={(item) => item.id}
     style={{ flex: 1 }}
+    
   />
 
   <View style={styles.divisionPersonal}>
@@ -182,9 +239,17 @@ export default function HomeScreen() {
     style={{ flex: 1 }}
   />
 
-  <View style={styles.divisionArchived}>
-    <Text style={styles.divisionTitleArchived}>Archived Lists</Text>
-  </View>
+<View style={styles.divisionArchived}>
+  <Text style={styles.divisionTitleArchived}>Archived Lists</Text>
+</View>
+<FlatList
+  data={archivedLists}
+  renderItem={renderListItem}
+  keyExtractor={(item) => item.id}
+  style={{ flex: 1 }}
+  borderRadius={10}
+/>
+
 </ScrollView>
 <FAB.Group 
     fabStyle={styles.fab}
@@ -199,6 +264,7 @@ export default function HomeScreen() {
       {
         icon: 'playlist-check',
         label: 'Join list',
+        overlayColor: '#fff',
         onPress:JoinList,
       },
       {
@@ -210,6 +276,33 @@ export default function HomeScreen() {
     onStateChange={({ open }) => setIsSpeedDialOpen(open)}
     onPress={() => setIsSpeedDialOpen(!isSpeedDialOpen)}
   />
+  <Modal
+  animationType="fade"
+  transparent={true}
+  visible={selectedList !== null}
+  onRequestClose={() => setSelectedList(null)}
+>
+  <View style={styles.modalContainer}>
+    <View style={styles.modal}>
+      <Text style={styles.modalTitle}>Confirm Delete</Text>
+      <Text style={styles.modalText}>
+        Are you sure you want to delete the list "{selectedList?.name}"?
+      </Text>
+      <View style={styles.modalButtonContainer}>
+        <TouchableOpacity
+          style={styles.modalButton}
+          onPress={() => setSelectedList(null)}
+        >
+          <Text style={styles.buttonText}>Cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.modalButton} onPress={handleDelete}>
+          <Text style={styles.buttonText}>Delete</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  </View>
+</Modal>
+
      
       <Modal
         animationType="fade"
@@ -335,7 +428,7 @@ const styles = StyleSheet.create({
   button: {
   paddingVertical: 15,
   paddingHorizontal: 30,
-  borderRadius: 1,
+  borderRadius: 10,
   backgroundColor: '#FEFEFE',
   },
   buttonText: {
@@ -351,42 +444,42 @@ const styles = StyleSheet.create({
   paddingHorizontal: 10,
   },
   divisionShared: {
-  right:5,
+  // right:5,
   fontSize: 24,
   fontWeight: 'bold',
   color: '#868892',
   backgroundColor: "#FEFEFE",
-  width: '102%',
+  width: '100%',
   height: 40,
   paddingHorizontal: 10,
   paddingVertical: 5,
-  borderRadius: 1, //5
+  borderRadius: 10, //5
   },
   divisionPersonal: {
-  right:5,
+  // right:5,
   fontSize: 24,
   fontWeight: 'bold',
   color: '#868892',
   backgroundColor: "#FEFEFE",
-  width: '102%',
+  width: '100%',
   height: 40,
   marginTop: 20,
   paddingHorizontal: 10,
   paddingVertical: 5,
-  borderRadius: 1,//5
+  borderRadius: 10,
   },
   divisionArchived: {
-  right:5,
+  // right:5,
   fontSize: 24,
   fontWeight: 'bold',
   color: '#868892',
   backgroundColor: "#FF784C",
-  width: '102%',
+  width: '100%',
   height: 40,
   marginTop: 20,
   paddingHorizontal: 10,
   paddingVertical: 5,
-  borderRadius: 1, //5
+  borderRadius: 10, 
   },
   divisionTitle: {
   fontSize: 23,
@@ -419,8 +512,9 @@ const styles = StyleSheet.create({
 listbox: {
     backgroundColor: '#636C84',
     marginTop: 10,
-    width: '102%',
+    width: '100%',
     height:65,
+    borderRadius: 10,
     },
 listtext: {
   left:5,

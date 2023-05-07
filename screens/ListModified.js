@@ -8,6 +8,7 @@ import { Button } from "react-native-paper";
 import HamburgerMenu from './test';
 /////////////////////////////////////////
 const ListModified = () => {
+
   const navigation = useNavigation();
   const ListDetails = ({ route }) => {
     const { list } = route.params;
