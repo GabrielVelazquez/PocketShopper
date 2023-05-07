@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, Animated, Pressable } from 'react-native';
 
 const HamburgerMenu  = ({ navigation }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -22,6 +22,8 @@ const HamburgerMenu  = ({ navigation }) => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={toggleMenu}>
@@ -32,11 +34,30 @@ const HamburgerMenu  = ({ navigation }) => {
       </TouchableOpacity>
       {/* Menu */}
       <Animated.View style={[styles.menu, { width: menuWidth }]}>
-        <Text style={styles.menuText}>Menu Item 1</Text>
-        <Text style={styles.menuText}>Menu Item 2</Text>
-        <Text style={styles.menuText}>Menu Item 3</Text>
-        {/* Menu content */}
-        {/* Place your menu items here */}
+     
+
+      <TouchableOpacity onPress={toggleMenu}>
+        {/* Hamburger button */}
+        <View style={styles.hamburger} />
+        <View style={styles.hamburger} />
+        <View style={styles.hamburger} />
+      </TouchableOpacity>
+    
+      {/* Menu */}
+        
+        <View style={styles.burgerbuttunscontainer}>
+        <Pressable onPress={() => {console.log('edit');}}>
+        <Text style={styles.menuText}>Edit Profile</Text>
+        </Pressable>
+   
+        <Pressable onPress={() => {console.log('shoppers');}}>
+      <Text style={styles.menuText}>Shoppers</Text>
+      </Pressable>
+
+      <Pressable onPress={() => {console.log('LogOut');}}>
+        <Text style={styles.menuText}>Logout</Text>
+        </Pressable>
+        </View>
       </Animated.View>
     </View>
   );
@@ -44,36 +65,49 @@ const HamburgerMenu  = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor:'white',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 1,
+    height:800,
+  },
+  hamburgerContainer: {
+    padding: 10,
   },
   hamburger: {
     width: 30,
     height: 3,
-    backgroundColor: 'black',
+    backgroundColor: 'white',
     marginVertical: 3,
-    right: 165,
-    bottom: 350,
+    left: 15,
+    top:15,
   },
   menu: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
+    height:800,
     //width:60,
     backgroundColor: '#5469A3',
     zIndex: 1,
     borderRightWidth: 1,
-    borderColor: 'gray',
+    borderColor:'#4A5D92',
     overflow: 'hidden',
   },
   menuText: {
+   //top: 100,
+   marginBottom:30,
     color: 'white',
     fontSize: 18,
-    padding: 10,
+    fontWeight:'bold',
+    padding: 15,
+    backgroundColor:'#636C84',
+    width:250,
+    height:55,
+    //verticalAlign:'center',
   },
+burgerbuttunscontainer: {
+    top: 100,
+     //verticalAlign:'center',
+   },
 });
 
 export default HamburgerMenu ;

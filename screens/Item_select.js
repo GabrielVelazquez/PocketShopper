@@ -3,7 +3,6 @@ import {StyleSheet, Text, View, Image, Pressable, TextInput, TouchableOpacity, M
 import SelectDropdown from 'react-native-select-dropdown' //npm install react-native-select-dropdown
 import { LinearGradient } from "expo-linear-gradient"; //FIRESTORE
 import {firebase} from '../firebase.config'; //FIRESTORE
-import HamburgerMenu from './test';
 //import storage from '@react-native-firebase/storage';
 //import { initializeApp } from 'firebase/app';
 const ItemSelect = ({navigation}) => {//navigation
@@ -196,9 +195,7 @@ const modalhandleCancelCreate = () => {
         ]} />
         {/* Header Title */}
         <Text style={styles.title}>Add items to list</Text>
-          {/* OtherPage content */}
-      <HamburgerMenu navigation={navigation} />
-      {/* OtherPage content */}
+
         <Text style={styles.searchtext}>Search Item</Text>
         {/* Search Bar */}
         <View style={styles.searchContainer}>

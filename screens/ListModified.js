@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Border, Color, FontFamily, FontSize, Image } from "../GlobalStyles";
 import {firebase} from '../firebase.config'; //FIRESTORE
 import { Button } from "react-native-paper";
+import HamburgerMenu from './test';
 /////////////////////////////////////////
 const ListModified = () => {
   const navigation = useNavigation();
@@ -108,6 +109,7 @@ const renderCategories = () => {
 
   return (
     <View style={styles.containerfront}>
+      <HamburgerMenu navigation={navigation} />
   <View style={styles.containerback}/>
 
  <Text style={styles.PageTitle}>List Name</Text> 

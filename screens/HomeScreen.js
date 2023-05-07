@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Image, SafeAreaView, ScrollView,  FlatList, Tou
 import { useNavigation } from '@react-navigation/native';
 import {firebase} from '../firebase.config';
 import { FAB } from 'react-native-paper';
+import HamburgerMenu from './test';
 
 const database = firebase.database();
 export default function HomeScreen() {
@@ -142,6 +143,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <HamburgerMenu navigation={navigation} />
       <View style={styles.header}>
         <Image
           style={styles.logo}
@@ -208,8 +210,6 @@ export default function HomeScreen() {
     onStateChange={({ open }) => setIsSpeedDialOpen(open)}
     onPress={() => setIsSpeedDialOpen(!isSpeedDialOpen)}
   />
-
-
      
       <Modal
         animationType="fade"
