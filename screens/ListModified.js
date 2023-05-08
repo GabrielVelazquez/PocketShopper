@@ -6,6 +6,8 @@ import { Border, Color, FontFamily, FontSize, Image } from "../GlobalStyles";
 import {firebase} from '../firebase.config'; //FIRESTORE
 import { Button } from "react-native-paper";
 import HamburgerMenu from './test';
+import CreateItemModal from "./CreateItemModal";
+import { FAB } from 'react-native-paper';
 import { useRoute } from '@react-navigation/native';
 /////////////////////////////////////////
 const firestore = firebase.firestore();
@@ -14,8 +16,8 @@ const ListModified = () => {
   const { listId, lists } = route.params;;
   
   const navigation = useNavigation();
- 
   const [listData, setListData] = useState(null);
+  const [isSpeedDialOpen, setIsSpeedDialOpen] = useState(false);
 
   useEffect(() => {
     const getListData = async () => {
@@ -134,8 +136,9 @@ const renderCategories = () => {
   return (
     <View style={styles.containerfront}>
       <HamburgerMenu navigation={navigation} />
+      
   <View style={styles.containerback}/>
-
+  <CreateItemModal navigation={navigation} />
   {/* <Text style={styles.PageTitle}>{ListDetails}</Text> */}
   <Text>List Name: {listData?.name}</Text>
  
@@ -144,7 +147,16 @@ const renderCategories = () => {
 <ScrollView contentContainerStyle={styles.scrollContainer}>
       {renderCategories()}
     </ScrollView>
+
+    <View style={styles.floatingcontainer}>
+      <TouchableOpacity style={styles.floatingButton} onPress={()=> navigation.navigate("ItemSelect")}>
+  <Text style={styles.floatingbuttonText}>+</Text>
+</TouchableOpacity>
+
+    </View>
+
      </View>
+
   );
 };
 
@@ -154,15 +166,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#5469A3', 
     alignItems: 'center',
     justifyContent: 'center',
-    height:150,
+    height:120,
   },
   containerfront: {
     //flex: 1,
-    top: 0,
-    left: 0,
+    //top: 0,
+    //left: 0,
     backgroundColor: Color.lightsteelblue_200,
     width: 390,
-    height: 850,
+    height: 755,
     position: "absolute",
   },
   PageTitle: {
@@ -212,6 +224,37 @@ itemtext:{
   marginBottom:10,
   textAlign: "left",
   left:10,
+},
+fab: {
+  backgroundColor: '#FEFEFE',
+   //color: '#5469A3',
+},
+
+floatingcontainer: {
+  flex: 1,
+  // Other container styles
+},
+floatingButton: {
+  position: 'absolute',
+  width: 56,
+  height: 56,
+  borderRadius: 28,
+  backgroundColor: '#5469A3',
+  alignItems: 'center',
+  justifyContent: 'center',
+  right: 30,
+  bottom: 25,
+  elevation: 5, // For Android shadow
+  shadowColor: '#000', // For iOS shadow
+  shadowOpacity: 0.3, // For iOS shadow
+  shadowOffset: {
+    width: 0,
+    height: 2,
+  }, // For iOS shadow
+},
+floatingbuttonText: {
+  fontSize: 24,
+  color: '#FFFFFF',
 },
  
 });

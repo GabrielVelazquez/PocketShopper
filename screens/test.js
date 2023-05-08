@@ -6,6 +6,7 @@ const HamburgerMenu = ({ navigation }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuWidth = useState(new Animated.Value(0))[0];
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   const toggleMenu = () => {
@@ -36,8 +37,10 @@ const HamburgerMenu = ({ navigation }) => {
           if (doc.exists) {
             const userData = doc.data();
             setUsername(userData.username);
+            setEmail(userData.email);
           } else {
             setUsername("");
+            setEmail("");
           }
           setIsLoading(false);
         })
@@ -48,6 +51,7 @@ const HamburgerMenu = ({ navigation }) => {
         });
     } else {
       setUsername("");
+      setEmail("");
       setIsLoading(false);
     }
   }, []);
@@ -62,12 +66,20 @@ const HamburgerMenu = ({ navigation }) => {
       </TouchableOpacity>
       {/* Menu */}
       <Animated.View style={[styles.menu, { width: menuWidth }]}>
+      <TouchableOpacity onPress={toggleMenu}>
+        {/* Hamburger button */}
+        <View style={styles.hamburger} />
+        <View style={styles.hamburger} />
+        <View style={styles.hamburger} />
+      </TouchableOpacity>
         <View style={styles.burgerbuttunscontainer}>
-          {isLoading ? (
-            <Text>Loading...</Text>
-          ) : (
-            <>
-              <Text style={styles.menuText}>{username}</Text>
+         {isLoading ? (
+  <Text>Loading...</Text>
+) : (
+  <>
+   <Text style={{fontSize:25,width:250,height:55,marginBottom:10,
+  color: 'white',fontWeight:'bold',padding: 15, bottom:30}}>username{email}</Text>
+
               <Pressable onPress={() => { console.log('edit'); }}>
                 <Text style={styles.menuText}>Edit Profile</Text>
               </Pressable>

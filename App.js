@@ -41,11 +41,13 @@ export default function App() {
 <Stack.Navigator>
 
 {/*}
+{
  <Stack.Screen
     name="HUB"
     component={Hub}
     //options={{headerShown: false}}
   /> 
+}
 */}
 
 

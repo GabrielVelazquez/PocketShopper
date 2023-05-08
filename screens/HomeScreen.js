@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import {firebase} from '../firebase.config';
 import { FAB } from 'react-native-paper';
 import HamburgerMenu from './test';
+import CreateItemModal from "./CreateItemModal";
 
 
 const firestore = firebase.firestore();
@@ -211,6 +212,7 @@ export default function HomeScreen() {
   const handleSubmit2 = () => {
     // Add code to handle the submission of the new item here
     console.log(newItemName, selectedCategory);
+    //<CreateItemModal navigation={navigation} />
     setModalVisible2(true);
   };
 
@@ -233,9 +235,13 @@ export default function HomeScreen() {
         <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
           <Text style={styles.buttonText}>Create List</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => setModalVisible2(true)}>
+
+        {/*<TouchableOpacity style={styles.button} onPress={() => setModalVisible2(true)}>
           <Text style={styles.buttonText}>Create Item</Text>
         </TouchableOpacity>
+  */}
+
+        <CreateItemModal navigation={navigation} />
       </View>
 
       <ScrollView style={styles.scrollView}>
@@ -270,8 +276,8 @@ export default function HomeScreen() {
   style={{ flex: 1 }}
   borderRadius={10}
 />
-
 </ScrollView>
+
 <FAB.Group 
     fabStyle={styles.fab}
     open={isSpeedDialOpen}
@@ -297,6 +303,7 @@ export default function HomeScreen() {
     onStateChange={({ open }) => setIsSpeedDialOpen(open)}
     onPress={() => setIsSpeedDialOpen(!isSpeedDialOpen)}
   />
+
   <Modal
   animationType="fade"
   transparent={true}
@@ -347,7 +354,7 @@ export default function HomeScreen() {
         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
           <Switch trackColor={{/*false: '#FF784C'*/ true: '#1FF9FA'}}
         //thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
-        ios_backgroundColor="#FF784C"
+        //ios_backgroundColor="#FF784C"
             value={isShared}
             onValueChange={(value) => setIsShared(value)}
             

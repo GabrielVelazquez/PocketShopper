@@ -89,6 +89,11 @@ const handleSaveNewItem = () => {
     });
 };
 
+const navigateToList = (listId) => {
+  navigation.navigate('ListModified', { listId: listId, lists: lists });
+  console.log('Navigate to list:', listId);
+};
+
 
 //BORRAR LUEGO#####################################################
 //const [count, setCount] = useState(0);
@@ -244,7 +249,7 @@ const handleSaveNewItem = () => {
         </TouchableOpacity>
 
         {/* Button 2 terminar */}
-        <TouchableOpacity style={styles.buttondone} onPress={()=> navigation.navigate("HomeScreen")}>{/*DONE */}
+        <TouchableOpacity style={styles.buttondone} onPress={()=> navigation.navigate("HomeScreen")}>{/*onPress={() => navigateToList(item.id)}>*/}
           <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Done</Text>
         </TouchableOpacity>
       </View>
