@@ -1,5 +1,5 @@
 import * as React from "react";
-import {useState } from 'react';
+import {useState, useEffect } from 'react';
 import { Pressable, StyleSheet, View, Text, /*Image,*/ TouchableOpacity,ScrollView , FlatList} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Border, Color, FontFamily, FontSize, Image } from "../GlobalStyles";
@@ -8,23 +8,41 @@ import { Button } from "react-native-paper";
 import HamburgerMenu from './test';
 import { useRoute } from '@react-navigation/native';
 /////////////////////////////////////////
-const database = firebase.database();
+const firestore = firebase.firestore();
 const ListModified = () => {
   const route = useRoute();
-  const { listId, lists } = route.params;
+  const { listId, lists } = route.params;;
   
   const navigation = useNavigation();
  
-  const ListDetails = ({ route }) => {
-    
-    return (
-      <View>
-        <Text>List name: {lists?.name}</Text>
-        <Text>List owner: {lists?.owner}</Text>
-        <Text>Invite code: {lists?.inviteCode}</Text>
-        <Button title="Send invite" onPress={() => sendInvite(lists)} />
-      </View>
-    );
+  const [listData, setListData] = useState(null);
+
+  useEffect(() => {
+    const getListData = async () => {
+      const listRef = firebase.firestore().collection('Lists').doc(listId);
+      const listDoc = await listRef.get();
+
+      if (listDoc.exists) {
+        setListData(listDoc.data());
+      }
+    };
+
+    getListData();
+  }, [listId]);
+
+  const ListDetails = () => {
+    if (listData) {
+      return (
+        <View>
+          <Text>List name: {listData.name}</Text>
+          <Text>List owner: {listData.owner}</Text>
+          <Text>Invite code: {listData.inviteCode}</Text>
+          <Button title="Send invite" onPress={() => sendInvite(listData)} />
+        </View>
+      );
+    } else {
+      return null;
+    }
   };
 /////////////////////////////////////////////
   const ItemRef = firebase.firestore().collection('Items'); //FIRESTORE
@@ -118,15 +136,14 @@ const renderCategories = () => {
       <HamburgerMenu navigation={navigation} />
   <View style={styles.containerback}/>
 
-  <Text style={styles.PageTitle}>{ListDetails(route)}</Text>
+  {/* <Text style={styles.PageTitle}>{ListDetails}</Text> */}
+  <Text>List Name: {listData?.name}</Text>
+ 
+      {/* <Text>List Name: {lists.name}</Text> */}
 {/*<Text>hola</Text> */}
 <ScrollView contentContainerStyle={styles.scrollContainer}>
       {renderCategories()}
     </ScrollView>
-
-
-
-
      </View>
   );
 };

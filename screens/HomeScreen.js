@@ -5,7 +5,8 @@ import {firebase} from '../firebase.config';
 import { FAB } from 'react-native-paper';
 import HamburgerMenu from './test';
 
-const database = firebase.database();
+
+const firestore = firebase.firestore();
 export default function HomeScreen() {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
@@ -22,6 +23,8 @@ export default function HomeScreen() {
   const [archivedLists, setArchivedLists] = useState([]);
   const [selectedListId, setSelectedListId] = useState(null);
   const [selectedList, setSelectedList] = useState(null);
+  const [items, setItems] = useState([]);
+
 
 
 
@@ -36,12 +39,20 @@ export default function HomeScreen() {
     const archivedList = { ...selectedList, archivedAt: new Date() };
     setLists(updatedLists);
     setArchivedLists([...archivedLists, archivedList]);
-
-    // Elimina la lista de Firebase
-    database.ref(`lists/${selectedList.id}`).remove();
-
-    setSelectedList(null);
+  
+    // Elimina la lista de Firestore
+    firestore
+      .collection('lists')
+      .doc(selectedList.id)
+      .delete()
+      .then(() => {
+        setSelectedList(null);
+      })
+      .catch((error) => {
+        console.error('Error deleting document: ', error);
+      });
   };
+  
 
   const renderListItem = ({ item, isShared }) => {
     if (!isShared && item.owner !== firebase.auth().currentUser.uid) {
@@ -54,16 +65,17 @@ export default function HomeScreen() {
     const handleLongPress = (listId) => {
       setSelectedListId(listId);
     };
-    
+  
+    const navigateToList = (listId) => {
+      navigation.navigate('ListModified', { listId: listId, lists: lists });
+      console.log('Navigate to list:', listId);
+    };
   
     return (
       <TouchableOpacity
-    onPress={() => {
-      navigation.navigate('ListModified', { listId: item.id, lists: lists });
-      console.log('Navigate to list:', item.id);
-    }}
-    onLongPress={() => handleLongPress(item.id)} // Agrega el evento de presionar prolongadamente
-  >
+        onPress={() => navigateToList(item.id)}
+        onLongPress={() => handleLongPress(item.id)}
+      >
         <View style={styles.listbox}>
           <Text style={styles.listtext}>{item.name}</Text>
           <Text style={styles.listtextammount}>{item.items?.length}/#</Text>
@@ -73,33 +85,36 @@ export default function HomeScreen() {
   };
   
   
+  
     //Este es el que funciona en el servidor
     const handleCreateList = () => {
-      setModalVisible (true);
+      setModalVisible(true);
       if (newListName !== '') {
-        const newListId = Math.random().toString().replace(/\D/g, ''); // Elimina los caracteres no numéricos del ID
-        const newList = { id: newListId, name: newListName, items: [], owner: firebase.auth().currentUser.uid, isShared, inviteCode: null, archivedBy: null}; // Agrega el campo "owner" con la identificación del usuario actual y el valor de "isShared"
-        setLists([...lists, newList]);
-        setNewListName('');
-        setModalVisible(false);
+        const newList = {
+          name: newListName,
+          items: [], // Inicializa "items" como un array vacío
+          owner: firebase.auth().currentUser.uid,
+          isShared,
+          inviteCode: null,
+          archivedBy: null
+        };
     
-        // Agrega la nueva lista a Firebase
-        database.ref(`lists/${newListId}`).set(newList);
-        // Escucha los cambios en el campo "inviteCode" de la lista recién creada
-    database.ref(`lists/${newListId}/inviteCode`).on('value', (snapshot) => {
-      const newInviteCode = snapshot.val();
-      if (newInviteCode) {
-        const updatedLists = lists.map((list) => {
-          if (list.id === newListId) {
-            return { ...list, inviteCode: newInviteCode };
-          }
-          return list;
-        });
-        setLists(updatedLists);
-      }
-    });
+        firestore
+          .collection('lists')
+          .add(newList)
+          .then((docRef) => {
+            const newListWithId = { ...newList, id: docRef.id };
+            setLists([...lists, newListWithId]);
+            setNewListName('');
+            setModalVisible(false);
+          })
+          .catch((error) => {
+            console.error('Error adding document: ', error);
+          });
       }
     };
+    
+    
     
     const sendInvite = (list) => {
       // Genera un código de invitación único para la lista
@@ -147,18 +162,20 @@ export default function HomeScreen() {
     useEffect(() => {
       const currentUser = firebase.auth().currentUser;
     
-      database.ref('lists').on('value', (snapshot) => {
-        const firebaseLists = snapshot.val();
-        if (firebaseLists) {
-          const newLists = Object.keys(firebaseLists)
-            .map((id) => ({ id, ...firebaseLists[id] }))
-            .filter((list) => list.owner === currentUser.uid); // Filtra las listas para que solo se muestren las del usuario actual
-    
+      return firestore
+        .collection('lists')
+        .where('owner', '==', currentUser.uid)
+        .onSnapshot((querySnapshot) => {
+          const newLists = [];
+          querySnapshot.forEach((doc) => {
+            const newList = { id: doc.id, ...doc.data() };
+            newLists.push(newList);
+          });
           setPersonalLists(newLists.filter((list) => !list.isShared));
           setSharedLists(newLists.filter((list) => list.isShared));
-        }
-      });
+        });
     }, []);
+    
 
 
     useEffect(() => {
@@ -190,11 +207,6 @@ export default function HomeScreen() {
           setSelectedList(null);
         }
       }, [selectedListId, lists]);
-      
-     
-    
-    
-    
  
   const handleSubmit2 = () => {
     // Add code to handle the submission of the new item here
