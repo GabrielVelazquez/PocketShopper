@@ -1,23 +1,28 @@
 import * as React from "react";
 import {useState } from 'react';
-import { Pressable, StyleSheet, View, Text, /*Image,*/ TouchableOpacity,ScrollView } from "react-native";
+import { Pressable, StyleSheet, View, Text, /*Image,*/ TouchableOpacity,ScrollView , FlatList} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Border, Color, FontFamily, FontSize, Image } from "../GlobalStyles";
 import {firebase} from '../firebase.config'; //FIRESTORE
 import { Button } from "react-native-paper";
 import HamburgerMenu from './test';
+import { useRoute } from '@react-navigation/native';
 /////////////////////////////////////////
+const database = firebase.database();
 const ListModified = () => {
-
+  const route = useRoute();
+  const { listId, lists } = route.params;
+  
   const navigation = useNavigation();
+ 
   const ListDetails = ({ route }) => {
-    const { list } = route.params;
+    
     return (
       <View>
-        <Text>List name: {list.name}</Text>
-        <Text>List owner: {list.owner}</Text>
-        <Text>Invite code: {list.inviteCode}</Text>
-        <Button title="Send invite" onPress={() => sendInvite(list)} />
+        <Text>List name: {lists?.name}</Text>
+        <Text>List owner: {lists?.owner}</Text>
+        <Text>Invite code: {lists?.inviteCode}</Text>
+        <Button title="Send invite" onPress={() => sendInvite(lists)} />
       </View>
     );
   };
@@ -113,8 +118,7 @@ const renderCategories = () => {
       <HamburgerMenu navigation={navigation} />
   <View style={styles.containerback}/>
 
- <Text style={styles.PageTitle}>List Name</Text> 
-
+  <Text style={styles.PageTitle}>{ListDetails(route)}</Text>
 {/*<Text>hola</Text> */}
 <ScrollView contentContainerStyle={styles.scrollContainer}>
       {renderCategories()}

@@ -20,7 +20,9 @@ export default function HomeScreen() {
   const categories = ['Fruits', 'Vegetables', 'Meat', 'Dairy'];
   const [isSpeedDialOpen, setIsSpeedDialOpen] = useState(false);
   const [archivedLists, setArchivedLists] = useState([]);
+  const [selectedListId, setSelectedListId] = useState(null);
   const [selectedList, setSelectedList] = useState(null);
+
 
 
 
@@ -49,18 +51,19 @@ export default function HomeScreen() {
       return null;
     }
   
-    const handleLongPress = (list) => {
-      setSelectedList(list);
+    const handleLongPress = (listId) => {
+      setSelectedListId(listId);
     };
+    
   
     return (
       <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('ListModified');
-          console.log('Navigate to list:', item.id);
-        }}
-        onLongPress={() => handleLongPress(item)} // Agrega el evento de presionar prolongadamente
-      >
+    onPress={() => {
+      navigation.navigate('ListModified', { listId: item.id, lists: lists });
+      console.log('Navigate to list:', item.id);
+    }}
+    onLongPress={() => handleLongPress(item.id)} // Agrega el evento de presionar prolongadamente
+  >
         <View style={styles.listbox}>
           <Text style={styles.listtext}>{item.name}</Text>
           <Text style={styles.listtextammount}>{item.items?.length}/#</Text>
@@ -179,6 +182,15 @@ export default function HomeScreen() {
         setSelectedList(null);
       };
     
+      useEffect(() => {
+        if (selectedListId) {
+          const selectedList = lists.find((list) => list.id === selectedListId);
+          setSelectedList(selectedList);
+        } else {
+          setSelectedList(null);
+        }
+      }, [selectedListId, lists]);
+      
      
     
     

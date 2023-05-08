@@ -1,15 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, Animated, Pressable } from 'react-native';
-import {firebase} from '../firebase.config'; //FIRESTORE
+import { firebase } from '../firebase.config';
 
-const HamburgerMenu  = ({ navigation }) => {
-  const sessionData = {
-    usuario: "email",
-  };
+const HamburgerMenu = ({ navigation }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuWidth = useState(new Animated.Value(0))[0];
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const toggleMenu = () => {
     if (isMenuOpen) {
@@ -28,7 +25,32 @@ const HamburgerMenu  = ({ navigation }) => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  
+  useEffect(() => {
+    // Fetch the username from Firestore
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser) {
+      const userRef = firebase.firestore().collection("users").doc(currentUser.uid);
+      userRef
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            const userData = doc.data();
+            setUsername(userData.username);
+          } else {
+            setUsername("");
+          }
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error getting user document:", error);
+          setUsername("");
+          setIsLoading(false);
+        });
+    } else {
+      setUsername("");
+      setIsLoading(false);
+    }
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -40,36 +62,32 @@ const HamburgerMenu  = ({ navigation }) => {
       </TouchableOpacity>
       {/* Menu */}
       <Animated.View style={[styles.menu, { width: menuWidth }]}>
-     
-
-      <TouchableOpacity onPress={toggleMenu}>
-        {/* Hamburger button */}
-        <View style={styles.hamburger} />
-        <View style={styles.hamburger} />
-        <View style={styles.hamburger} />
-      </TouchableOpacity>
-    
-      {/* Menu */}
-        
         <View style={styles.burgerbuttunscontainer}>
-        <Pressable onPress={() => {console.log('edit');}}>
-        <Text style={styles.menuText}>Edit Profile</Text>
-        </Pressable>
-   
-        <Pressable onPress={() => {console.log('shoppers');}}>
-      <Text style={styles.menuText}>Shoppers</Text>
-      </Pressable>
-
-      <Pressable onPress={() => {
-    firebase.auth().signOut(email, password)
-      .then(() => {
-        // Login successful, navigate to the home screen
-        navigation.navigate('LOGIN');
-        setPassword ("");
-      })
-  }}>
-        <Text style={styles.menuText}>Logout</Text>
-        </Pressable>
+          {isLoading ? (
+            <Text>Loading...</Text>
+          ) : (
+            <>
+              <Text style={styles.menuText}>{username}</Text>
+              <Pressable onPress={() => { console.log('edit'); }}>
+                <Text style={styles.menuText}>Edit Profile</Text>
+              </Pressable>
+              <Pressable onPress={() => { console.log('shoppers'); }}>
+                <Text style={styles.menuText}>Shoppers</Text>
+              </Pressable>
+              <Pressable onPress={() => {
+                firebase.auth().signOut()
+                  .then(() => {
+                    // Logout successful, navigate to the login screen
+                    navigation.navigate('LOGIN');
+                  })
+                  .catch((error) => {
+                    console.error("Error logging out:", error);
+                  });
+              }}>
+                <Text style={styles.menuText}>Logout</Text>
+              </Pressable>
+            </>
+          )}
         </View>
       </Animated.View>
     </View>

@@ -1,60 +1,3 @@
-// import { StatusBar } from "expo-status-bar";
-// import React, { useState } from "react";
-// import {
-//   StyleSheet,
-//   Text,
-//   View,
-//   Image,
-//   TextInput,
-//   Button,
-//   TouchableOpacity,
-// } from "react-native";
-// export const Sign_up = ({navigation}) => {
-// // export default function Sign_up() {
-//   const [email, setnewEmail] = useState("");
-//   const [password, setnewPassword] = useState("");
-//   const [username, setnewUsername] = useState("");
-//   return (
-//     <View style={styles.container}>
-//       <Image style={styles.image} source={require('../assets/Pocketshopper_logo_v4.png')} />
-//       <StatusBar style="auto" />
-//       <View style={styles.inputView}>
-//         <TextInput
-//           style={styles.TextInput}
-//           placeholder="Enter new email..."
-//           placeholderTextColor="#000"
-//           textAlign="center"
-//           onChangeText={(email) => setnewEmail(email)}
-//         /> 
-//       </View> 
-//       <View style={styles.inputView}>
-//         <TextInput
-//           style={styles.TextInput}
-//           placeholder="Enter new password..."
-//           placeholderTextColor="#000"
-//           textAlign="center"
-//           secureTextEntry={true}
-//           onChangeText={(password) => setnewPassword(password)}
-//         /> 
-//        </View>
-//       <View style={styles.inputView}>
-//         <TextInput
-//           style={styles.TextInput}
-//           placeholder="Enter new username..."
-//           placeholderTextColor="#000"
-//           textAlign="center"
-//           secureTextEntry={true}
-//           onChangeText={(username) => setnewUsername(username)}
-//         /> 
-//       </View> 
-//       <TouchableOpacity style={styles.SignUpBtn}>
-//         <Text style={styles.SignUpText}>Done!</Text> 
-//       </TouchableOpacity>
-//     </View> 
-//   );
-// }
-//}
-
 import React, { useState } from "react";
 // import firebase from '../firebase.config'; //FIRESTORE
 import firebase from 'firebase/compat/app'
@@ -94,17 +37,27 @@ export default function Sign_up({ navigation }) {
       firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
-        .then((u) => {
-          setUser(u);
-          console.log(u);
+        .then((userCredential) => {
+          const user = userCredential.user;
+          const userData = {
+            username: username,
+            email: email,
+          };
+  
+          // Store the username in Firestore
+          firebase.firestore().collection("users").doc(user.uid).set(userData);
+  
+          setUser(user);
+          console.log(user);
           navigation.navigate("HomeScreen"); // redirect to HomeScreen
         })
-        .catch((e) => {
+        .catch((error) => {
           setIsLoading(false);
           setError("Email already in use");
         });
     }
   };
+  
 
   return (
     <View style={styles.container}>
