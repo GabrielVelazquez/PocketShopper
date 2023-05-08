@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {StyleSheet, Text, View, Image, Pressable, TextInput, TouchableOpacity, Modal, SafeAreaView, ScrollView, FlatList} from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown' //npm install react-native-select-dropdown
 import { LinearGradient } from "expo-linear-gradient"; //FIRESTORE
@@ -7,25 +7,33 @@ import {firebase} from '../firebase.config'; //FIRESTORE
 //import { initializeApp } from 'firebase/app';
 const ItemSelect = ({navigation}) => {//navigation
 const ItemRef = firebase.firestore().collection('Items'); //FIRESTORE
-
-//const ItemRef = firebase.firestore().collection('Items');
-//const database = firebase.database();
 const database = firebase.database();
 
-const data = [
-  //{ id: '1', name: 'Apple', category: 'Fruit', price: '1.31',image: require('../assets/apple.png') },
-  //{ id: '2',name: 'Banana', category: 'Fruit', price: '1.00', image: require('../assets/banana.png') },
-  //{ id: '3',name: 'Strawberry', category: 'Fruit', price: '2.00', image: require('../assets/strawberry.png') },
-  //{ id: '4',name: 'Milk', category: 'Dairy', price: '3.50', image: require('../assets/milk.png') },
-  //{ id: '5',name: 'Cheese', category: 'Dairy', price: '4.00', image: require('../assets/cheese.png') },
-  //{ id: '6',name: 'Donut', category: 'Pastry', price: '2.50', image: require('../assets/mydonut.png') },
-  //{ id: '7',name: 'Ham', category: 'Meat', price: '5.50', image: require('../assets/ham.png') },
-  //{ id: '8',name: 'Cups', category: 'Other', price: '2.50', image: require('../assets/mydonut.png') },
-];
+const [searchText, setSearchText] = useState('');
+const [items, setItems] = useState([]);
+const [newItemName, setNewItemName] = useState('');
+const [newPriceName, setNewPriceName] = useState('');
+//const [newItemName, setNewItemName] = useState(data);
+const [selectedCategory, setSelectedCategory] = useState(null);
+//const [newPriceName, setNewPriceName] = useState(data);
+const [modalVisible, setModalVisible] = useState(false);
+const categories = Array.from(new Set(items.map(item => item.category)));
+
+
+//const data = [];
 //const categories=[];
 
+useEffect(() => {
+  ItemRef.onSnapshot(querySnapShot => {
+    const items = querySnapShot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    setItems(items);
+  });
+}, []);
 
-//FIRESTORE WIP
+/* FIRESTORE WIP
 (async () => {
 },[]
 )
@@ -37,22 +45,14 @@ querySnapShot.forEach((doc) => {
  const {name, category, price}=doc.data()
  items.push({
 id: doc.id, name, category, price
-}); //console.log(items)
-//if (category && !categories.includes(category)) {   PARA CATEGORY DROP LIST
-//  categories.push(category);
-//}
+}); 
 })
 setItems(items)
 }
 )
-
-const [searchText, setSearchText] = useState(''); //textinput
-const [items, setItems] = useState(data);
-const [newItemName, setNewItemName] = useState(data);
-const [selectedCategory, setSelectedCategory] = useState(null);
-const [newPriceName, setNewPriceName] = useState(data);
-const [modalVisible, setModalVisible] = useState(false);
-const categories = Array.from(new Set(items.map(item => item.category)));
+*/
+//const [searchText, setSearchText] = useState(''); //textinput
+//const [items, setItems] = useState(data);
 
 //const categories = Array.from(new Set(data.map(item => item.category))); // extract unique categories from the data array
 //COMENTAR categories ^^^
@@ -66,6 +66,29 @@ const modalhandleCancelCreate = () => {
  setSelectedCategory('');
   setNewPriceName('');
 };
+
+const handleSaveNewItem = () => {
+  if (!newItemName || !selectedCategory) return;
+
+  const newItem = {
+    name: newItemName,
+    category: selectedCategory,
+    price: newPriceName || '',
+  };
+
+  ItemRef.add(newItem)
+    .then(() => {
+      setItems([...items, newItem]);
+      setModalVisible(false);
+      setNewItemName('');
+      setSelectedCategory('');
+      setNewPriceName('');
+    })
+    .catch(error => {
+      console.log('Error creating item:', error);
+    });
+};
+
 
 //BORRAR LUEGO#####################################################
 //const [count, setCount] = useState(0);
@@ -147,6 +170,7 @@ const modalhandleCancelCreate = () => {
   */
 
   //^^^ Clone for modal input
+/*
   const handleSaveNewItem = (selectedCategory) => { //if  selecteedcategory == category. category: selectedcategory
     setModalVisible(false);
     const newItem = {
@@ -164,12 +188,9 @@ const modalhandleCancelCreate = () => {
     
     //database.ref(`lists/${newListId}`).set(newItem);
   };
+  */
 
   
-
-
-
-
   const renderCategories = () => {
     const categories = Array.from(new Set(items.map((item) => item.category)));
     return categories.map((category) => (
@@ -179,11 +200,12 @@ const modalhandleCancelCreate = () => {
       </View>
     ));
   };
+
+  
   
   //render stuff?
   return (
 //Background and Search Bar--------------------------------
-
 
     <View style={styles.container}>
       <LinearGradient style={styles.gradientBackdrop}
