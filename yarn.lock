@@ -7279,7 +7279,7 @@ prompts@^2.3.2, prompts@^2.4.0:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@*, prop-types@^15.5.10, prop-types@^15.7.2:
+prop-types@*, prop-types@^15.5.10, prop-types@^15.5.7, prop-types@^15.7.2:
   version "15.8.1"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -7453,6 +7453,13 @@ react-native-action-button@^2.8.5:
   dependencies:
     prop-types "^15.5.10"
 
+react-native-check-box@^2.1.7:
+  version "2.1.7"
+  resolved "https://registry.npmjs.org/react-native-check-box/-/react-native-check-box-2.1.7.tgz"
+  integrity sha512-dPVOoz4jKs2je2HSHp7+XJXNyZFq8Kij7IHutigrQKzB550Dko6ZAQu/1mG1FzdUMFxxkZ2nX59KmbR0Co0T8Q==
+  dependencies:
+    prop-types "^15.5.7"
+
 react-native-codegen@^0.71.5:
   version "0.71.5"
   resolved "https://registry.npmjs.org/react-native-codegen/-/react-native-codegen-0.71.5.tgz"
@@ -7578,7 +7585,7 @@ react-native-web@~0.18.11:
     postcss-value-parser "^4.2.0"
     styleq "^0.1.2"
 
-react-native@*, "react-native@>= 0.62", react-native@>=0.11, react-native@>=0.57, react-native@>=0.59, react-native@0.71.7:
+react-native@*, "react-native@>= 0.62", react-native@>=0.11, react-native@>=0.20.0, react-native@>=0.57, react-native@>=0.59, react-native@0.71.7:
   version "0.71.7"
   resolved "https://registry.npmjs.org/react-native/-/react-native-0.71.7.tgz"
   integrity sha512-Id6iRLS581fJMFGbBl1jP5uSmjExtGOvw5Gvh7694zISXjsRAsFMmU+izs0pyCLqDBoHK7y4BT7WGPGw693nYw==

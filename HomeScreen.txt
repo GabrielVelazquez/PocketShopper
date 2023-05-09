@@ -5,6 +5,7 @@ import {firebase} from '../firebase.config';
 import { FAB } from 'react-native-paper';
 import HamburgerMenu from './test';
 import CreateItemModal from "./CreateItemModal";
+import { getFirestore, collection, doc, deleteDoc, updateDoc } from "firebase/firestore";
 
 
 const firestore = firebase.firestore();
@@ -35,56 +36,50 @@ export default function HomeScreen() {
   const toggleSpeedDial = () => {
     setIsSpeedDialOpen(!isSpeedDialOpen);
   };
-  const handleDelete = () => {
+  const handleDelete = async () => {
+    const firestore = getFirestore();
     const updatedLists = lists.filter((list) => list.id !== selectedList.id);
     const archivedList = { ...selectedList, archivedAt: new Date() };
     setLists(updatedLists);
     setArchivedLists([...archivedLists, archivedList]);
   
     // Elimina la lista de Firestore
-    firestore
-      .collection('lists')
-      .doc(selectedList.id)
-      .delete()
-      .then(() => {
-        setSelectedList(null);
-      })
-      .catch((error) => {
-        console.error('Error deleting document: ', error);
-      });
+    const listRef = doc(firestore, "lists", selectedList.id);
+    await deleteDoc(listRef);
+  
+    setSelectedList(null);
   };
   
 
-  const renderListItem = ({ item, isShared }) => {
-    if (!isShared && item.owner !== firebase.auth().currentUser.uid) {
+  const renderListItem = ({ item }) => {
+    if (!item.isShared && item.owner !== firebase.auth().currentUser.uid) {
       return null;
     }
-    if (isShared && item.owner === firebase.auth().currentUser.uid) {
+    if (item.isShared && item.owner === firebase.auth().currentUser.uid) {
       return null;
     }
   
-    const handleLongPress = (listId) => {
-      setSelectedListId(listId);
+    const handleLongPress = (list) => {
+      setSelectedList(list);
     };
   
-    const navigateToList = (listId) => {
-      navigation.navigate('ListModified', { listId: listId, lists: lists });
-      console.log('Navigate to list:', listId);
+    const navigateToList = (list) => {
+      navigation.navigate('ItemSelect', { list });
+      console.log('Navigate to list:', item.name);
     };
   
     return (
       <TouchableOpacity
         onPress={() => navigateToList(item.id)}
-        onLongPress={() => handleLongPress(item.id)}
+        onLongPress={() => handleLongPress(item)}
       >
         <View style={styles.listbox}>
           <Text style={styles.listtext}>{item.name}</Text>
-          <Text style={styles.listtextammount}>{item.items?.length}/#</Text>
+          <Text style={styles.listtextammount}>{item.lists?.length}/#</Text>
         </View>
       </TouchableOpacity>
     );
   };
-  
   
   
     //Este es el que funciona en el servidor
@@ -222,7 +217,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <HamburgerMenu navigation={navigation} />
       <View style={styles.header}>
         <Image
@@ -231,16 +226,10 @@ export default function HomeScreen() {
         />
         <Text style={styles.headerText}>Pocket {'\n'}Shopper</Text>
       </View>
-
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
           <Text style={styles.buttonText}>Create List</Text>
         </TouchableOpacity>
-
-        {/*<TouchableOpacity style={styles.button} onPress={() => setModalVisible2(true)}>
-          <Text style={styles.buttonText}>Create Item</Text>
-        </TouchableOpacity>
-  */}
 
         <CreateItemModal navigation={navigation} />
       </View>
@@ -271,8 +260,10 @@ export default function HomeScreen() {
   <Text style={styles.divisionTitleArchived}>Archived Lists</Text>
 </View>
 <FlatList
-  data={archivedLists}
+// Dentro de FlatList:
   renderItem={renderListItem}
+  data={archivedLists}
+  // renderItem={renderListItem}
   keyExtractor={(item) => item.id}
   style={{ flex: 1 }}
   borderRadius={10}
@@ -354,8 +345,7 @@ export default function HomeScreen() {
         />
         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
           <Switch trackColor={{/*false: '#FF784C'*/ true: '#1FF9FA'}}
-        //thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
-        //ios_backgroundColor="#FF784C"
+        
             value={isShared}
             onValueChange={(value) => setIsShared(value)}
             
@@ -422,7 +412,7 @@ selectedCategory === category && styles.categoryTextSelected,
 </View>
 </View>
 </Modal>
-</View>
+</SafeAreaView>
 );
 }
 
@@ -434,7 +424,7 @@ const styles = StyleSheet.create({
   },
   header: {
         backgroundColor: '#5469A3',
-        height: 170,
+        height: 150,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
@@ -476,6 +466,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     },
  
+  
   scrollView: {
   flex: 1,
   backgroundColor: '#B1C0D8',
@@ -614,6 +605,7 @@ listtext: {
   },
   modalButton: {
   backgroundColor: '#87CEFA',
+ 
   paddingVertical: 10,
   paddingHorizontal: 20,
   borderRadius: 5,
@@ -673,12 +665,5 @@ listtext: {
       borderRadius: 2,
       paddingVertical: 15,
       paddingHorizontal: 50,
-    },
-    backButton: {
-      position: "absolute",
-      top: 30,
-      left: 10,
-      height:40,
-      width:40,
     },
   });

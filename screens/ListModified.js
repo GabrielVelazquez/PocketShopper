@@ -1,25 +1,53 @@
 import * as React from "react";
-import {useState } from 'react';
-import { Pressable, StyleSheet, View, Text, /*Image,*/ TouchableOpacity,ScrollView } from "react-native";
+import {useState, useEffect } from 'react';
+import { Pressable, StyleSheet, View, Text, Image, TouchableOpacity,ScrollView , FlatList} from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Border, Color, FontFamily, FontSize, Image } from "../GlobalStyles";
+import { Border, Color, /*FontFamily,*/ FontSize} from "../GlobalStyles";
 import {firebase} from '../firebase.config'; //FIRESTORE
 import { Button } from "react-native-paper";
 import HamburgerMenu from './test';
-/////////////////////////////////////////
-const ListModified = () => {
+import CreateItemModal from "./CreateItemModal";
+import { FAB } from 'react-native-paper';
+import { Checkbox } from 'react-native-paper';
 
+import { useRoute } from '@react-navigation/native';
+/////////////////////////////////////////
+const firestore = firebase.firestore();
+const ListModified = () => {
+  const route = useRoute();
+  const { listId, lists } = route.params;;
+  
   const navigation = useNavigation();
-  const ListDetails = ({ route }) => {
-    const { list } = route.params;
-    return (
-      <View>
-        <Text>List name: {list.name}</Text>
-        <Text>List owner: {list.owner}</Text>
-        <Text>Invite code: {list.inviteCode}</Text>
-        <Button title="Send invite" onPress={() => sendInvite(list)} />
-      </View>
-    );
+  const [listData, setListData] = useState(null);
+  const [isSpeedDialOpen, setIsSpeedDialOpen] = useState(false);
+
+  useEffect(() => {
+    const getListData = async () => {
+      const listRef = firebase.firestore().collection('Lists').doc(listId);
+      const listDoc = await listRef.get();
+      const navigation =useNavigation();
+
+      if (listDoc.exists) {
+        setListData(listDoc.data());
+      }
+    };
+
+    getListData();
+  }, [listId]);
+
+  const ListDetails = () => {
+    if (listData) {
+      return (
+        <View>
+          <Text>List name: {listData.name}</Text>
+          <Text>List owner: {listData.owner}</Text>
+          <Text>Invite code: {listData.inviteCode}</Text>
+          <Button title="Send invite" onPress={() => sendInvite(listData)} />
+        </View>
+      );
+    } else {
+      return null;
+    }
   };
 /////////////////////////////////////////////
   const ItemRef = firebase.firestore().collection('Items'); //FIRESTORE
@@ -54,11 +82,17 @@ const renderItem = (item) => {
    const handlePress = () => {//----------------
     //setCount(count + 1);//se le suma 1 al count al presionar--------------
   };
+  item.checked = !item.checked;
       return (
         <TouchableOpacity key={item.id} onPress={() => {handlePress(); console.log('Check off ',item.name,' of ',item.price);}}>
-        <Text style={styles.itemtext}>{item.name} {'\t'} price: ${item.price}</Text> 
-        {/*<Pressable style={styles.itemcounter}></Pressable>*/}
-       
+         <View style={styles.itemContainer}>
+        <Checkbox.Android
+          status={item.checked ? 'checked' : 'unchecked'}
+          onPress={handlePress}
+          color="#5469A3"
+        />
+        <Text style={styles.itemtext}>{item.name} {'\t'} price: ${item.price}</Text>
+      </View>
       </TouchableOpacity>
       );
     };    
@@ -90,7 +124,7 @@ const renderCategory = (category) => {
     <View style={styles.category}>
       <Pressable style={[styles.categoryTitle,{backgroundColor}]}></Pressable> 
       {/*CHECKBOX HERE*/}
-      <Text style={{fontSize: 24,fontWeight: 'bold',color: '#000',width: 360,height: 27,
+         <Text style={{fontSize: 24,fontWeight: 'bold',color: '#000',width: 360,height: 27,
   bottom:38, left:10,}}>{category}</Text>
       <View style={styles.list}>
         {filteredItems.map(renderItem)}</View>
@@ -110,20 +144,36 @@ const renderCategories = () => {
 
   return (
     <View style={styles.containerfront}>
-      <HamburgerMenu navigation={navigation} />
+  
+    
+      
   <View style={styles.containerback}/>
+  <HamburgerMenu navigation={navigation} />
+  <CreateItemModal navigation={navigation} />
 
- <Text style={styles.PageTitle}>List Name</Text> 
-
+  <Text style={styles.PageTitle}>List Name</Text> 
+  {/*{listData?.name} */}
+  {/* <Text style={styles.PageTitle}>{ListDetails}</Text> */}
+  
+  <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+       <Image style={styles.backButton} source={require('../assets/arrow_back_FILL0_wght400_GRAD0_opsz48.png')} />
+      </TouchableOpacity>
+      
+      {/* <Text>List Name: {lists.name}</Text> */}
 {/*<Text>hola</Text> */}
 <ScrollView contentContainerStyle={styles.scrollContainer}>
       {renderCategories()}
     </ScrollView>
 
+    <View style={styles.floatingcontainer}>
+      <TouchableOpacity style={styles.floatingButton} onPress={()=> navigation.navigate("ItemSelect")}>
+  <Text style={styles.floatingbuttonText}>+</Text>
+</TouchableOpacity>
 
-
+    </View>
 
      </View>
+
   );
 };
 
@@ -133,12 +183,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#5469A3', 
     alignItems: 'center',
     justifyContent: 'center',
-    height:150,
+    height:170,
   },
   containerfront: {
     //flex: 1,
-    top: 0,
-    left: 0,
+    //top: 0,
+    //left: 0,
     backgroundColor: Color.lightsteelblue_200,
     width: 390,
     height: 850,
@@ -152,18 +202,18 @@ const styles = StyleSheet.create({
     //width: 20,
     textAlign: "center",
     color: Color.white,
-    fontFamily: FontFamily.interRegular,
+    //fontFamily: FontFamily.interRegular,
     position: "absolute",
   },
 category: {
-  marginTop:10,
-  marginBottom: 1,
+  marginTop:2,
+  marginBottom: 0,
   width: 360,
 },
 categoryTitle: { //categoryfruit, check later los colores
   fontSize: 24,
   fontWeight: 'bold',
-  marginBottom: 2,
+  marginBottom: 1,
   color: '#000',
   width: 360,
   height: 41,
@@ -192,6 +242,48 @@ itemtext:{
   textAlign: "left",
   left:10,
 },
- 
+fab: {
+  backgroundColor: '#FEFEFE',
+   //color: '#5469A3',
+},
+
+floatingcontainer: {
+  flex: 1,
+  // Other container styles
+},
+floatingButton: {
+  position: 'absolute',
+  width: 56,
+  height: 56,
+  borderRadius: 28,
+  backgroundColor: '#5469A3',
+  alignItems: 'center',
+  justifyContent: 'center',
+  right: 35,
+  bottom: 55,
+  elevation: 5, // For Android shadow
+  shadowColor: '#000', // For iOS shadow
+  shadowOpacity: 0.3, // For iOS shadow
+  shadowOffset: {
+    width: 0,
+    height: 2,
+  }, // For iOS shadow
+},
+floatingbuttonText: {
+  fontSize: 24,
+  color: '#FFFFFF',
+},
+backButton: {
+  position: "absolute",
+  top: 35,
+  left: 165,
+  height:40,
+  width:40,
+},
+itemContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+
 });
 export default ListModified;

@@ -5,10 +5,10 @@ import { LinearGradient } from "expo-linear-gradient"; //FIRESTORE
 import {firebase} from '../firebase.config'; //FIRESTORE
 //import storage from '@react-native-firebase/storage';
 //import { initializeApp } from 'firebase/app';
-const ItemSelect = ({navigation}) => {//navigation
+const ItemSelect = ({route}) => {//navigation
 const ItemRef = firebase.firestore().collection('Items'); //FIRESTORE
 const database = firebase.database();
-
+const { list } = route.params;
 const [searchText, setSearchText] = useState('');
 const [items, setItems] = useState([]);
 const [newItemName, setNewItemName] = useState('');
@@ -27,38 +27,36 @@ useEffect(() => {
   ItemRef.onSnapshot(querySnapShot => {
     const items = querySnapShot.docs.map(doc => ({
       id: doc.id,
-      ...doc.data(),
+      ...doc.data()
     }));
     setItems(items);
   });
 }, []);
 
-/* FIRESTORE WIP
-(async () => {
-},[]
-)
-ItemRef.onSnapshot(
- querySnapShot => {
-   const items = []
-   //const categories = []
-querySnapShot.forEach((doc) => {
- const {name, category, price}=doc.data()
- items.push({
-id: doc.id, name, category, price
-}); 
-})
-setItems(items)
-}
-)
-*/
-//const [searchText, setSearchText] = useState(''); //textinput
-//const [items, setItems] = useState(data);
 
 //const categories = Array.from(new Set(data.map(item => item.category))); // extract unique categories from the data array
 //COMENTAR categories ^^^
 const handleCreateItem = () => {
   setModalVisible(true);
 };
+
+
+const handleAddToList = (list, item) => {
+  const listRef = firebase.firestore().collection('lists').doc(list);
+
+  // Agregar el artículo a la matriz "items" de la lista en Firestore
+  listRef.update({
+    items: firebase.firestore.FieldValue.arrayUnion(item)
+  })
+    .then(() => {
+      console.log('Artículo agregado a la lista en Firestore');
+    })
+    .catch(error => {
+      console.log('Error al agregar el artículo a la lista:', error);
+    });
+};
+
+
 
 const modalhandleCancelCreate = () => {
   setModalVisible(false);
@@ -95,35 +93,24 @@ const navigateToList = (listId) => {
 };
 
 
-
-
 //BORRAR LUEGO#####################################################
 //const [count, setCount] = useState(0);
 /*console.log(item.name) se remplaza con add to list con correct id */
-  const renderItem = (item) => {
-//COUNT DE ITEM INDIVIDUAL PERO SEARCH NO FUNCIONA CON ESTO
- const handlePress = () => {//----------------
-  //setCount(count + 1);//se le suma 1 al count al presionar--------------
-};
+const renderItem = (item) => {
+  const handlePress = () => {
+    handleAddToList(list.listId, item); // Agregar el artículo a la lista en Firestore
+  };
 
-{/*
-const getImageSource = () => {
-  // Get the image source based on the item's name
-  const imageName = item.name.toLowerCase().replace(/\s/g, ''); // Convert the name to lowercase and remove spaces
-  return require(`../assets/${imageName}.png`); // Assuming the image files are named in lowercase without spaces and have a .png extension
-};
-*/}
-
-    return (
-      <TouchableOpacity key={item.id} onPress={() => {handlePress(); console.log(item.name);}}>
-      <Text style={styles.itemtext}>{item.name}</Text> 
-      {/*<Image source={getImageSource()} style={styles.image} />*/}
-      <Image source={require('../assets/itemplaceholder.png')} style={styles.image} /> 
+  return (
+    <TouchableOpacity key={item.id} onPress={handlePress}>
+      <Text style={styles.itemtext}>{item.name}</Text>
+      <Image source={item.image} style={styles.image} />
       <Pressable style={styles.itemcounter}></Pressable>
-      <Text style={{fontSize:15,color:'#fff',left:80,bottom:55,marginBottom:-50}}></Text> 
+      <Text style={{ fontSize: 15, color: '#fff', left: 80, bottom: 55, marginBottom: -50 }}></Text>
     </TouchableOpacity>
-    );
-  };    
+  );
+};
+
   /*</TouchableOpacity>is {item.price}</Text> //FIRESTORE*/
   const renderCategory = (category) => {
     let backgroundColor = '#FFFFFF'; // default blanco
@@ -157,56 +144,6 @@ const getImageSource = () => {
       </View>
     );
   };
-
-  /*
-  const handleAddItem = (category) => {
-    //setModalVisible(true);
-    const newItem = {
-      id: `${Date.now()}`,
-      name: `New ${category} Item`,
-      category: category,
-      //price: price,
-      image: require('../assets/itemlplaceholder.png'),
-    };
-    setItems([...items, newItem]);
-  };
-  */
-
-  //setItems(prevItems => {
-   // return[{id: id(), text}, ...prevItems]
-  //})
-
-  /*
-  const renderAddItem = (category) => {
-    return (
-      <Pressable key={category} style={styles.addButton}onPress={() => handleAddItem(category)}> 
-        <Text style={styles.addButtonText}>+ Add {category}</Text>
-      </Pressable>
-    );
-  };
-  */
-
-  //^^^ Clone for modal input
-/*
-  const handleSaveNewItem = (selectedCategory) => { //if  selecteedcategory == category. category: selectedcategory
-    setModalVisible(false);
-    const newItem = {
-      id: `${Date.now()}`,
-      name: newItemName,
-      category: selectedCategory,
-      //category:`${selectedCategory} `,
-      price: newPriceName,
-      image: require('../assets/itemlplaceholder.png')
-    };
-    const itemsRef = database.ref('Items'); // Use a specific location in the database
-  itemsRef.push(newItem);
-    setItems([...items, newItem]);
-    //database.ref(`Items/${selectedCategory}`).set(newItem);//
-    
-    //database.ref(`lists/${newListId}`).set(newItem);
-  };
-  */
-
   
   const renderCategories = () => {
     const categories = Array.from(new Set(items.map((item) => item.category)));
@@ -232,9 +169,6 @@ const getImageSource = () => {
           "rgba(177, 192, 216, 0.9)",
           "rgba(195, 212, 233, 0.61)",
         ]} />
-         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-       <Image style={styles.backButton} source={require('../assets/arrow_back_FILL0_wght400_GRAD0_opsz48.png')} />
-      </TouchableOpacity>
         {/* Header Title */}
         <Text style={styles.title}>Add items to list</Text>
 
@@ -482,14 +416,6 @@ const styles = StyleSheet.create({
     left:67,
     bottom:30,
 },     
-
-backButton: {
-  position: "absolute",
-  top: 35,
-  left: 10,
-  height:40,
-  width:40,
-},
   //MODAL---------------------------------
   modalContainer: { //modal completo
     flex: 1,
