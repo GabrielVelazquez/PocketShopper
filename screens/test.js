@@ -81,7 +81,7 @@ const HamburgerMenu = ({ navigation }) => {
    <Text style={{fontSize:25,width:250,height:55,marginBottom:10,
   color: 'white',fontWeight:'bold',padding: 15, bottom:30}}>username{email}</Text>
 
-              <Pressable onPress={() => { console.log('edit'); }}>
+              <Pressable onPress={() => { console.log('edit'); navigation.navigate("RemadeProfile") }}>
                 <Text style={styles.menuText}>Edit Profile</Text>
               </Pressable>
               <Pressable onPress={() => { console.log('shoppers'); }}>

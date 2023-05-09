@@ -41,7 +41,7 @@ export default function App() {
 ) */}
 <Stack.Navigator>
 
-{/*
+
 {
  <Stack.Screen
     name="HUB"
@@ -49,7 +49,7 @@ export default function App() {
     //options={{headerShown: false}}
   /> 
 }
-*/}
+
 
 
 <Stack.Screen 
@@ -97,9 +97,14 @@ export default function App() {
   name="ListModified"
   component={ListModified}
   options={{headerShown: false}}
-
   />
 
+
+<Stack.Screen
+  name="RemadeProfile"
+  component={RemadeProfile}
+  options={{headerShown: false}}
+  />
 </Stack.Navigator>
 </NavigationContainer>
   );

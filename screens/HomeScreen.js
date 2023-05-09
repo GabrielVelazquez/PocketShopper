@@ -69,7 +69,7 @@ export default function HomeScreen() {
     };
   
     const navigateToList = (listId) => {
-      navigation.navigate('ItemSelect', { listId: listId, lists: lists });
+      navigation.navigate('ListModified', { listId: listId, lists: lists });
       console.log('Navigate to list:', listId);
     };
   
