@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   menu: {
     position: 'absolute',
-    height:800,
+    height:850,
     //width:60,
     backgroundColor: '#5469A3',
     zIndex: 1,
