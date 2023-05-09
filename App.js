@@ -21,6 +21,7 @@ import LOGIN from "./screens/LOGIN";
 import Sign_up from "./screens/Sign_up";
 import HomeScreen from "./screens/HomeScreen";
 import ListModified from "./screens/ListModified";
+import RemadeProfile from "./screens/RemadeProfile";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator, style } from "@react-navigation/native-stack";
 // import { AccountNavigator } from "./screens/account.navigator";

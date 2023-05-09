@@ -40,8 +40,8 @@ export default function Hub({navigation}) {
         onPress={()=> navigation.navigate("Sign_up")} //parametro para pasar data
         />
         <Button 
-        title="Navigate to Profile Screens"
-        onPress={()=> navigation.navigate("ProfileScreen")} //parametro para pasar data
+        title="Navigate to Profile Creator"
+        onPress={()=> navigation.navigate("RemadeProfile")} //parametro para pasar data
         />
         <Button 
         title="Navigate Home Template "

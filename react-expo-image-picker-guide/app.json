@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "react-expo-image-picker-guide",
+    "slug": "react-expo-image-picker-guide",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
