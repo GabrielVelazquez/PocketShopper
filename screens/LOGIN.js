@@ -73,7 +73,7 @@ const LOGIN = ({navigation}) => {
         setErrorMessage(error.message);
       });
   }}>
-  <Text style={styles.loginText}>LOGIN</Text>
+  <Text style={styles.loginText}>Login</Text>
 </TouchableOpacity>
 
        <Text style = {{color: "#000", top:45,}}>or Create Account</Text>

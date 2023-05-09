@@ -17,7 +17,7 @@ export default function Hub({navigation}) {
         />
 
         <Button 
-        title="Navigate to CrearLista"
+        title="Navigate to function call test"
         onPress={()=> navigation.navigate("CrearLista")} //parametro para pasar data
         />
 
@@ -27,7 +27,7 @@ export default function Hub({navigation}) {
          />
 
         <Button 
-        title="Navigate to Data Preview for testing only"
+        title=" NOW PRESENTING: CHECKBOX for testing only"
         onPress={()=> navigation.navigate("LocalDataTable")} //parametro para pasar data
          />
 

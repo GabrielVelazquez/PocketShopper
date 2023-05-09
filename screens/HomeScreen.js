@@ -614,7 +614,6 @@ listtext: {
   },
   modalButton: {
   backgroundColor: '#87CEFA',
- 
   paddingVertical: 10,
   paddingHorizontal: 20,
   borderRadius: 5,

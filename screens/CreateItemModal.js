@@ -234,10 +234,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     position: 'absolute',
-    //top:'55%',
     bottom: 170,
-    right: 45,
-    //padding: 2,  
+    right: 35, 
+    left: 35,
+    
   },
   modalbuttoncancel: {
     backgroundColor: '#FF784C',

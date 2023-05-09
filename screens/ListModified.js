@@ -8,6 +8,8 @@ import { Button } from "react-native-paper";
 import HamburgerMenu from './test';
 import CreateItemModal from "./CreateItemModal";
 import { FAB } from 'react-native-paper';
+import { Checkbox } from 'react-native-paper';
+
 import { useRoute } from '@react-navigation/native';
 /////////////////////////////////////////
 const firestore = firebase.firestore();
@@ -80,11 +82,17 @@ const renderItem = (item) => {
    const handlePress = () => {//----------------
     //setCount(count + 1);//se le suma 1 al count al presionar--------------
   };
+  item.checked = !item.checked;
       return (
         <TouchableOpacity key={item.id} onPress={() => {handlePress(); console.log('Check off ',item.name,' of ',item.price);}}>
-        <Text style={styles.itemtext}>{item.name} {'\t'} price: ${item.price}</Text> 
-        {/*<Pressable style={styles.itemcounter}></Pressable>*/}
-       
+         <View style={styles.itemContainer}>
+        <Checkbox.Android
+          status={item.checked ? 'checked' : 'unchecked'}
+          onPress={handlePress}
+          color="#5469A3"
+        />
+        <Text style={styles.itemtext}>{item.name} {'\t'} price: ${item.price}</Text>
+      </View>
       </TouchableOpacity>
       );
     };    
@@ -116,7 +124,7 @@ const renderCategory = (category) => {
     <View style={styles.category}>
       <Pressable style={[styles.categoryTitle,{backgroundColor}]}></Pressable> 
       {/*CHECKBOX HERE*/}
-      <Text style={{fontSize: 24,fontWeight: 'bold',color: '#000',width: 360,height: 27,
+         <Text style={{fontSize: 24,fontWeight: 'bold',color: '#000',width: 360,height: 27,
   bottom:38, left:10,}}>{category}</Text>
       <View style={styles.list}>
         {filteredItems.map(renderItem)}</View>
@@ -272,5 +280,10 @@ backButton: {
   height:40,
   width:40,
 },
+itemContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+
 });
 export default ListModified;

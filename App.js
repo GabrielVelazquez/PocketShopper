@@ -40,7 +40,7 @@ export default function App() {
 ) */}
 <Stack.Navigator>
 
-{/*}
+{/*
 {
  <Stack.Screen
     name="HUB"
