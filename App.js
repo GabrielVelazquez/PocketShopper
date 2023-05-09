@@ -41,7 +41,7 @@ export default function App() {
 ) */}
 <Stack.Navigator>
 
-
+{/*}
 {
  <Stack.Screen
     name="HUB"
@@ -49,7 +49,8 @@ export default function App() {
     //options={{headerShown: false}}
   /> 
 }
-
+*/
+}
 
 
 <Stack.Screen 
