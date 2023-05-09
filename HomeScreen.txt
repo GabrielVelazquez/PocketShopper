@@ -1,0 +1,669 @@
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, Image, SafeAreaView, ScrollView,  FlatList, TouchableOpacity, Modal, TextInput, Switch, Button, BackHandler } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import {firebase} from '../firebase.config';
+import { FAB } from 'react-native-paper';
+import HamburgerMenu from './test';
+import CreateItemModal from "./CreateItemModal";
+import { getFirestore, collection, doc, deleteDoc, updateDoc } from "firebase/firestore";
+
+
+const firestore = firebase.firestore();
+export default function HomeScreen() {
+  const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
+  const [newItemName, setNewItemName] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [lists, setLists] = useState([]);
+  const [newListName, setNewListName] = useState('');
+  const [isShared, setIsShared] = useState(false);
+  const [personalLists, setPersonalLists] = useState([]);
+  const [sharedLists, setSharedLists] = useState([]);
+  const categories = ['Fruits', 'Vegetables', 'Meat', 'Dairy'];
+  const [isSpeedDialOpen, setIsSpeedDialOpen] = useState(false);
+  const [archivedLists, setArchivedLists] = useState([]);
+  const [selectedListId, setSelectedListId] = useState(null);
+  const [selectedList, setSelectedList] = useState(null);
+  const [items, setItems] = useState([]);
+
+
+
+
+
+  // const [inviteCode, setInviteCode] = useState('');
+
+  const toggleSpeedDial = () => {
+    setIsSpeedDialOpen(!isSpeedDialOpen);
+  };
+  const handleDelete = async () => {
+    const firestore = getFirestore();
+    const updatedLists = lists.filter((list) => list.id !== selectedList.id);
+    const archivedList = { ...selectedList, archivedAt: new Date() };
+    setLists(updatedLists);
+    setArchivedLists([...archivedLists, archivedList]);
+  
+    // Elimina la lista de Firestore
+    const listRef = doc(firestore, "lists", selectedList.id);
+    await deleteDoc(listRef);
+  
+    setSelectedList(null);
+  };
+  
+
+  const renderListItem = ({ item }) => {
+    if (!item.isShared && item.owner !== firebase.auth().currentUser.uid) {
+      return null;
+    }
+    if (item.isShared && item.owner === firebase.auth().currentUser.uid) {
+      return null;
+    }
+  
+    const handleLongPress = (list) => {
+      setSelectedList(list);
+    };
+  
+    const navigateToList = (list) => {
+      navigation.navigate('ItemSelect', { list });
+      console.log('Navigate to list:', item.name);
+    };
+  
+    return (
+      <TouchableOpacity
+        onPress={() => navigateToList(item.id)}
+        onLongPress={() => handleLongPress(item)}
+      >
+        <View style={styles.listbox}>
+          <Text style={styles.listtext}>{item.name}</Text>
+          <Text style={styles.listtextammount}>{item.lists?.length}/#</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+  
+  
+    //Este es el que funciona en el servidor
+    const handleCreateList = () => {
+      setModalVisible(true);
+      if (newListName !== '') {
+        const newList = {
+          name: newListName,
+          items: [], // Inicializa "items" como un array vacío
+          owner: firebase.auth().currentUser.uid,
+          isShared,
+          inviteCode: null,
+          archivedBy: null
+        };
+    
+        firestore
+          .collection('lists')
+          .add(newList)
+          .then((docRef) => {
+            const newListWithId = { ...newList, id: docRef.id };
+            setLists([...lists, newListWithId]);
+            setNewListName('');
+            setModalVisible(false);
+          })
+          .catch((error) => {
+            console.error('Error adding document: ', error);
+          });
+      }
+    };
+    
+    
+    
+    const sendInvite = (list) => {
+      // Genera un código de invitación único para la lista
+      const inviteCode = Math.random().toString(36).substr(2, 5);
+      // Actualiza el código de invitación en la lista en Firebase
+      database.ref(`lists/${list.id}/inviteCode`).set(inviteCode);
+      // Muestra el código de invitación en una ventana emergente
+      alert(`El código de invitación para la lista "${list.name}" es: ${inviteCode}`);
+    };
+    
+    
+
+    const JoinList = () => {
+      const [inviteCode, setInviteCode] = useState('');
+    
+      const handleJoinList = () => {
+        // Busca la lista con el código de invitación correspondiente en Firebase
+        database.ref('lists').orderByChild('inviteCode').equalTo(inviteCode).once('value', (snapshot) => {
+          const firebaseLists = snapshot.val();
+          if (firebaseLists) {
+            // Si se encuentra una lista con el código de invitación correspondiente, agrega al usuario actual como colaborador
+            const listId = Object.keys(firebaseLists)[0];
+            const list = firebaseLists[listId];
+            const currentUser = firebase.auth().currentUser;
+            if (currentUser) {
+              database.ref(`lists/${listId}/collaborators/${currentUser.uid}`).set(true);
+              alert(`Te has unido a la lista "${list.name}"`);
+            }
+          } else {
+            // Si no se encuentra una lista con el código de invitación correspondiente, muestra un mensaje de error
+            alert(`No se encontró ninguna lista con el código de invitación "${inviteCode}"`);
+          }
+        });
+        
+      };
+      return (
+        <View>
+          <Text>Enter invite code:</Text>
+          <TextInput value={inviteCode} onChangeText={setInviteCode} />
+          <Button title="Join list" onPress={handleJoinList} />
+        </View>
+      );
+    };
+    
+    useEffect(() => {
+      const currentUser = firebase.auth().currentUser;
+    
+      return firestore
+        .collection('lists')
+        .where('owner', '==', currentUser.uid)
+        .onSnapshot((querySnapshot) => {
+          const newLists = [];
+          querySnapshot.forEach((doc) => {
+            const newList = { id: doc.id, ...doc.data() };
+            newLists.push(newList);
+          });
+          setPersonalLists(newLists.filter((list) => !list.isShared));
+          setSharedLists(newLists.filter((list) => list.isShared));
+        });
+    }, []);
+    
+
+
+    useEffect(() => {
+      const removeArchivedLists = () => {
+        const currentDate = new Date();
+        const updatedArchivedLists = archivedLists.filter(
+          (list) =>
+            (currentDate - list.archivedAt) / (1000 * 60 * 60 * 24) < 30 && // Elimina las listas archivadas después de 30 días
+            list.archivedBy === firebase.auth().currentUser.uid // Filtra las listas archivadas por el usuario actual
+        );
+        setArchivedLists(updatedArchivedLists);
+      };
+    
+      const interval = setInterval(removeArchivedLists, 24 * 60 * 60 * 1000); // Verifica el archivado cada 24 horas
+    
+      return () => clearInterval(interval);
+    }, [archivedLists]);
+    
+    
+      const handleModalClose = () => {
+        setSelectedList(null);
+      };
+    
+      useEffect(() => {
+        if (selectedListId) {
+          const selectedList = lists.find((list) => list.id === selectedListId);
+          setSelectedList(selectedList);
+        } else {
+          setSelectedList(null);
+        }
+      }, [selectedListId, lists]);
+ 
+  const handleSubmit2 = () => {
+    // Add code to handle the submission of the new item here
+    console.log(newItemName, selectedCategory);
+    //<CreateItemModal navigation={navigation} />
+    setModalVisible2(true);
+  };
+
+  const handleCancel = () => {
+    setModalVisible(false);
+    setModalVisible2(false);
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <HamburgerMenu navigation={navigation} />
+      <View style={styles.header}>
+        <Image
+          style={styles.logo}
+          source={require('../assets/Pocketshopper_logo_v4.png')}
+        />
+        <Text style={styles.headerText}>Pocket {'\n'}Shopper</Text>
+      </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
+          <Text style={styles.buttonText}>Create List</Text>
+        </TouchableOpacity>
+
+        <CreateItemModal navigation={navigation} />
+      </View>
+
+      <ScrollView style={styles.scrollView}>
+  <View style={styles.divisionShared}>
+    <Text style={styles.divisionTitle}>Shared Lists</Text>
+  </View>
+  <FlatList
+    data={sharedLists}
+    renderItem={renderListItem}
+    keyExtractor={(item) => item.id}
+    style={{ flex: 1 }}
+    
+  />
+
+  <View style={styles.divisionPersonal}>
+    <Text style={styles.divisionTitle}>Personal Lists</Text>
+  </View>
+  <FlatList
+    data={personalLists}
+    renderItem={renderListItem}
+    keyExtractor={(item) => item.id}
+    style={{ flex: 1 }}
+  />
+
+<View style={styles.divisionArchived}>
+  <Text style={styles.divisionTitleArchived}>Archived Lists</Text>
+</View>
+<FlatList
+// Dentro de FlatList:
+  renderItem={renderListItem}
+  data={archivedLists}
+  // renderItem={renderListItem}
+  keyExtractor={(item) => item.id}
+  style={{ flex: 1 }}
+  borderRadius={10}
+/>
+</ScrollView>
+
+<FAB.Group 
+    fabStyle={styles.fab}
+    open={isSpeedDialOpen}
+    icon={isSpeedDialOpen ? 'close' : 'plus'}
+    actions={[
+      {
+        icon: 'playlist-plus',
+        label: 'Create list',
+        onPress: handleCreateList,
+      },
+      {
+        icon: 'playlist-check',
+        label: 'Join list',
+        overlayColor: '#fff',
+        onPress:JoinList,
+      },
+      {
+        icon: 'plus-box',
+        label: 'Create item',
+        onPress: handleSubmit2,
+      },
+    ]}
+    onStateChange={({ open }) => setIsSpeedDialOpen(open)}
+    onPress={() => setIsSpeedDialOpen(!isSpeedDialOpen)}
+  />
+
+  <Modal
+  animationType="fade"
+  transparent={true}
+  visible={selectedList !== null}
+  onRequestClose={() => setSelectedList(null)}
+>
+  <View style={styles.modalContainer}>
+    <View style={styles.modal}>
+      <Text style={styles.modalTitle}>Confirm Delete</Text>
+      <Text style={styles.modalText}>
+        Are you sure you want to delete the list "{selectedList?.name}"?
+      </Text>
+      <View style={styles.modalbuttonContainerdelete}>
+
+      <TouchableOpacity style={styles.modalButtonCancel2} onPress={handleDelete}>
+          <Text style={styles.buttonTextModal}>Delete</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.modalButtonCreate}
+          onPress={() => setSelectedList(null)}
+        >
+          <Text style={styles.buttonTextModal}>Cancel</Text>
+        </TouchableOpacity>
+  
+      </View>
+    </View>
+  </View>
+</Modal>
+
+     
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+       
+    <View style={styles.modal}>
+        <Text style={styles.modalTitle}>Create List</Text>
+        <Text style={{ fontSize: 25, color: '#fff', bottom: 55, right: 45 }}>List name</Text>
+        <TextInput
+          style={styles.modallistInput}
+          placeholder="List Name"
+          onChangeText={(text) => setNewListName(text)}
+        />
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
+          <Switch trackColor={{/*false: '#FF784C'*/ true: '#1FF9FA'}}
+        
+            value={isShared}
+            onValueChange={(value) => setIsShared(value)}
+            
+          />
+          <Text style={{ marginLeft:10,color:'#fff', fontSize:25 }}>Shared List</Text>
+        </View>
+      </View>
+        </View>
+
+        <View style={styles.modalbuttonContainer}>
+        <TouchableOpacity style={styles.modalButtonCancel} onPress={handleCancel}>
+              <Text style={styles.buttonTextModal}>Cancel</Text>
+            </TouchableOpacity>
+        <TouchableOpacity style={styles.modalButtonCreate} onPress={handleCreateList}>
+              <Text style={styles.buttonTextModal}>Create</Text>
+            </TouchableOpacity>
+            </View>
+      </Modal>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible2}
+        onRequestClose={() => setModalVisible2(false)}
+      >
+
+<View style={styles.modalContainer}>
+  <View style={styles.modal}>
+    <Text style={styles.modalTitle}>Create Item</Text>
+    <Text style={{ fontSize: 25, color: '#fff' }}>Item Name:</Text>
+    <TextInput
+      style={styles.input}
+      placeholder="Item Name"
+      onChangeText={(text) => setNewItemName(text)}
+    />
+ 
+<View style={styles.categoryContainer}>
+{categories.map((category) => (
+<TouchableOpacity
+key={category}
+style={[
+styles.categoryButton,
+selectedCategory === category && styles.categoryButtonSelected,
+]}
+onPress={() => setSelectedCategory(category)}
+>
+<Text
+style={[
+styles.categoryText,
+selectedCategory === category && styles.categoryTextSelected,
+]}
+>
+{category}
+</Text>
+</TouchableOpacity>
+))}
+</View>
+<TouchableOpacity style={styles.modalButton} onPress={handleSubmit2}>
+<Text style={styles.buttonText}>Create</Text>
+</TouchableOpacity>
+<TouchableOpacity style={styles.modalButton} onPress={handleCancel}>
+<Text style={styles.buttonText}>Cancel</Text>
+</TouchableOpacity>
+</View>
+</View>
+</Modal>
+</SafeAreaView>
+);
+}
+
+
+const styles = StyleSheet.create({
+  container: {
+  flex: 1,
+  backgroundColor: '#FFFFFF',
+  },
+  header: {
+        backgroundColor: '#5469A3',
+        height: 150,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: 50,
+      },
+      logo: {
+            width: 100,
+            height: 80,
+            resizeMode: "contain",
+            bottom:5,
+          },
+  headerText: {
+  fontSize: 24,
+  fontWeight: 'bold',
+  marginLeft: 10,
+  bottom:5,
+  },
+  buttonContainer: {
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  paddingVertical: 20,
+  backgroundColor: '#B1C0D8',
+  },
+  button: {
+  paddingVertical: 15,
+  paddingHorizontal: 30,
+  borderRadius: 10,
+  backgroundColor: '#FEFEFE',
+  },
+  buttonText: {
+  color: '#000',
+  fontWeight: 'bold',
+  fontSize: 20,
+  },
+
+  buttonTextModal: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 20,
+    },
+ 
+  
+  scrollView: {
+  flex: 1,
+  backgroundColor: '#B1C0D8',
+  paddingHorizontal: 10,
+  },
+  divisionShared: {
+  // right:5,
+  fontSize: 24,
+  fontWeight: 'bold',
+  color: '#868892',
+  backgroundColor: "#FEFEFE",
+  width: '100%',
+  height: 40,
+  paddingHorizontal: 10,
+  paddingVertical: 5,
+  borderRadius: 10, //5
+  },
+  divisionPersonal: {
+  // right:5,
+  fontSize: 24,
+  fontWeight: 'bold',
+  color: '#868892',
+  backgroundColor: "#FEFEFE",
+  width: '100%',
+  height: 40,
+  marginTop: 20,
+  paddingHorizontal: 10,
+  paddingVertical: 5,
+  borderRadius: 10,
+  },
+  divisionArchived: {
+  // right:5,
+  fontSize: 24,
+  fontWeight: 'bold',
+  color: '#868892',
+  backgroundColor: "#FF784C",
+  width: '100%',
+  height: 40,
+  marginTop: 20,
+  paddingHorizontal: 10,
+  paddingVertical: 5,
+  borderRadius: 10, 
+  },
+  divisionTitle: {
+  fontSize: 23,
+  fontWeight: 'bold',
+  right:5,
+  color:'#868892',
+  },
+  divisionTitleArchived: {
+    fontSize: 23,
+    fontWeight: 'bold',
+    right:5,
+    color: '#fff',
+    },
+  content: {
+  marginTop: 10,
+  },
+
+  item: {
+  fontSize: 16,
+  paddingVertical: 10,
+  borderBottomWidth: 1,
+  borderBottomColor: '#ccc',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(84, 105, 163, 0.87)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+listbox: {
+    backgroundColor: '#636C84',
+    marginTop: 10,
+    width: '100%',
+    height:65,
+    borderRadius: 10,
+    },
+listtext: {
+  left:5,
+  top:2,
+      color: '#fff',
+      fontSize:25,
+      fontWeight:'bold',
+      },
+      listtextammount: {
+        left:"82%",
+        bottom:17,
+            color: '#fff',
+            fontSize:30,
+            fontWeight:'bold',
+            },
+  modal: {
+    alignItems: 'center',
+    borderRadius: 30,
+    backgroundColor: '#BBC6DA',
+    width: 340,
+    height: 388,
+  },
+  modalTitle: {
+    fontSize: 35,
+    fontWeight: 'bold',
+    color:'#fff',
+    textAlign: 'center',
+    paddingTop: 1 ,
+    //position:'absolute',
+     top:'-12%',
+     right:10,
+     marginBottom:50,
+  },
+  modalText: {
+    fontSize: 20, 
+    color: '#fff', 
+    //bottom: 55, 
+   // right: 45 
+   width:250,
+   textAlign:'center',
+  },
+  modalTextInput: {
+  width: '100%',
+  borderColor: 'gray',
+  borderWidth: 1,
+  paddingVertical: 10,
+  paddingHorizontal: 15,
+  marginBottom: 20,
+  borderRadius: 5,
+  },
+  modalPicker: {
+  width: '100%',
+  borderColor: 'gray',
+  borderWidth: 1,
+  paddingVertical: 10,
+  paddingHorizontal: 15,
+  marginBottom: 20,
+  borderRadius: 5,
+  },
+  modalButton: {
+  backgroundColor: '#87CEFA',
+ 
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  borderRadius: 5,
+  marginHorizontal: 5,
+  },
+  modallistInput:{
+    borderColor: '#ccc',
+    backgroundColor: '#fff',
+    borderRadius: 5,
+   marginBottom: -25,
+    width: 200,
+    height: 40,
+    bottom: 50,
+    right:0,
+    },
+    modalButtonCreate:{
+      backgroundColor: '#636D85',
+      borderRadius: 2,
+      paddingVertical: 15,
+      paddingHorizontal: 50,
+    },
+    modalButtonCancel:{
+      backgroundColor: '#FF784C',
+      borderRadius: 2,
+      paddingVertical: 15,
+      paddingHorizontal: 50,
+    },
+    modalbuttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      position: 'absolute',
+      bottom: 120,
+      left: 0,
+      right: 0,
+      padding: 20,
+      marginBottom:10,
+    },
+    fab: {
+      backgroundColor: '#FEFEFE',
+       //color: '#5469A3',
+    },
+    modalbuttonContainerdelete: {
+      flexDirection: 'column',
+      //justifyContent: 'space-between',
+      alignItems: 'center',
+      position: 'absolute',
+      bottom: 65,
+      left: 0,
+      right: 0,
+      padding: 10,
+      marginBottom:0,
+    },
+    modalButtonCancel2:{
+      backgroundColor: '#FF784C',
+      marginBottom:30,
+      borderRadius: 2,
+      paddingVertical: 15,
+      paddingHorizontal: 50,
+    },
+  });
