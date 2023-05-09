@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 // import firebase from '../firebase.config'; //FIRESTORE
+import { LinearGradient } from "expo-linear-gradient";
+import { useNavigation } from "@react-navigation/native";
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 
@@ -15,7 +17,7 @@ import {
 } from "react-native";
 
 
-export default function Sign_up({ navigation }) {
+export default function Sign_up() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -23,6 +25,7 @@ export default function Sign_up({ navigation }) {
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const navigation = useNavigation();
 
   const handleSignUp = (email, password, repeatedPassword) => {
     if (!email || !password || !repeatedPassword) {
@@ -61,14 +64,29 @@ export default function Sign_up({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <View style={{marginBottom:45}}>
+       <LinearGradient style={styles.gradientBackdrop}
+        locations={[0.15, 0.53, 0.89]}
+        colors={[
+          "#c6d8eb",
+          "rgba(198, 216, 235, 0)",
+          "rgba(163, 176, 230, 0.61)",
+        ]} />
+
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+       <Image style={styles.backButton} source={require('../assets/arrow_back_FILL0_wght400_GRAD0_opsz48.png')} />
+      </TouchableOpacity>
+
+      <View style={{marginBottom:45, top:30}}>
       <Image style={styles.image} source={require('../assets/Pocketshopper_logo_v4.png')} />
       <Text style={styles.imagetext}>Pocket{'\n'}Shopper</Text>
       </View>
+
+      <Text style={{fontSize:30, fontWeight:'bold', bottom:10}}>Create account</Text>
+      
       <View style={styles.inputView}>
         <TextInput
           style={styles.TextInput}
-          placeholder="Enter new email..."
+          placeholder="Email address"
           placeholderTextColor="#000"
           textAlign="center"
           onChangeText={(email) => setEmail(email)}
@@ -77,7 +95,7 @@ export default function Sign_up({ navigation }) {
       <View style={styles.inputView}>
         <TextInput
           style={styles.TextInput}
-          placeholder="Enter new password..."
+          placeholder="Password"
           placeholderTextColor="#000"
           textAlign="center"
           secureTextEntry={true}
@@ -87,7 +105,7 @@ export default function Sign_up({ navigation }) {
       <View style={styles.inputView}>
         <TextInput
           style={styles.TextInput}
-          placeholder="Enter password again..."
+          placeholder="Re-enter password"
           placeholderTextColor="#000"
           textAlign="center"
           secureTextEntry={true}
@@ -100,7 +118,7 @@ export default function Sign_up({ navigation }) {
       <View style={styles.inputView}>
         <TextInput
           style={styles.TextInput}
-          placeholder="Enter new username..."
+          placeholder="Username"
           placeholderTextColor="#000"
           textAlign="center"
           onChangeText={(username) => setUsername(username)}
@@ -142,21 +160,22 @@ const styles = StyleSheet.create({
   },
   inputView: {
     backgroundColor: "#C6D8EB",
-    borderRadius: 0,
+    borderRadius: 5,
     width: "70%",
     height: 45,
     marginBottom: 20,
-    alignItems: "center",
+    //alignItems: "center",
   },
   TextInput: {
     height: 50,
     flex: 1,
     padding: 10,
-    marginLeft: 20,
+    fontSize:20,
+    marginRight:0,
   },
   SignUpBtn: {
     width: "80%",
-    borderRadius: 0,
+    borderRadius: 5,
     height: 50,
     alignItems: "center",
     justifyContent: "center",
@@ -172,6 +191,7 @@ const styles = StyleSheet.create({
     right:80,
     bottom:30,
   },
+
   imagetext:{
     fontSize: 45,
     color: '#000',
@@ -179,5 +199,25 @@ const styles = StyleSheet.create({
     position: "absolute",
     left:45,
     bottom:35,
+  },
+  gradientBackdrop: {
+    top: 0,
+    left: 0,
+    width: "100%",
+    backgroundColor: "transparent",
+    position: "absolute",
+    height: "100%",
+    borderStyle: "solid",
+    borderColor: "#000",
+    borderWidth: 1,
+    backgroundColor: "transparent",
+    position: "absolute",
+  },
+  backButton: {
+    position: "absolute",
+    top: 35,
+    left: 10,
+    height:40,
+    width:40,
   },
 });

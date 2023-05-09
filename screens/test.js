@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, Animated, Pressable } from 'react-native';
+import { Image, Text, View, TouchableOpacity, StyleSheet, Animated, Pressable } from 'react-native';
 import { firebase } from '../firebase.config';
 
 const HamburgerMenu = ({ navigation }) => {
@@ -64,6 +64,7 @@ const HamburgerMenu = ({ navigation }) => {
         <View style={styles.hamburger} />
         <View style={styles.hamburger} />
       </TouchableOpacity>
+
       {/* Menu */}
       <Animated.View style={[styles.menu, { width: menuWidth }]}>
       <TouchableOpacity onPress={toggleMenu}>
@@ -122,8 +123,8 @@ const styles = StyleSheet.create({
     height: 3,
     backgroundColor: 'white',
     marginVertical: 3,
-    left: 15,
-    top:15,
+    left: 25,
+    top:70,
   },
   menu: {
     position: 'absolute',

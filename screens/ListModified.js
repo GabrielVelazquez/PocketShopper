@@ -1,8 +1,8 @@
 import * as React from "react";
 import {useState, useEffect } from 'react';
-import { Pressable, StyleSheet, View, Text, /*Image,*/ TouchableOpacity,ScrollView , FlatList} from "react-native";
+import { Pressable, StyleSheet, View, Text, Image, TouchableOpacity,ScrollView , FlatList} from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Border, Color, FontFamily, FontSize, Image } from "../GlobalStyles";
+import { Border, Color, /*FontFamily,*/ FontSize} from "../GlobalStyles";
 import {firebase} from '../firebase.config'; //FIRESTORE
 import { Button } from "react-native-paper";
 import HamburgerMenu from './test';
@@ -23,6 +23,7 @@ const ListModified = () => {
     const getListData = async () => {
       const listRef = firebase.firestore().collection('Lists').doc(listId);
       const listDoc = await listRef.get();
+      const navigation =useNavigation();
 
       if (listDoc.exists) {
         setListData(listDoc.data());
@@ -135,13 +136,21 @@ const renderCategories = () => {
 
   return (
     <View style={styles.containerfront}>
-      <HamburgerMenu navigation={navigation} />
+  
+    
       
   <View style={styles.containerback}/>
+  <HamburgerMenu navigation={navigation} />
   <CreateItemModal navigation={navigation} />
+
+  <Text style={styles.PageTitle}>List Name</Text> 
+  {/*{listData?.name} */}
   {/* <Text style={styles.PageTitle}>{ListDetails}</Text> */}
-  <Text>List Name: {listData?.name}</Text>
- 
+  
+  <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+       <Image style={styles.backButton} source={require('../assets/arrow_back_FILL0_wght400_GRAD0_opsz48.png')} />
+      </TouchableOpacity>
+      
       {/* <Text>List Name: {lists.name}</Text> */}
 {/*<Text>hola</Text> */}
 <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -166,7 +175,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#5469A3', 
     alignItems: 'center',
     justifyContent: 'center',
-    height:120,
+    height:170,
   },
   containerfront: {
     //flex: 1,
@@ -174,7 +183,7 @@ const styles = StyleSheet.create({
     //left: 0,
     backgroundColor: Color.lightsteelblue_200,
     width: 390,
-    height: 755,
+    height: 850,
     position: "absolute",
   },
   PageTitle: {
@@ -185,18 +194,18 @@ const styles = StyleSheet.create({
     //width: 20,
     textAlign: "center",
     color: Color.white,
-    fontFamily: FontFamily.interRegular,
+    //fontFamily: FontFamily.interRegular,
     position: "absolute",
   },
 category: {
-  marginTop:10,
-  marginBottom: 1,
+  marginTop:2,
+  marginBottom: 0,
   width: 360,
 },
 categoryTitle: { //categoryfruit, check later los colores
   fontSize: 24,
   fontWeight: 'bold',
-  marginBottom: 2,
+  marginBottom: 1,
   color: '#000',
   width: 360,
   height: 41,
@@ -242,8 +251,8 @@ floatingButton: {
   backgroundColor: '#5469A3',
   alignItems: 'center',
   justifyContent: 'center',
-  right: 30,
-  bottom: 25,
+  right: 35,
+  bottom: 55,
   elevation: 5, // For Android shadow
   shadowColor: '#000', // For iOS shadow
   shadowOpacity: 0.3, // For iOS shadow
@@ -256,6 +265,12 @@ floatingbuttonText: {
   fontSize: 24,
   color: '#FFFFFF',
 },
- 
+backButton: {
+  position: "absolute",
+  top: 35,
+  left: 165,
+  height:40,
+  width:40,
+},
 });
 export default ListModified;

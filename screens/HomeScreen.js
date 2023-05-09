@@ -222,7 +222,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <HamburgerMenu navigation={navigation} />
       <View style={styles.header}>
         <Image
@@ -231,6 +231,7 @@ export default function HomeScreen() {
         />
         <Text style={styles.headerText}>Pocket {'\n'}Shopper</Text>
       </View>
+
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
           <Text style={styles.buttonText}>Create List</Text>
@@ -421,7 +422,7 @@ selectedCategory === category && styles.categoryTextSelected,
 </View>
 </View>
 </Modal>
-</SafeAreaView>
+</View>
 );
 }
 
@@ -433,7 +434,7 @@ const styles = StyleSheet.create({
   },
   header: {
         backgroundColor: '#5469A3',
-        height: 150,
+        height: 170,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
@@ -475,7 +476,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     },
  
-  
   scrollView: {
   flex: 1,
   backgroundColor: '#B1C0D8',
@@ -674,5 +674,12 @@ listtext: {
       borderRadius: 2,
       paddingVertical: 15,
       paddingHorizontal: 50,
+    },
+    backButton: {
+      position: "absolute",
+      top: 30,
+      left: 10,
+      height:40,
+      width:40,
     },
   });

@@ -27,7 +27,7 @@ useEffect(() => {
   ItemRef.onSnapshot(querySnapShot => {
     const items = querySnapShot.docs.map(doc => ({
       id: doc.id,
-      ...doc.data()
+      ...doc.data(),
     }));
     setItems(items);
   });
@@ -95,6 +95,8 @@ const navigateToList = (listId) => {
 };
 
 
+
+
 //BORRAR LUEGO#####################################################
 //const [count, setCount] = useState(0);
 /*console.log(item.name) se remplaza con add to list con correct id */
@@ -103,10 +105,20 @@ const navigateToList = (listId) => {
  const handlePress = () => {//----------------
   //setCount(count + 1);//se le suma 1 al count al presionar--------------
 };
+
+{/*
+const getImageSource = () => {
+  // Get the image source based on the item's name
+  const imageName = item.name.toLowerCase().replace(/\s/g, ''); // Convert the name to lowercase and remove spaces
+  return require(`../assets/${imageName}.png`); // Assuming the image files are named in lowercase without spaces and have a .png extension
+};
+*/}
+
     return (
       <TouchableOpacity key={item.id} onPress={() => {handlePress(); console.log(item.name);}}>
       <Text style={styles.itemtext}>{item.name}</Text> 
-      <Image source={item.image} style={styles.image} />
+      {/*<Image source={getImageSource()} style={styles.image} />*/}
+      <Image source={require('../assets/itemplaceholder.png')} style={styles.image} /> 
       <Pressable style={styles.itemcounter}></Pressable>
       <Text style={{fontSize:15,color:'#fff',left:80,bottom:55,marginBottom:-50}}></Text> 
     </TouchableOpacity>
@@ -220,6 +232,9 @@ const navigateToList = (listId) => {
           "rgba(177, 192, 216, 0.9)",
           "rgba(195, 212, 233, 0.61)",
         ]} />
+         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+       <Image style={styles.backButton} source={require('../assets/arrow_back_FILL0_wght400_GRAD0_opsz48.png')} />
+      </TouchableOpacity>
         {/* Header Title */}
         <Text style={styles.title}>Add items to list</Text>
 
@@ -467,6 +482,14 @@ const styles = StyleSheet.create({
     left:67,
     bottom:30,
 },     
+
+backButton: {
+  position: "absolute",
+  top: 35,
+  left: 10,
+  height:40,
+  width:40,
+},
   //MODAL---------------------------------
   modalContainer: { //modal completo
     flex: 1,
