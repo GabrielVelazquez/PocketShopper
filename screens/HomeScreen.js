@@ -5,6 +5,7 @@ import {firebase} from '../firebase.config';
 import { FAB } from 'react-native-paper';
 import HamburgerMenu from './test';
 import CreateItemModal from "./CreateItemModal";
+import { LogBox } from 'react-native';
 
 
 const firestore = firebase.firestore();
@@ -68,7 +69,7 @@ export default function HomeScreen() {
     };
   
     const navigateToList = (listId) => {
-      navigation.navigate('ListModified', { listId: listId, lists: lists });
+      navigation.navigate('ItemSelect', { listId: listId, lists: lists });
       console.log('Navigate to list:', listId);
     };
   
@@ -177,7 +178,11 @@ export default function HomeScreen() {
         });
     }, []);
     
+    
 
+    useEffect(() => {
+        LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+    }, [])
 
     useEffect(() => {
       const removeArchivedLists = () => {

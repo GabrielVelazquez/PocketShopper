@@ -3,11 +3,15 @@ import {StyleSheet, Text, View, Image, Pressable, TextInput, TouchableOpacity, M
 import SelectDropdown from 'react-native-select-dropdown' //npm install react-native-select-dropdown
 import { LinearGradient } from "expo-linear-gradient"; //FIRESTORE
 import {firebase} from '../firebase.config'; //FIRESTORE
+import { useRoute } from '@react-navigation/native';
 //import storage from '@react-native-firebase/storage';
 //import { initializeApp } from 'firebase/app';
 const ItemSelect = ({navigation}) => {//navigation
 const ItemRef = firebase.firestore().collection('Items'); //FIRESTORE
 const database = firebase.database();
+
+const route = useRoute();
+  const { listId, lists } = route.params;
 
 const [searchText, setSearchText] = useState('');
 const [items, setItems] = useState([]);
@@ -100,11 +104,12 @@ const navigateToList = (listId) => {
 //BORRAR LUEGO#####################################################
 //const [count, setCount] = useState(0);
 /*console.log(item.name) se remplaza con add to list con correct id */
-  const renderItem = (item) => {
-//COUNT DE ITEM INDIVIDUAL PERO SEARCH NO FUNCIONA CON ESTO
- const handlePress = () => {//----------------
-  //setCount(count + 1);//se le suma 1 al count al presionar--------------
-};
+const renderItem = (item) => {
+  const handlePress = () => {
+    handleAddToList(lists.items, item); // Agregar el artículo a la lista en Firestore
+    console.log(lists);
+    console.log(item);
+  };
 
 {/*
 const getImageSource = () => {
@@ -158,54 +163,21 @@ const getImageSource = () => {
     );
   };
 
-  /*
-  const handleAddItem = (category) => {
-    //setModalVisible(true);
-    const newItem = {
-      id: `${Date.now()}`,
-      name: `New ${category} Item`,
-      category: category,
-      //price: price,
-      image: require('../assets/itemlplaceholder.png'),
-    };
-    setItems([...items, newItem]);
+  const handleAddToList = (list, item) => {
+    console.log("HOLA ", listId)
+    const listRef = firebase.firestore().collection('lists').doc(listId);
+  
+    // Agregar el artículo a la matriz "items" de la lista en Firestore
+    listRef.update({
+      items: firebase.firestore.FieldValue.arrayUnion(item)
+    })
+      .then(() => {
+        console.log('Artículo agregado a la lista en Firestore');
+      })
+      .catch(error => {
+        console.log('Error al agregar el artículo a la lista:', error);
+      });
   };
-  */
-
-  //setItems(prevItems => {
-   // return[{id: id(), text}, ...prevItems]
-  //})
-
-  /*
-  const renderAddItem = (category) => {
-    return (
-      <Pressable key={category} style={styles.addButton}onPress={() => handleAddItem(category)}> 
-        <Text style={styles.addButtonText}>+ Add {category}</Text>
-      </Pressable>
-    );
-  };
-  */
-
-  //^^^ Clone for modal input
-/*
-  const handleSaveNewItem = (selectedCategory) => { //if  selecteedcategory == category. category: selectedcategory
-    setModalVisible(false);
-    const newItem = {
-      id: `${Date.now()}`,
-      name: newItemName,
-      category: selectedCategory,
-      //category:`${selectedCategory} `,
-      price: newPriceName,
-      image: require('../assets/itemlplaceholder.png')
-    };
-    const itemsRef = database.ref('Items'); // Use a specific location in the database
-  itemsRef.push(newItem);
-    setItems([...items, newItem]);
-    //database.ref(`Items/${selectedCategory}`).set(newItem);//
-    
-    //database.ref(`lists/${newListId}`).set(newItem);
-  };
-  */
 
   
   const renderCategories = () => {
@@ -264,9 +236,10 @@ const getImageSource = () => {
         </TouchableOpacity>
 
         {/* Button 2 terminar */}
-        <TouchableOpacity style={styles.buttondone} onPress={()=> navigation.navigate("HomeScreen")}>{/*onPress={() => navigateToList(item.id)}>*/}
+        <TouchableOpacity style={styles.buttondone} onPress={()=> navigation.navigate('ListModified', { listId: listId, lists: lists })}>
           <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Done</Text>
         </TouchableOpacity>
+        
       </View>
 
 
