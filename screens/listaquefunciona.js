@@ -7,7 +7,7 @@ import {firebase} from '../firebase.config'; //FIRESTORE
 import { Button, CheckBox } from "react-native-elements";
 import HamburgerMenu from './test';
 import CreateItemModal from "./CreateItemModal";
-import { Checkbox } from 'react-native-paper';
+
 import { FAB } from 'react-native-paper';
 import 'firebase/firestore';
 
@@ -60,6 +60,8 @@ const ListModified = () => {
           <CheckBox
             checked={item.completed}
             onPress={() => handleItemCheck(item.id)}
+            checkedColor={item.completed ? '#1FF9FA' : '#1FF9FA'}
+            uncheckedColor={item.completed ? '#00FF00' : '#000000'} // Color when checkbox is not checked
           />
           <Text style={styles.itemtext}>{item.name} - Price: ${item.price}</Text>
         </View>

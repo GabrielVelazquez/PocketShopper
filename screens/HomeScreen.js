@@ -27,7 +27,7 @@ export default function HomeScreen() {
   const [selectedList, setSelectedList] = useState(null);
   const [items, setItems] = useState([]);
   const [inviteCode, setInviteCode] = useState('');
-
+  const [modalVisible3, setModalVisible3] = useState(false);
 
 
 
@@ -85,9 +85,11 @@ export default function HomeScreen() {
       </TouchableOpacity>
     );
   };
-  
+
+
   //Join list
   const handleJoinList = () => {
+    setModalVisible3(true);
     // Verifica que se haya ingresado un código de invitación
     if (inviteCode !== '') {
       // Realiza la consulta a Firestore para encontrar la lista correspondiente al código de invitación
@@ -124,13 +126,13 @@ export default function HomeScreen() {
           console.error('Error querying lists: ', error);
         });
     }
-    return (
-      <View>
-        <Text>Enter invite code:</Text>
-        <TextInput value={inviteCode} onChangeText={setInviteCode} />
-        <Button title="Join list" onPress={handleJoinList} />
-      </View>
-    );
+    //return (
+    //  <View>
+    //    <Text>Enter invite code:</Text>
+    //    <TextInput value={inviteCode} onChangeText={setInviteCode} />
+    //    <Button title="Join list" onPress={handleJoinList} />
+    //  </View>
+    //);
   };
   
   
@@ -233,6 +235,7 @@ export default function HomeScreen() {
   const handleCancel = () => {
     setModalVisible(false);
     setModalVisible2(false);
+    setModalVisible3(false);
   };
 
   return (
@@ -349,7 +352,6 @@ export default function HomeScreen() {
   </View>
 </Modal>
 
-     
       <Modal
         animationType="fade"
         transparent={true}
@@ -402,7 +404,7 @@ export default function HomeScreen() {
     <Text style={{ fontSize: 25, color: '#fff' }}>Item Name:</Text>
     <TextInput
       style={styles.input}
-      placeholder="Item Name"
+      placeholder="Item name"
       onChangeText={(text) => setNewItemName(text)}
     />
  
@@ -428,7 +430,7 @@ selectedCategory === category && styles.categoryTextSelected,
 ))}
 </View>
 <TouchableOpacity style={styles.modalButton} onPress={handleSubmit2}>
-<Text style={styles.buttonText}>Create</Text>
+<Text style={styles.buttonText}>Join</Text>
 </TouchableOpacity>
 <TouchableOpacity style={styles.modalButton} onPress={handleCancel}>
 <Text style={styles.buttonText}>Cancel</Text>
@@ -436,6 +438,45 @@ selectedCategory === category && styles.categoryTextSelected,
 </View>
 </View>
 </Modal>
+
+
+
+
+{/*CODE MODAL*/}
+<Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible3}
+        onRequestClose={() => setModalVisible3(false)}
+      >
+
+<View style={styles.modalContainer}>
+  <View style={styles.modal}>
+    <Text style={styles.modalTitle}>Join a List!</Text>
+    <Text style={{ fontSize: 25, color: '#fff', bottom:50 }}>List code:</Text>
+    <TextInput
+      style={styles.modallistInput}
+      placeholder="List code"
+      //onChangeText={(text) => setNewItemName(text)}
+      value={inviteCode} onChangeText={setInviteCode}
+      />
+      <View style={styles.modalbuttonContainerjoin}>
+      <TouchableOpacity style={styles.modalButtonCancel} onPress={handleCancel}>
+<Text style={styles.buttonTextModal}>Cancel</Text>
+</TouchableOpacity>
+
+<TouchableOpacity style={styles.modalButtonCreate} //onPress={handleJoinList}> 
+onPress={() => {handleJoinList(); setModalVisible3(false);setInviteCode('');}}>
+  
+{/*onPress={handleSubmit2}>*/}
+<Text style={styles.buttonTextModal}>Join</Text>
+</TouchableOpacity>
+</View>
+</View>
+</View>
+</Modal>
+{/*CODE MODAL*/}
+
 </View>
 );
 }
@@ -694,5 +735,16 @@ listtext: {
       left: 10,
       height:40,
       width:40,
+    },
+    modalbuttonContainerjoin: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      position: 'absolute',
+      bottom: 100,
+      left: 0,
+      right: 0,
+      padding: 1,
+      marginBottom:10,
     },
   });
