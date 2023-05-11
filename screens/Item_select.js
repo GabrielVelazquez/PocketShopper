@@ -77,10 +77,24 @@ const handleSaveNewItem = () => {
     });
 };
 
-const navigateToList = (listId) => {
-  navigation.navigate('ListModified', { listId: listId, lists: lists });
-  console.log('Navigate to list:', listId);
-};
+/*
+const gotoitem = ({ item}) => {
+  const navigateToList = (listId) => {
+    navigation.navigate('ListModified', { listId: listId, lists: lists });
+    console.log('Navigate to list:', listId);
+  };
+  
+  return (
+    <View style={styles.buttonContainer}>
+  <TouchableOpacity  style={styles.buttondone} onPress={() => navigateToList(item.id)}
+    >
+      <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Done</Text>  
+        </TouchableOpacity>
+        {/*{gotoitem(item)}* /}
+        </View>
+      );
+  }
+  */ 
 
 
 
