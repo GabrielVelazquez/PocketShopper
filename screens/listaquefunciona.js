@@ -1,9 +1,9 @@
 import * as React from "react";
-import { useState, useEffect } from 'react';
-import { Pressable, StyleSheet, View, Text, Image, TouchableOpacity, ScrollView, FlatList } from "react-native";
+import {useState, useEffect } from 'react';
+import { Pressable, StyleSheet, View, Text, Image, TouchableOpacity,ScrollView , FlatList} from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Border, Color, /*FontFamily,*/ FontSize } from "../GlobalStyles";
-import { firebase } from '../firebase.config'; //FIRESTORE
+import { Border, Color, /*FontFamily,*/ FontSize} from "../GlobalStyles";
+import {firebase} from '../firebase.config'; //FIRESTORE
 import { Button, CheckBox } from "react-native-elements";
 import HamburgerMenu from './test';
 import CreateItemModal from "./CreateItemModal";
@@ -12,7 +12,7 @@ import { FAB } from 'react-native-paper';
 import 'firebase/firestore';
 
 import { useRoute } from '@react-navigation/native';
-
+/////////////////////////////////////////
 const firestore = firebase.firestore();
 const ListModified = () => {
   const navigation = useNavigation();
@@ -56,21 +56,12 @@ const ListModified = () => {
 
     return (
       <TouchableOpacity key={item.id} onPress={handlePress}>
-<<<<<<< Updated upstream
-        <View style={styles.itemContainer}>
+         <View style={styles.itemContainer}>
           <CheckBox
             checked={item.completed}
             onPress={() => handleItemCheck(item.id)}
           />
           <Text style={styles.itemtext}>{item.name} - Price: ${item.price}</Text>
-=======
-          <View>
-              <Checkbox.Android
-                status={item.checked ? 'checked' : 'unchecked'}
-                onPress={() => handlePress(item.id)}
-              />
-        <Text style={styles.itemtext}>{item.name} - Price: ${item.price}</Text>
->>>>>>> Stashed changes
         </View>
       </TouchableOpacity>
     );
@@ -108,15 +99,10 @@ const ListModified = () => {
   const renderCategories = () => {
     const categories = Array.from(new Set(items.map(item => item.category)));
     return categories.map((category) => (
-<<<<<<< Updated upstream
-      <View key={category} style={styles.containercat}>
-        <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{category}</Text>
-=======
-      <View key={category}>
+      <View key={category}style={styles.containercat}>
            {renderCategory(category)} 
           {/*Del render category para add color*/}
         {/*<Text style={{ fontSize: 24, fontWeight: 'bold' }}>{category}</Text> */}
->>>>>>> Stashed changes
         {items
           .filter(item => item.category === category)
           .map(renderItem)
@@ -128,21 +114,17 @@ const ListModified = () => {
 
   return (
     <View style={styles.containerfront}>
-<<<<<<< Updated upstream
-      <Text style={styles.PageTitle}>List Name: {listData?.name}</Text>
-      <Text>Invite Code: {listData?.inviteCode}</Text>
-=======
     <View style={styles.containerback}/>
     <HamburgerMenu navigation={navigation} />
   <CreateItemModal navigation={navigation} />
 
-      <Text style={styles.PageTitle}>{listData?.name}</Text>
+  <Text style={styles.PageTitle}>{listData?.name}</Text>
+      <Text>Invite Code: {listData?.inviteCode}</Text>
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
        <Image style={styles.backButton} source={require('../assets/arrow_back_FILL0_wght400_GRAD0_opsz48.png')} />
       </TouchableOpacity>
       
       <ScrollView contentContainerStyle={styles.scrollContainer}>
->>>>>>> Stashed changes
       {renderCategories()}
       </ScrollView>
 
@@ -265,7 +247,12 @@ itemContainer: {
   flexDirection: 'row',
   alignItems: 'center',
 },
-
+buttoncreate: {
+  //paddingVertical: 15,
+  //paddingHorizontal: 30,
+  //borderRadius: 10,
+  backgroundColor: '#FEFEFE',
+},
 
 });
 export default ListModified;
