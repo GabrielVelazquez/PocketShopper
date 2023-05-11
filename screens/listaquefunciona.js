@@ -7,6 +7,7 @@ import { firebase } from '../firebase.config'; //FIRESTORE
 import { Button, CheckBox } from "react-native-elements";
 import HamburgerMenu from './test';
 import CreateItemModal from "./CreateItemModal";
+import { Checkbox } from 'react-native-paper';
 import { FAB } from 'react-native-paper';
 import 'firebase/firestore';
 
@@ -55,37 +56,104 @@ const ListModified = () => {
 
     return (
       <TouchableOpacity key={item.id} onPress={handlePress}>
+<<<<<<< Updated upstream
         <View style={styles.itemContainer}>
           <CheckBox
             checked={item.completed}
             onPress={() => handleItemCheck(item.id)}
           />
           <Text style={styles.itemtext}>{item.name} - Price: ${item.price}</Text>
+=======
+          <View>
+              <Checkbox.Android
+                status={item.checked ? 'checked' : 'unchecked'}
+                onPress={() => handlePress(item.id)}
+              />
+        <Text style={styles.itemtext}>{item.name} - Price: ${item.price}</Text>
+>>>>>>> Stashed changes
         </View>
       </TouchableOpacity>
     );
   };
 
+  const renderCategory = (category) => {
+    let backgroundColor = '#FFFFFF'; // default blanco
+    // cambia el color segun data category
+    if (category=== 'Fruit') {
+      backgroundColor = '#F7A0CB';
+    } else if (category === 'Dairy') {
+      backgroundColor = '#F6EC95';
+    } else if (category === 'Bakery') {
+      backgroundColor = '#F4C283';
+    }else if (category === 'Meat') {
+      backgroundColor = '#D25241';
+    }else if (category === 'Fish') {
+      backgroundColor = '#7CABC5';
+    }else if (category === 'Beverages') {
+      backgroundColor = '#3574C4';
+    }else if (category === 'Vegetables') {
+      backgroundColor = '#80C547';
+    }
+    const filteredItems = items.filter((item) => { //const categoryItems = items.filter((item) => item.category === category);
+        return item.category === category;});
+    return (
+      <View style={styles.category}>
+        <Pressable style={[styles.categoryTitle,{backgroundColor}]}></Pressable> 
+        <Text style={{fontSize: 24,fontWeight: 'bold',color: '#000',width: 360,height: 27,
+        bottom:38, left:10,}}>{category}</Text>
+      </View>
+    );
+  };
+
   const renderCategories = () => {
     const categories = Array.from(new Set(items.map(item => item.category)));
-
     return categories.map((category) => (
+<<<<<<< Updated upstream
       <View key={category} style={styles.containercat}>
         <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{category}</Text>
+=======
+      <View key={category}>
+           {renderCategory(category)} 
+          {/*Del render category para add color*/}
+        {/*<Text style={{ fontSize: 24, fontWeight: 'bold' }}>{category}</Text> */}
+>>>>>>> Stashed changes
         {items
           .filter(item => item.category === category)
           .map(renderItem)
         }
+      
       </View>
     ));
   };
 
   return (
     <View style={styles.containerfront}>
+<<<<<<< Updated upstream
       <Text style={styles.PageTitle}>List Name: {listData?.name}</Text>
       <Text>Invite Code: {listData?.inviteCode}</Text>
+=======
+    <View style={styles.containerback}/>
+    <HamburgerMenu navigation={navigation} />
+  <CreateItemModal navigation={navigation} />
+
+      <Text style={styles.PageTitle}>{listData?.name}</Text>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+       <Image style={styles.backButton} source={require('../assets/arrow_back_FILL0_wght400_GRAD0_opsz48.png')} />
+      </TouchableOpacity>
+      
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+>>>>>>> Stashed changes
       {renderCategories()}
+      </ScrollView>
+
+      <View style={styles.floatingcontainer}>
+      <TouchableOpacity style={styles.floatingButton} onPress={()=> navigation.navigate("ItemSelect", {listId: listId, lists:lists})}>
+  <Text style={styles.floatingbuttonText}>+</Text>
+</TouchableOpacity>
+
     </View>
+    </View>
+  
   );
 };
 
@@ -107,9 +175,10 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   PageTitle: {
-    top: 100,
-    left: 135,
+    top: 125,
+    left: 10,
     fontSize: 30,
+    fontWeight:"bold",
     //height: 31,
     //width: 20,
     textAlign: "center",
@@ -118,8 +187,8 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
 category: {
-  marginTop:2,
-  marginBottom: 0,
+  marginTop:10,
+  marginBottom:-25,
   width: 360,
 },
 categoryTitle: { //categoryfruit, check later los colores
@@ -196,6 +265,7 @@ itemContainer: {
   flexDirection: 'row',
   alignItems: 'center',
 },
+
 
 });
 export default ListModified;
