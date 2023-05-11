@@ -26,7 +26,7 @@ export default function HomeScreen() {
   const [selectedListId, setSelectedListId] = useState(null);
   const [selectedList, setSelectedList] = useState(null);
   const [items, setItems] = useState([]);
-
+  const [inviteCode, setInviteCode] = useState('');
 
 
 
@@ -86,6 +86,52 @@ export default function HomeScreen() {
     );
   };
   
+  //Join list
+  const handleJoinList = () => {
+    // Verifica que se haya ingresado un código de invitación
+    if (inviteCode !== '') {
+      // Realiza la consulta a Firestore para encontrar la lista correspondiente al código de invitación
+      firestore
+        .collection('lists')
+        .where('inviteCode', '==', inviteCode)
+        .get()
+        .then((querySnapshot) => {
+          if (!querySnapshot.empty) {
+            // Si se encuentra una lista con el código de invitación, obtén su ID
+            const listId = querySnapshot.docs[0].id;
+  
+            // Agrega al usuario actual como invitado en la lista
+            firestore
+              .collection('lists')
+              .doc(listId)
+              .update({
+                invitedUsers: firebase.firestore.FieldValue.arrayUnion(
+                  firebase.auth().currentUser.uid
+                ),
+              })
+              .then(() => {
+                // Realiza cualquier acción adicional después de unirse a la lista
+                console.log('Joined list successfully!');
+              })
+              .catch((error) => {
+                console.error('Error joining list: ', error);
+              });
+          } else {
+            console.log('List not found');
+          }
+        })
+        .catch((error) => {
+          console.error('Error querying lists: ', error);
+        });
+    }
+    return (
+      <View>
+        <Text>Enter invite code:</Text>
+        <TextInput value={inviteCode} onChangeText={setInviteCode} />
+        <Button title="Join list" onPress={handleJoinList} />
+      </View>
+    );
+  };
   
   
     //Este es el que funciona en el servidor
@@ -98,8 +144,16 @@ export default function HomeScreen() {
           owner: firebase.auth().currentUser.uid,
           isShared,
           inviteCode: null,
-          archivedBy: null
+          archivedBy: null,
+          invitedUsers: null,
         };
+    
+        if (isShared) { // Verifica si la lista es compartida
+          // Genera un código de invitación único para la lista
+          const inviteCode = Math.random().toString(36).substr(2, 5);
+          // Agrega el código de invitación a la lista
+          newList.inviteCode = inviteCode;
+        }
     
         firestore
           .collection('lists')
@@ -114,51 +168,6 @@ export default function HomeScreen() {
             console.error('Error adding document: ', error);
           });
       }
-    };
-    
-    
-    
-    const sendInvite = (list) => {
-      // Genera un código de invitación único para la lista
-      const inviteCode = Math.random().toString(36).substr(2, 5);
-      // Actualiza el código de invitación en la lista en Firebase
-      database.ref(`lists/${list.id}/inviteCode`).set(inviteCode);
-      // Muestra el código de invitación en una ventana emergente
-      alert(`El código de invitación para la lista "${list.name}" es: ${inviteCode}`);
-    };
-    
-    
-
-    const JoinList = () => {
-      const [inviteCode, setInviteCode] = useState('');
-    
-      const handleJoinList = () => {
-        // Busca la lista con el código de invitación correspondiente en Firebase
-        database.ref('lists').orderByChild('inviteCode').equalTo(inviteCode).once('value', (snapshot) => {
-          const firebaseLists = snapshot.val();
-          if (firebaseLists) {
-            // Si se encuentra una lista con el código de invitación correspondiente, agrega al usuario actual como colaborador
-            const listId = Object.keys(firebaseLists)[0];
-            const list = firebaseLists[listId];
-            const currentUser = firebase.auth().currentUser;
-            if (currentUser) {
-              database.ref(`lists/${listId}/collaborators/${currentUser.uid}`).set(true);
-              alert(`Te has unido a la lista "${list.name}"`);
-            }
-          } else {
-            // Si no se encuentra una lista con el código de invitación correspondiente, muestra un mensaje de error
-            alert(`No se encontró ninguna lista con el código de invitación "${inviteCode}"`);
-          }
-        });
-        
-      };
-      return (
-        <View>
-          <Text>Enter invite code:</Text>
-          <TextInput value={inviteCode} onChangeText={setInviteCode} />
-          <Button title="Join list" onPress={handleJoinList} />
-        </View>
-      );
     };
     
     useEffect(() => {
@@ -298,7 +307,7 @@ export default function HomeScreen() {
         icon: 'playlist-check',
         label: 'Join list',
         overlayColor: '#fff',
-        onPress:JoinList,
+        onPress: handleJoinList,
       },
       {
         icon: 'plus-box',

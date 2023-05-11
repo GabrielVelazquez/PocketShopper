@@ -1,17 +1,17 @@
 import * as React from "react";
-import {useState, useEffect } from 'react';
-import { Pressable, StyleSheet, View, Text, Image, TouchableOpacity,ScrollView , FlatList} from "react-native";
+import { useState, useEffect } from 'react';
+import { Pressable, StyleSheet, View, Text, Image, TouchableOpacity, ScrollView, FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Border, Color, /*FontFamily,*/ FontSize} from "../GlobalStyles";
-import {firebase} from '../firebase.config'; //FIRESTORE
-import { Button } from "react-native-paper";
+import { Border, Color, /*FontFamily,*/ FontSize } from "../GlobalStyles";
+import { firebase } from '../firebase.config'; //FIRESTORE
+import { Button, CheckBox } from "react-native-elements";
 import HamburgerMenu from './test';
 import CreateItemModal from "./CreateItemModal";
 import { FAB } from 'react-native-paper';
 import 'firebase/firestore';
 
 import { useRoute } from '@react-navigation/native';
-/////////////////////////////////////////
+
 const firestore = firebase.firestore();
 const ListModified = () => {
   const navigation = useNavigation();
@@ -38,6 +38,16 @@ const ListModified = () => {
     getListData();
   }, []);
 
+  const handleItemCheck = (itemId) => {
+    const updatedItems = items.map(item => {
+      if (item.id === itemId) {
+        return { ...item, completed: !item.completed };
+      }
+      return item;
+    });
+    setItems(updatedItems);
+  };
+
   const renderItem = (item) => {
     const handlePress = () => {
       console.log('Check off', item.name, 'of', item.price);
@@ -45,7 +55,13 @@ const ListModified = () => {
 
     return (
       <TouchableOpacity key={item.id} onPress={handlePress}>
-        <Text>{item.name} - Price: ${item.price}</Text>
+        <View style={styles.itemContainer}>
+          <CheckBox
+            checked={item.completed}
+            onPress={() => handleItemCheck(item.id)}
+          />
+          <Text style={styles.itemtext}>{item.name} - Price: ${item.price}</Text>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -54,7 +70,7 @@ const ListModified = () => {
     const categories = Array.from(new Set(items.map(item => item.category)));
 
     return categories.map((category) => (
-      <View key={category}>
+      <View key={category} style={styles.containercat}>
         <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{category}</Text>
         {items
           .filter(item => item.category === category)
@@ -65,8 +81,9 @@ const ListModified = () => {
   };
 
   return (
-    <View>
-      <Text>List Name: {listData?.name}</Text>
+    <View style={styles.containerfront}>
+      <Text style={styles.PageTitle}>List Name: {listData?.name}</Text>
+      <Text>Invite Code: {listData?.inviteCode}</Text>
       {renderCategories()}
     </View>
   );
