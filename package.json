@@ -9,7 +9,11 @@
     "web": "expo start --web"
   },
   "dependencies": {
+<<<<<<< Updated upstream
     "@react-native-async-storage/async-storage": "^1.18.1",
+=======
+    "@react-native-clipboard/clipboard": "^1.11.2",
+>>>>>>> Stashed changes
     "@react-native-community/checkbox": "^0.5.15",
     "@react-native-firebase/storage": "^17.4.3",
     "@react-native-picker/picker": "^2.4.8",
@@ -18,6 +22,7 @@
     "@react-navigation/stack": "^6.3.16",
     "expo": "^48.0.15",
     "expo-checkbox": "~2.3.1",
+    "expo-clipboard": "~4.1.2",
     "expo-image-picker": "^14.1.1",
     "expo-linear-gradient": "^12.1.2",
     "expo-splash-screen": "~0.18.2",

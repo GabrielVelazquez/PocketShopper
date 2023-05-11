@@ -33,6 +33,7 @@ useEffect(() => {
     const items = querySnapShot.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
+      completed: false, // Agrega el campo "completed" con valor inicial "false"
     }));
     setItems(items);
   });
@@ -147,12 +148,12 @@ const getImageSource = () => {
   };
 
   const handleAddToList = (list, item) => {
-    console.log("HOLA ", listId)
     const listRef = firebase.firestore().collection('lists').doc(listId);
   
     // Agregar el artículo a la matriz "items" de la lista en Firestore
+    const itemToAdd = { ...item, completed: false }; // Agrega el campo "completed" con valor "false" al artículo
     listRef.update({
-      items: firebase.firestore.FieldValue.arrayUnion(item)
+      items: firebase.firestore.FieldValue.arrayUnion(itemToAdd)
     })
       .then(() => {
         console.log('Artículo agregado a la lista en Firestore');
@@ -161,7 +162,7 @@ const getImageSource = () => {
         console.log('Error al agregar el artículo a la lista:', error);
       });
   };
-
+  
   
   const renderCategories = () => {
     const categories = Array.from(new Set(items.map((item) => item.category)));

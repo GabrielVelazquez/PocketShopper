@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Image, SafeAreaView, ScrollView,  FlatList, TouchableOpacity, Modal, TextInput, Switch, Button, BackHandler } from 'react-native';
+import { StyleSheet, View, Text, Image, SafeAreaView, ScrollView,  SectionList, TouchableOpacity, Modal, TextInput, Switch, Button, BackHandler } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {firebase} from '../firebase.config';
 import { FAB } from 'react-native-paper';
 import HamburgerMenu from './test';
 import CreateItemModal from "./CreateItemModal";
-import { getFirestore, collection, doc, deleteDoc, updateDoc } from "firebase/firestore";
+// import { LogBox } from 'react-native';
 
 
 const firestore = firebase.firestore();
@@ -26,7 +26,7 @@ export default function HomeScreen() {
   const [selectedListId, setSelectedListId] = useState(null);
   const [selectedList, setSelectedList] = useState(null);
   const [items, setItems] = useState([]);
-
+  const [inviteCode, setInviteCode] = useState('');
 
 
 
@@ -36,50 +36,106 @@ export default function HomeScreen() {
   const toggleSpeedDial = () => {
     setIsSpeedDialOpen(!isSpeedDialOpen);
   };
-  const handleDelete = async () => {
-    const firestore = getFirestore();
+  const handleDelete = () => {
     const updatedLists = lists.filter((list) => list.id !== selectedList.id);
     const archivedList = { ...selectedList, archivedAt: new Date() };
     setLists(updatedLists);
     setArchivedLists([...archivedLists, archivedList]);
   
     // Elimina la lista de Firestore
-    const listRef = doc(firestore, "lists", selectedList.id);
-    await deleteDoc(listRef);
-  
-    setSelectedList(null);
+    firestore
+      .collection('lists')
+      .doc(selectedList.id)
+      .delete()
+      .then(() => {
+        setSelectedList(null);
+      })
+      .catch((error) => {
+        console.error('Error deleting document: ', error);
+      });
   };
   
 
-  const renderListItem = ({ item }) => {
-    if (!item.isShared && item.owner !== firebase.auth().currentUser.uid) {
+  const renderListItem = ({ item, isShared }) => {
+    if (!isShared && item.owner !== firebase.auth().currentUser.uid) {
       return null;
     }
-    if (item.isShared && item.owner === firebase.auth().currentUser.uid) {
+    if (isShared && item.owner === firebase.auth().currentUser.uid) {
       return null;
     }
   
-    const handleLongPress = (list) => {
-      setSelectedList(list);
+    const handleLongPress = (listId) => {
+      setSelectedListId(listId);
     };
   
-    const navigateToList = (list) => {
-      navigation.navigate('ItemSelect', { list });
-      console.log('Navigate to list:', item.name);
+    const navigateToList = (listId) => {
+      navigation.navigate('listaquefunciona', { listId: listId, lists: lists });
+      console.log('Navigate to list:', listId);
     };
   
     return (
       <TouchableOpacity
         onPress={() => navigateToList(item.id)}
-        onLongPress={() => handleLongPress(item)}
+        onLongPress={() => handleLongPress(item.id)}
       >
         <View style={styles.listbox}>
           <Text style={styles.listtext}>{item.name}</Text>
-          <Text style={styles.listtextammount}>{item.lists?.length}/#</Text>
+          <Text style={styles.listtextammount}>#/{item.items?.length}</Text>
         </View>
       </TouchableOpacity>
     );
   };
+  
+  //Join list
+  const handleJoinList = () => {
+    // Verifica que se haya ingresado un código de invitación
+    if (inviteCode !== '') {
+      // Realiza la consulta a Firestore para encontrar la lista correspondiente al código de invitación
+      firestore
+        .collection('lists')
+        .where('inviteCode', '==', inviteCode)
+        .get()
+        .then((querySnapshot) => {
+          if (!querySnapshot.empty) {
+            // Si se encuentra una lista con el código de invitación, obtén su ID
+            const listId = querySnapshot.docs[0].id;
+  
+            // Agrega al usuario actual como invitado en la lista
+            firestore
+              .collection('lists')
+              .doc(listId)
+              .update({
+                invitedUsers: firebase.firestore.FieldValue.arrayUnion(
+                  firebase.auth().currentUser.uid
+                ),
+              })
+              .then(() => {
+                // Realiza cualquier acción adicional después de unirse a la lista
+                console.log('Joined list successfully!');
+              })
+              .catch((error) => {
+                console.error('Error joining list: ', error);
+              });
+          } else {
+            console.log('List not found');
+          }
+        })
+        .catch((error) => {
+          console.error('Error querying lists: ', error);
+        });
+    }
+ 
+  
+  return (
+    <View>
+      {/* ... */}
+      <Text>Enter invite code:</Text>
+      <TextInput value={inviteCode} onChangeText={setInviteCode} />
+      <Button title="Join list" onPress={handleJoinList} />
+    </View>
+  );
+};
+  
   
   
     //Este es el que funciona en el servidor
@@ -92,8 +148,16 @@ export default function HomeScreen() {
           owner: firebase.auth().currentUser.uid,
           isShared,
           inviteCode: null,
-          archivedBy: null
+          archivedBy: null,
+          invitedUsers: null,
         };
+    
+        if (isShared) { // Verifica si la lista es compartida
+          // Genera un código de invitación único para la lista
+          const inviteCode = Math.random().toString(36).substr(2, 5);
+          // Agrega el código de invitación a la lista
+          newList.inviteCode = inviteCode;
+        }
     
         firestore
           .collection('lists')
@@ -108,51 +172,6 @@ export default function HomeScreen() {
             console.error('Error adding document: ', error);
           });
       }
-    };
-    
-    
-    
-    const sendInvite = (list) => {
-      // Genera un código de invitación único para la lista
-      const inviteCode = Math.random().toString(36).substr(2, 5);
-      // Actualiza el código de invitación en la lista en Firebase
-      database.ref(`lists/${list.id}/inviteCode`).set(inviteCode);
-      // Muestra el código de invitación en una ventana emergente
-      alert(`El código de invitación para la lista "${list.name}" es: ${inviteCode}`);
-    };
-    
-    
-
-    const JoinList = () => {
-      const [inviteCode, setInviteCode] = useState('');
-    
-      const handleJoinList = () => {
-        // Busca la lista con el código de invitación correspondiente en Firebase
-        database.ref('lists').orderByChild('inviteCode').equalTo(inviteCode).once('value', (snapshot) => {
-          const firebaseLists = snapshot.val();
-          if (firebaseLists) {
-            // Si se encuentra una lista con el código de invitación correspondiente, agrega al usuario actual como colaborador
-            const listId = Object.keys(firebaseLists)[0];
-            const list = firebaseLists[listId];
-            const currentUser = firebase.auth().currentUser;
-            if (currentUser) {
-              database.ref(`lists/${listId}/collaborators/${currentUser.uid}`).set(true);
-              alert(`Te has unido a la lista "${list.name}"`);
-            }
-          } else {
-            // Si no se encuentra una lista con el código de invitación correspondiente, muestra un mensaje de error
-            alert(`No se encontró ninguna lista con el código de invitación "${inviteCode}"`);
-          }
-        });
-        
-      };
-      return (
-        <View>
-          <Text>Enter invite code:</Text>
-          <TextInput value={inviteCode} onChangeText={setInviteCode} />
-          <Button title="Join list" onPress={handleJoinList} />
-        </View>
-      );
     };
     
     useEffect(() => {
@@ -172,7 +191,11 @@ export default function HomeScreen() {
         });
     }, []);
     
+    
 
+    // useEffect(() => {
+    //     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+    // }, [])
 
     useEffect(() => {
       const removeArchivedLists = () => {
@@ -217,7 +240,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <HamburgerMenu navigation={navigation} />
       <View style={styles.header}>
         <Image
@@ -226,48 +249,39 @@ export default function HomeScreen() {
         />
         <Text style={styles.headerText}>Pocket {'\n'}Shopper</Text>
       </View>
+
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
           <Text style={styles.buttonText}>Create List</Text>
         </TouchableOpacity>
 
+        {/*<TouchableOpacity style={styles.button} onPress={() => setModalVisible2(true)}>
+          <Text style={styles.buttonText}>Create Item</Text>
+        </TouchableOpacity>
+  */}
+
         <CreateItemModal navigation={navigation} />
       </View>
 
       <ScrollView style={styles.scrollView}>
-  <View style={styles.divisionShared}>
-    <Text style={styles.divisionTitle}>Shared Lists</Text>
-  </View>
-  <FlatList
-    data={sharedLists}
-    renderItem={renderListItem}
-    keyExtractor={(item) => item.id}
-    style={{ flex: 1 }}
-    
-  />
 
-  <View style={styles.divisionPersonal}>
-    <Text style={styles.divisionTitle}>Personal Lists</Text>
-  </View>
-  <FlatList
-    data={personalLists}
-    renderItem={renderListItem}
-    keyExtractor={(item) => item.id}
-    style={{ flex: 1 }}
-  />
-
-<View style={styles.divisionArchived}>
-  <Text style={styles.divisionTitleArchived}>Archived Lists</Text>
-</View>
-<FlatList
-// Dentro de FlatList:
-  renderItem={renderListItem}
-  data={archivedLists}
-  // renderItem={renderListItem}
+<SectionList
+  sections={[
+    { title: 'Shared Lists', data: sharedLists },
+    { title: 'Personal Lists', data: personalLists },
+    { title: 'Archived Lists', data: archivedLists },
+  ]}
+  renderItem={({ item }) => renderListItem({ item, isShared: item.title === 'Shared Lists' })}
+  renderSectionHeader={({ section: { title } }) => (
+    <View style={styles.divisionPersonal}>
+      <Text style={styles.divisionTitle}>{title}</Text>
+    </View>
+  )}
   keyExtractor={(item) => item.id}
   style={{ flex: 1 }}
-  borderRadius={10}
+  stickySectionHeadersEnabled={false}
 />
+
 </ScrollView>
 
 <FAB.Group 
@@ -284,7 +298,7 @@ export default function HomeScreen() {
         icon: 'playlist-check',
         label: 'Join list',
         overlayColor: '#fff',
-        onPress:JoinList,
+        onPress: handleJoinList,
       },
       {
         icon: 'plus-box',
@@ -345,7 +359,8 @@ export default function HomeScreen() {
         />
         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
           <Switch trackColor={{/*false: '#FF784C'*/ true: '#1FF9FA'}}
-        
+        //thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+        //ios_backgroundColor="#FF784C"
             value={isShared}
             onValueChange={(value) => setIsShared(value)}
             
@@ -412,7 +427,7 @@ selectedCategory === category && styles.categoryTextSelected,
 </View>
 </View>
 </Modal>
-</SafeAreaView>
+</View>
 );
 }
 
@@ -424,7 +439,7 @@ const styles = StyleSheet.create({
   },
   header: {
         backgroundColor: '#5469A3',
-        height: 150,
+        height: 170,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
@@ -466,7 +481,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     },
  
-  
   scrollView: {
   flex: 1,
   backgroundColor: '#B1C0D8',
@@ -605,7 +619,6 @@ listtext: {
   },
   modalButton: {
   backgroundColor: '#87CEFA',
- 
   paddingVertical: 10,
   paddingHorizontal: 20,
   borderRadius: 5,
@@ -665,5 +678,12 @@ listtext: {
       borderRadius: 2,
       paddingVertical: 15,
       paddingHorizontal: 50,
+    },
+    backButton: {
+      position: "absolute",
+      top: 30,
+      left: 10,
+      height:40,
+      width:40,
     },
   });
