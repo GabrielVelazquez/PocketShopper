@@ -22,6 +22,7 @@ import Sign_up from "./screens/Sign_up";
 import HomeScreen from "./screens/HomeScreen";
 import ListModified from "./screens/ListModified";
 import RemadeProfile from "./screens/RemadeProfile";
+import listaquefunciona from "./screens/listaquefunciona";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator, style } from "@react-navigation/native-stack";
 // import { AccountNavigator } from "./screens/account.navigator";
@@ -106,6 +107,13 @@ export default function App() {
   component={RemadeProfile}
   options={{headerShown: false}}
   />
+
+<Stack.Screen
+  name="listaquefunciona"
+  component={listaquefunciona}
+  options={{headerShown: false}}
+  />
+
 </Stack.Navigator>
 </NavigationContainer>
   );

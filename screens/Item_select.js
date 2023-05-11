@@ -24,6 +24,7 @@ const [modalVisible, setModalVisible] = useState(false);
 const categories = Array.from(new Set(items.map(item => item.category)));
 
 
+
 //const data = [];
 //const categories=[];
 
@@ -37,24 +38,6 @@ useEffect(() => {
   });
 }, []);
 
-/* FIRESTORE WIP
-(async () => {
-},[]
-)
-ItemRef.onSnapshot(
- querySnapShot => {
-   const items = []
-   //const categories = []
-querySnapShot.forEach((doc) => {
- const {name, category, price}=doc.data()
- items.push({
-id: doc.id, name, category, price
-}); 
-})
-setItems(items)
-}
-)
-*/
 //const [searchText, setSearchText] = useState(''); //textinput
 //const [items, setItems] = useState(data);
 
@@ -120,7 +103,7 @@ const getImageSource = () => {
 */}
 
     return (
-      <TouchableOpacity key={item.id} onPress={() => {handlePress(); console.log(item.name);}}>
+      <TouchableOpacity key={item.id} onPress={() => {handlePress(); console.log(item.name);}}onLongPress={() => handleLongPress(item.id)}>
       <Text style={styles.itemtext}>{item.name}</Text> 
       {/*<Image source={getImageSource()} style={styles.image} />*/}
       <Image source={require('../assets/itemplaceholder.png')} style={styles.image} /> 
@@ -190,6 +173,26 @@ const getImageSource = () => {
     ));
   };
 
+/*
+  const renderListItem = (item) => {
+
+    const navigateToList = (listId) => {
+      navigation.navigate('listaquefunciona', { listId: listId, lists: lists });
+      console.log('Navigate to list:', listId);
+    };
+  
+    return (
+      <TouchableOpacity style={styles.buttondone}
+        onPress={() => navigateToList(item.id)}
+        onLongPress={() => handleLongPress(item.id)}
+      >
+        <View style={styles.listbox}>
+        <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Done</Text>  
+        </View>
+      </TouchableOpacity>
+    );
+  };
+ */
   
   
   //render stuff?
@@ -232,14 +235,14 @@ const getImageSource = () => {
 <View style={styles.buttonContainer}>
         {/* Button 1 crear */}
         <TouchableOpacity style={styles.buttoncreate} onPress={handleCreateItem}>
-          <Text style={{color:'#000',fontSize: 16,textAlign:'center',}}>Create Item</Text>
+          <Text style={{color:'#000',fontSize: 16,textAlign:'center',}}>Create Item</Text> 
         </TouchableOpacity>
 
         {/* Button 2 terminar */}
-        <TouchableOpacity style={styles.buttondone} onPress={()=> navigation.navigate('ListModified', { listId: listId, lists: lists })}>
-          <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Done</Text>
+        <TouchableOpacity  style={styles.buttondone} onPress={()=> navigation.navigate('listaquefunciona', { listId: listId, lists: lists })}>
+          <Text style={{color:'#fff',fontSize: 16,textAlign:'center'}}>Done</Text>  
         </TouchableOpacity>
-        
+       {/* EL NAVIGATE NO HACE UPDATE A LA LISTA, HAY QUE SALIR Y ENTRAR DENUEVO*/}
       </View>
 
 

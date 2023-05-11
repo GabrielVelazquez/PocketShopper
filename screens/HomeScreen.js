@@ -69,7 +69,7 @@ export default function HomeScreen() {
     };
   
     const navigateToList = (listId) => {
-      navigation.navigate('ListModified', { listId: listId, lists: lists });
+      navigation.navigate('listaquefunciona', { listId: listId, lists: lists });
       console.log('Navigate to list:', listId);
     };
   
@@ -80,7 +80,7 @@ export default function HomeScreen() {
       >
         <View style={styles.listbox}>
           <Text style={styles.listtext}>{item.name}</Text>
-          <Text style={styles.listtextammount}>{item.items?.length}/#</Text>
+          <Text style={styles.listtextammount}>#/{item.items?.length}</Text>
         </View>
       </TouchableOpacity>
     );
