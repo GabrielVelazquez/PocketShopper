@@ -7,7 +7,7 @@ import {firebase} from '../firebase.config'; //FIRESTORE
 import { Button, CheckBox } from "react-native-elements";
 import HamburgerMenu from './test';
 import CreateItemModal from "./CreateItemModal";
-
+import * as Clipboard from "expo-clipboard";
 import { FAB } from 'react-native-paper';
 import 'firebase/firestore';
 
@@ -21,8 +21,14 @@ const ListModified = () => {
   const [listData, setListData] = useState(null);
   const [items, setItems] = useState([]);
 
-  useEffect(() => {
-    const getListData = async () => {
+    useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      getListData();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+      const getListData = async () => {
       try {
         const listRef = firebase.firestore().collection('lists').doc(listId);
         const listDoc = await listRef.get();
@@ -36,18 +42,47 @@ const ListModified = () => {
       }
     };
 
-    getListData();
-  }, []);
+     const handleCopyCode = () => {
+      if (listData?.isShared && listData?.inviteCode) {
+        Clipboard.setString(listData.inviteCode);
+        // Agregar cualquier lógica adicional después de copiar el código al portapapeles
+      }
+    };
 
-  const handleItemCheck = (itemId) => {
+  const handleItemCheck = async (itemId) => {
     const updatedItems = items.map(item => {
       if (item.id === itemId) {
-        return { ...item, completed: !item.completed };
+        const updatedItem = { ...item, completed: !item.completed };
+        updateItemInFirestore(updatedItem); // Actualizar el item en Firestore
+        return updatedItem;
       }
       return item;
     });
     setItems(updatedItems);
   };
+
+  const updateItemInFirestore = async (item) => {
+    try {
+      const listRef = firestore.collection('lists').doc(listId);
+      const itemsToUpdate = items.map(existingItem => {
+        if (existingItem.id === item.id) {
+          return item;
+        }
+        return existingItem;
+      });
+  
+      setItems(itemsToUpdate); // Actualizar localmente la lista de productos
+  
+      await listRef.update({
+        items: itemsToUpdate,
+      });
+  
+      console.log('Item updated in Firestore:', item);
+    } catch (error) {
+      console.error('Error updating item in Firestore:', error);
+    }
+  };
+
 
   const renderItem = (item) => {
     const handlePress = () => {
@@ -121,7 +156,9 @@ const ListModified = () => {
   <CreateItemModal navigation={navigation} />
 
   <Text style={styles.PageTitle}>{listData?.name}</Text>
-      <Text>Invite Code: {listData?.inviteCode}</Text>
+  <TouchableOpacity onPress={handleCopyCode}>
+      <Text>{listData?.isShared && `Invite Code: ${listData?.inviteCode}`}</Text>
+    </TouchableOpacity>
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
        <Image style={styles.backButton} source={require('../assets/arrow_back_FILL0_wght400_GRAD0_opsz48.png')} />
       </TouchableOpacity>

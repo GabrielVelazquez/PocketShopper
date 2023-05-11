@@ -131,35 +131,38 @@ const getImageSource = () => {
   const renderCategory = (category) => {
     let backgroundColor = '#FFFFFF'; // default blanco
     // cambia el color segun data category
-    if (category=== 'Fruit') {
+    if (category === 'Fruit') {
       backgroundColor = '#F7A0CB';
     } else if (category === 'Dairy') {
       backgroundColor = '#F6EC95';
     } else if (category === 'Bakery') {
       backgroundColor = '#F4C283';
-    }else if (category === 'Meat') {
+    } else if (category === 'Meat') {
       backgroundColor = '#D25241';
-    }
-    else if (category === 'Fish') {
+    } else if (category === 'Fish') {
       backgroundColor = '#7CABC5';
-    }
-    else if (category === 'Beverages') {
+    } else if (category === 'Beverages') {
       backgroundColor = '#3574C4';
-    }
-    else if (category === 'Vegetables') {
+    } else if (category === 'Vegetables') {
       backgroundColor = '#80C547';
     }
-    const filteredItems = items.filter((item) => { //const categoryItems = items.filter((item) => item.category === category);
-        return item.category === category && item.name.toLowerCase().includes(searchText.toLowerCase());});
+  
+    const filteredItems = items.filter((item) => {
+      // Check if item and item.name exist before accessing toLowerCase()
+      return item && item.name && item.category === category && item.name.toLowerCase().includes(searchText.toLowerCase());
+    });
+  
     return (
       <View style={styles.category}>
         {/*<Text style={styles.categoryTitle}>{category}</Text> */}
-        <Text style={[styles.categoryTitle,{backgroundColor}]}>{category}</Text> 
+        <Text style={[styles.categoryTitle, { backgroundColor }]}>{category}</Text>
         <View style={styles.list}>
-          {filteredItems.map(renderItem)}</View>
+          {filteredItems.map(renderItem)}
+        </View>
       </View>
     );
   };
+  
 
   const handleAddToList = (list, item) => {
     const listRef = firebase.firestore().collection('lists').doc(listId);
