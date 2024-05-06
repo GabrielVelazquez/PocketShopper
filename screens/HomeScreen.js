@@ -28,6 +28,8 @@ export default function HomeScreen() {
   const [items, setItems] = useState([]);
   const [inviteCode, setInviteCode] = useState('');
   const [modalVisible3, setModalVisible3] = useState(false);
+  const [invitedList, setInvitedList] = useState(null);
+
 
 
 
@@ -37,11 +39,12 @@ export default function HomeScreen() {
     setIsSpeedDialOpen(!isSpeedDialOpen);
   };
   const handleDelete = () => {
-    const updatedLists = lists.filter((list) => list.id !== selectedList.id);
-    const archivedList = { ...selectedList, archivedAt: new Date() };
-    setLists(updatedLists);
-    setArchivedLists([...archivedLists, archivedList]);
-  
+    if (selectedList) { // Verifica si selectedList no es nulo
+      const updatedLists = lists.filter((list) => list.id !== selectedList.id);
+      const archivedList = { ...selectedList, archivedAt: new Date() };
+      setLists(updatedLists);
+      setArchivedLists([...archivedLists, archivedList]);
+      console.log(list);
     // Elimina la lista de Firestore
     firestore
       .collection('lists')
@@ -53,6 +56,7 @@ export default function HomeScreen() {
       .catch((error) => {
         console.error('Error deleting document: ', error);
       });
+    }
   };
   
 
@@ -60,7 +64,7 @@ export default function HomeScreen() {
     if (!isShared && item.owner !== firebase.auth().currentUser.uid) {
       return null;
     }
-    if (isShared && item.owner === firebase.auth().currentUser.uid) {
+    if (isShared && item.owner  === firebase.auth().currentUser.uid) {
       return null;
     }
   
@@ -126,13 +130,6 @@ export default function HomeScreen() {
           console.error('Error querying lists: ', error);
         });
     }
-    //return (
-    //  <View>
-    //    <Text>Enter invite code:</Text>
-    //    <TextInput value={inviteCode} onChangeText={setInviteCode} />
-    //    <Button title="Join list" onPress={handleJoinList} />
-    //  </View>
-    //);
   };
   
   
